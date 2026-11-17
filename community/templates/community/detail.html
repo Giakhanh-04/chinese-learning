@@ -1,0 +1,108 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block title %}{{ post.title }} - Cộng đồng{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/community.css' %}?v=1">
+{% endblock %}
+
+{% block content %}
+{% csrf_token %}
+
+<div class="cm-detail">
+
+  <a href="{% url 'community_home' %}" class="cm-back">← Quay lại cộng đồng</a>
+
+  <article class="cm-post cm-post-full">
+    <header class="cm-post-head">
+      <div class="cm-avatar">{{ post.author.full_name|default:post.author.username|slice:":1"|upper }}</div>
+      <div class="cm-post-meta">
+        <strong>{{ post.author.full_name|default:post.author.username }}
+          {% if post.author.role == "admin" %}<span class="cm-badge">Admin</span>{% endif %}
+        </strong>
+        <small>{{ post.category.name|default:"Khác" }} · {{ post.created_at|timesince }} trước</small>
+      </div>
+      {% if post.is_pinned %}<span class="cm-pin">📌 Bài ghim</span>{% endif %}
+    </header>
+
+    <h1 class="cm-detail-title">{{ post.title }}</h1>
+    <div class="cm-detail-body">{{ post.content|linebreaks }}</div>
+
+    <footer class="cm-post-foot">
+      <button type="button" class="cm-like {% if liked %}is-on{% endif %}"
+              data-url="{% url 'community_like' post.id %}">
+        <span class="cm-heart">{% if liked %}♥{% else %}♡{% endif %}</span>
+        <span class="cm-like-count">{{ like_count }}</span>
+      </button>
+      <span class="cm-stat">💬 {{ comments|length }}</span>
+      <span class="cm-stat">👁 {{ post.views }}</span>
+
+      {% if can_delete %}
+      <form method="post" action="{% url 'community_delete' post.id %}" class="cm-del-form"
+            onsubmit="return confirm('Xóa bài viết này?');">
+        {% csrf_token %}
+        <button class="cm-btn danger">Xóa bài</button>
+      </form>
+      {% endif %}
+    </footer>
+  </article>
+
+  <section class="cm-box cm-comments">
+    <h3>Bình luận ({{ comments|length }})</h3>
+
+    {% if me %}
+    <form method="post" class="cm-comment-form">
+      {% csrf_token %}
+      <textarea name="content" rows="3" maxlength="1000" placeholder="Viết bình luận..." required></textarea>
+      <button class="cm-btn">Gửi</button>
+    </form>
+    {% else %}
+      <p class="cm-muted"><a href="{% url 'login' %}">Đăng nhập</a> để bình luận.</p>
+    {% endif %}
+
+    {% for c in comments %}
+    <div class="cm-comment">
+      <div class="cm-avatar sm">{{ c.author.full_name|default:c.author.username|slice:":1"|upper }}</div>
+      <div class="cm-comment-main">
+        <strong>{{ c.author.full_name|default:c.author.username }}</strong>
+        <small>{{ c.created_at|timesince }} trước</small>
+        <p>{{ c.content|linebreaksbr }}</p>
+      </div>
+
+      {% if me and me.id == c.author_id or me and me.role == "admin" %}
+      <form method="post" action="{% url 'community_comment_delete' c.id %}"
+            onsubmit="return confirm('Xóa bình luận này?');">
+        {% csrf_token %}
+        <button class="cm-x" title="Xóa">✕</button>
+      </form>
+      {% endif %}
+    </div>
+    {% empty %}
+      <p class="cm-muted">Chưa có bình luận nào.</p>
+    {% endfor %}
+  </section>
+</div>
+
+<script>
+(function () {
+    var token = document.querySelector("[name=csrfmiddlewaretoken]").value;
+    var btn = document.querySelector(".cm-like");
+    if (!btn) return;
+    btn.addEventListener("click", function () {
+        fetch(btn.dataset.url, {
+            method: "POST", credentials: "same-origin",
+            headers: { "X-CSRFToken": token }
+        }).then(function (r) {
+            if (r.status === 401) { window.location.href = "{% url 'login' %}"; return null; }
+            return r.json();
+        }).then(function (d) {
+            if (!d) return;
+            btn.classList.toggle("is-on", d.liked);
+            btn.querySelector(".cm-heart").textContent = d.liked ? "♥" : "♡";
+            btn.querySelector(".cm-like-count").textContent = d.count;
+        });
+    });
+})();
+</script>
+{% endblock %}

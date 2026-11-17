@@ -1,0 +1,63 @@
+{% extends "admin_panel/admin_base.html" %}
+
+{% block title %}Bài học - {{ course.name }}{% endblock %}
+
+{% block content %}
+
+<div style="color:#777;font-size:14px;margin-bottom:6px;">
+    <a href="{% url 'admin_courses' %}" style="color:#354a7d;text-decoration:none;">← Khóa học</a>
+</div>
+
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+    <h1 style="font-size:26px;margin:0;">Bài học: {{ course.name }}</h1>
+        <div style="display:flex;gap:10px;">
+        <a href="{% url 'admin_lesson_import' course.id %}" class="adm-btn light">Nhập từ Excel</a>
+        <a href="{% url 'admin_lesson_create' course.id %}" class="adm-btn">+ Thêm bài học</a>
+    </div>
+</div>
+
+<div class="adm-card">
+    <div class="adm-table-wrap">
+        <table class="adm-table">
+            <thead>
+                <tr>
+                    <th>Thứ tự</th>
+                    <th>Tiêu đề</th>
+                    <th>Số từ vựng</th>
+                    <th>Trạng thái</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for l in lessons %}
+                <tr>
+                    <td>{{ l.lesson_order }}</td>
+                    <td style="white-space:normal;min-width:200px;">{{ l.title }}</td>
+                    <td>{{ l.vocab_count }}</td>
+                    <td>
+                        {% if l.is_on %}
+                            <span class="adm-badge premium">{{ l.status }}</span>
+                        {% else %}
+                            <span class="adm-badge" style="background:#eceef2;color:#666;">{{ l.status }}</span>
+                        {% endif %}
+                    </td>
+                    <td style="text-align:right;">
+                        <a href="{% url 'admin_lesson_vocab' l.id %}" class="adm-btn">Từ vựng</a>
+                        <a href="{% url 'admin_lesson_edit' l.id %}" class="adm-btn light">Sửa</a>
+
+                        <form method="post" action="{% url 'admin_lesson_delete' l.id %}" style="display:inline;"
+                              onsubmit="return confirm('Xóa bài học {{ l.title|escapejs }}? Không thể hoàn tác.');">
+                            {% csrf_token %}
+                            <button type="submit" class="adm-btn danger">Xóa</button>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="5" style="text-align:center;color:#777;padding:30px;">Khóa học này chưa có bài học nào.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

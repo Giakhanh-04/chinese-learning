@@ -1,0 +1,64 @@
+{% extends "admin_panel/admin_base.html" %}
+
+{% block title %}Gói Premium{% endblock %}
+
+{% block content %}
+
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+    <h1 style="font-size:26px;margin:0;">Gói Premium</h1>
+    <a href="{% url 'admin_package_create' %}" class="adm-btn">+ Thêm gói</a>
+</div>
+
+<div class="adm-card">
+    <div class="adm-table-wrap">
+        <table class="adm-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Tên gói</th>
+                    <th>Giá</th>
+                    <th>Thời hạn</th>
+                    <th>Đã bán</th>
+                    <th>Trạng thái</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in packages %}
+                <tr>
+                    <td>{{ p.id }}</td>
+                    <td>{{ p.name }}</td>
+                    <td>{{ p.price|floatformat:"0g" }} đ</td>
+                    <td>{{ p.duration_days }} ngày</td>
+                    <td>{{ p.sold }}</td>
+                    <td>
+                        {% if p.status == "active" %}
+                            <span class="adm-badge premium">{{ p.status }}</span>
+                        {% else %}
+                            <span class="adm-badge" style="background:#eceef2;color:#666;">{{ p.status }}</span>
+                        {% endif %}
+                    </td>
+                    <td style="text-align:right;">
+                        <a href="{% url 'admin_package_edit' p.id %}" class="adm-btn light">Sửa</a>
+
+                        <form method="post" action="{% url 'admin_package_toggle' p.id %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="adm-btn light">
+                                {% if p.status == "active" %}Ẩn{% else %}Hiện{% endif %}
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="7" style="text-align:center;color:#777;padding:30px;">Chưa có gói nào.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<p style="color:#777;font-size:13px;margin-top:12px;">
+    Gói không có nút xóa để giữ nguyên lịch sử giao dịch. Muốn ngừng bán thì bấm Ẩn.
+</p>
+
+{% endblock %}

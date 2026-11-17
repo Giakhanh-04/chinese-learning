@@ -1,0 +1,549 @@
+
+{% extends "core/base.html" %}
+
+{% block title %}Lộ trình AI - Hanzii{% endblock %}
+
+{% block content %}
+
+<style>
+/* ============================
+   HANZII - AI LEARNING PLANS
+============================ */
+
+.ai-plans-page {
+    --plan-primary: #354675;
+    --plan-dark: #26365f;
+    --plan-text: #252d3d;
+    --plan-muted: #747e91;
+    --plan-border: #e4e8f0;
+
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 30px 0 55px;
+    color: var(--plan-text);
+}
+
+/* PAGE HEADER */
+
+.ai-plans-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 24px;
+    margin-bottom: 30px;
+}
+
+.ai-plans-eyebrow {
+    margin-bottom: 10px;
+    color: var(--plan-primary);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+
+.ai-plans-header h1 {
+    margin: 0 0 12px;
+    font-size: clamp(28px, 4vw, 38px);
+    line-height: 1.3;
+    letter-spacing: -1px;
+}
+
+.ai-plans-header p {
+    max-width: 650px;
+    margin: 0;
+    color: var(--plan-muted);
+    font-size: 14px;
+    line-height: 1.8;
+}
+
+.ai-plans-count {
+    flex-shrink: 0;
+    padding: 11px 16px;
+    border: 1px solid var(--plan-border);
+    border-radius: 12px;
+    background: white;
+    color: var(--plan-primary);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* INTRO BANNER */
+
+.ai-plans-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 25px;
+    margin-bottom: 30px;
+    padding: 27px 30px;
+    border-radius: 20px;
+    background: linear-gradient(120deg, #354675, #52699e);
+    color: white;
+}
+
+.ai-plans-banner h2 {
+    margin: 0 0 9px;
+    font-size: 22px;
+    line-height: 1.5;
+}
+
+.ai-plans-banner p {
+    max-width: 680px;
+    margin: 0;
+    color: #e4e9f5;
+    font-size: 13px;
+    line-height: 1.8;
+}
+
+.ai-plans-banner-label {
+    display: block;
+    margin-bottom: 8px;
+    color: #dce4fa;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.7px;
+}
+
+.ai-plans-banner-mark {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 78px;
+    height: 78px;
+    border: 1px solid rgba(255,255,255,.45);
+    border-radius: 22px;
+    font-size: 25px;
+    font-weight: 700;
+    letter-spacing: -1px;
+}
+
+/* PLAN CARD */
+
+.ai-plans-list {
+    display: grid;
+    gap: 22px;
+}
+
+.ai-plan-card {
+    overflow: hidden;
+    border: 1px solid var(--plan-border);
+    border-radius: 20px;
+    background: white;
+    box-shadow: 0 7px 25px rgba(37, 49, 80, .035);
+}
+
+.ai-plan-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 25px 27px;
+    border-bottom: 1px solid #edf0f5;
+}
+
+.ai-plan-label {
+    margin-bottom: 9px;
+    color: var(--plan-muted);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+}
+
+.ai-plan-card h2 {
+    margin: 0;
+    color: var(--plan-text);
+    font-size: 23px;
+    line-height: 1.5;
+}
+
+.ai-plan-card h2 span {
+    color: var(--plan-primary);
+}
+
+.ai-plan-status {
+    flex-shrink: 0;
+    padding: 8px 12px;
+    border-radius: 30px;
+    background: #edf5ef;
+    color: #35734b;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.ai-plan-status.completed {
+    background: #eaf0fb;
+    color: #354675;
+}
+
+.ai-plan-status.other {
+    background: #f1f2f5;
+    color: #60697a;
+}
+
+/* PLAN DETAILS */
+
+.ai-plan-details {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    padding: 23px 27px;
+    background: #fcfcfe;
+}
+
+.ai-plan-detail {
+    min-width: 0;
+    padding: 16px 17px;
+    border: 1px solid #e9ecf3;
+    border-radius: 13px;
+    background: white;
+}
+
+.ai-plan-detail-label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--plan-muted);
+    font-size: 11px;
+}
+
+.ai-plan-detail-value {
+    color: var(--plan-text);
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.7;
+    overflow-wrap: anywhere;
+}
+
+/* AI GENERATED CONTENT */
+
+.ai-plan-content-wrap {
+    padding: 26px 27px 30px;
+}
+
+.ai-plan-content-heading {
+    margin: 0 0 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #edf0f5;
+    color: var(--plan-text);
+    font-size: 17px;
+}
+
+.ai-plan-content {
+    color: #454d5e;
+    font-size: 14px;
+    line-height: 1.95;
+    overflow-wrap: anywhere;
+}
+
+.ai-plan-content h1,
+.ai-plan-content h2,
+.ai-plan-content h3,
+.ai-plan-content h4 {
+    margin: 23px 0 10px;
+    color: var(--plan-primary);
+    line-height: 1.6;
+}
+
+.ai-plan-content h1 {
+    font-size: 23px;
+}
+
+.ai-plan-content h2 {
+    font-size: 20px;
+}
+
+.ai-plan-content h3,
+.ai-plan-content h4 {
+    font-size: 16px;
+}
+
+.ai-plan-content p {
+    margin: 0 0 14px;
+}
+
+.ai-plan-content ul,
+.ai-plan-content ol {
+    padding-left: 25px;
+    margin: 10px 0 18px;
+}
+
+.ai-plan-content li {
+    margin-bottom: 7px;
+}
+
+.ai-plan-content table {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    border-collapse: collapse;
+}
+
+.ai-plan-content th,
+.ai-plan-content td {
+    padding: 11px 13px;
+    border: 1px solid var(--plan-border);
+    text-align: left;
+}
+
+.ai-plan-content th {
+    background: #f1f4fa;
+    color: var(--plan-primary);
+}
+
+.ai-plan-content blockquote {
+    margin: 18px 0;
+    padding: 14px 18px;
+    border-left: 3px solid #536ba2;
+    background: #f5f7fc;
+    border-radius: 0 10px 10px 0;
+}
+
+/* EMPTY STATE */
+
+.ai-plan-empty {
+    padding: 55px 25px;
+    border: 1px solid var(--plan-border);
+    border-radius: 20px;
+    background: white;
+    text-align: center;
+}
+
+.ai-plan-empty-label {
+    margin-bottom: 15px;
+    color: var(--plan-primary);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+
+.ai-plan-empty h2 {
+    margin: 0 0 12px;
+    font-size: 24px;
+}
+
+.ai-plan-empty p {
+    max-width: 520px;
+    margin: 0 auto 25px;
+    color: var(--plan-muted);
+    font-size: 14px;
+    line-height: 1.9;
+}
+
+.ai-plan-create-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    padding: 13px 22px;
+    border-radius: 11px;
+    background: var(--plan-primary);
+    color: white;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    transition: background .2s, transform .2s;
+}
+
+.ai-plan-create-btn:hover {
+    background: var(--plan-dark);
+    color: white;
+    transform: translateY(-2px);
+}
+
+/* FOOTNOTE */
+
+.ai-plans-footnote {
+    margin-top: 25px;
+    color: #9098a8;
+    font-size: 11px;
+    line-height: 1.8;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 650px) {
+    .ai-plans-page {
+        padding: 18px 0 35px;
+    }
+
+    .ai-plans-header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .ai-plans-banner {
+        padding: 23px 20px;
+    }
+
+    .ai-plans-banner-mark {
+        display: none;
+    }
+
+    .ai-plan-card-header {
+        flex-direction: column;
+        padding: 21px 19px;
+    }
+
+    .ai-plan-details {
+        grid-template-columns: 1fr;
+        padding: 18px;
+    }
+
+    .ai-plan-content-wrap {
+        padding: 22px 19px;
+    }
+
+    .ai-plan-card h2 {
+        font-size: 21px;
+    }
+
+    .ai-plan-empty {
+        padding: 40px 20px;
+    }
+}
+</style>
+
+<div class="ai-plans-page">
+
+    <!-- PAGE HEADER -->
+    <header class="ai-plans-header">
+        <div>
+            <div class="ai-plans-eyebrow">PERSONALIZED LEARNING</div>
+            <h1>Lộ trình học tập AI</h1>
+            <p>
+                Theo dõi những lộ trình tiếng Trung được tạo cho tài khoản của bạn,
+                từ mục tiêu HSK đến kế hoạch học tập mỗi ngày.
+            </p>
+        </div>
+
+        {% if plans %}
+        <div class="ai-plans-count">
+            {{ plans|length }} lộ trình
+        </div>
+        {% endif %}
+    </header>
+
+    <!-- INTRO BANNER -->
+    <section class="ai-plans-banner">
+        <div>
+            <span class="ai-plans-banner-label">YOUR LEARNING JOURNEY</span>
+            <h2>Học có mục tiêu, tiến bộ từng ngày.</h2>
+            <p>
+                Xem lại mục tiêu, thời gian học và nội dung do AI đề xuất
+                để chủ động theo dõi hành trình học tiếng Trung.
+            </p>
+        </div>
+        <div class="ai-plans-banner-mark">AI</div>
+    </section>
+
+    <!-- PLANS -->
+    {% if plans %}
+
+        <div class="ai-plans-list">
+
+            {% for plan in plans %}
+
+            <article class="ai-plan-card">
+
+                <header class="ai-plan-card-header">
+                    <div>
+                        <div class="ai-plan-label">
+                            LỘ TRÌNH {{ forloop.counter|stringformat:"02d" }}
+                        </div>
+
+                        <h2>
+                            HSK {{ plan.current_hsk }}
+                            <span>→ HSK {{ plan.target_hsk }}</span>
+                        </h2>
+                    </div>
+
+                    {% if plan.status == "active" %}
+                        <span class="ai-plan-status">Đang học</span>
+                    {% elif plan.status == "completed" %}
+                        <span class="ai-plan-status completed">Hoàn thành</span>
+                    {% else %}
+                        <span class="ai-plan-status other">
+                            {{ plan.status }}
+                        </span>
+                    {% endif %}
+                </header>
+
+                <!-- DETAILS -->
+                <div class="ai-plan-details">
+
+                    <div class="ai-plan-detail">
+                        <span class="ai-plan-detail-label">Thời gian học mỗi ngày</span>
+                        <div class="ai-plan-detail-value">
+                            {{ plan.daily_minutes }} phút
+                        </div>
+                    </div>
+
+                    <div class="ai-plan-detail">
+                        <span class="ai-plan-detail-label">Mục tiêu học tập</span>
+                        <div class="ai-plan-detail-value">
+                            {{ plan.learning_goal|default:"Chưa cập nhật" }}
+                        </div>
+                    </div>
+
+                    <div class="ai-plan-detail">
+                        <span class="ai-plan-detail-label">Ngày bắt đầu</span>
+                        <div class="ai-plan-detail-value">
+                            {{ plan.start_date|date:"d/m/Y" }}
+                        </div>
+                    </div>
+
+                    <div class="ai-plan-detail">
+                        <span class="ai-plan-detail-label">Ngày kết thúc dự kiến</span>
+                        <div class="ai-plan-detail-value">
+                            {{ plan.end_date|date:"d/m/Y" }}
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- GENERATED CONTENT -->
+                <div class="ai-plan-content-wrap">
+                    <h3 class="ai-plan-content-heading">
+                        Nội dung lộ trình
+                    </h3>
+
+                    <div class="ai-plan-content">
+                        {{ plan.plan_content_html|safe }}
+                    </div>
+                </div>
+
+            </article>
+
+            {% endfor %}
+
+        </div>
+
+        <p class="ai-plans-footnote">
+            Thời gian và nội dung lộ trình được trình bày theo dữ liệu đã lưu
+            trong tài khoản của bạn.
+        </p>
+
+    {% else %}
+
+        <!-- EMPTY STATE -->
+        <section class="ai-plan-empty">
+            <div class="ai-plan-empty-label">START YOUR JOURNEY</div>
+            <h2>Bạn chưa có lộ trình học tập</h2>
+            <p>
+                Hãy tạo lộ trình đầu tiên để xác định trình độ hiện tại,
+                mục tiêu HSK và thời gian học phù hợp với bản thân.
+            </p>
+
+            <a href="{% url 'ai_chat' %}" class="ai-plan-create-btn">
+                Tạo lộ trình bằng AI
+                <span aria-hidden="true">→</span>
+            </a>
+        </section>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}
+```

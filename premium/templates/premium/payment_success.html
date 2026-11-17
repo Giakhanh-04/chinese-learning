@@ -1,0 +1,235 @@
+{% extends "core/base.html" %}
+
+{% block title %}{% if error %}Thanh toán không thành công{% else %}Thanh toán thành công{% endif %} - Hanzii{% endblock %}
+
+{% block content %}
+
+<style>
+.payment-success-page {
+    --navy:#304575;
+    --navy-dark:#25385f;
+    --soft:#e9eef8;
+    --text:#293347;
+    --muted:#77808f;
+    --border:#e5e8ef;
+
+    max-width:800px;
+    margin:auto;
+    padding:45px 22px 70px;
+    color:var(--text);
+}
+
+.success-card {
+    background:white;
+    border:1px solid var(--border);
+    border-radius:24px;
+    overflow:hidden;
+    box-shadow:0 12px 35px rgba(48,69,117,.08);
+}
+
+.success-banner {
+    padding:40px 25px;
+    text-align:center;
+    color:white;
+    background:linear-gradient(135deg,#25385f,#304575,#5870a8);
+}
+
+.success-banner.is-failed {
+    background:linear-gradient(135deg,#8f2d2d,#b83c3c,#d36363);
+}
+
+.success-icon {
+    width:85px;
+    height:85px;
+    margin:0 auto 18px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:50%;
+    background:rgba(255,255,255,.15);
+    border:1px solid rgba(255,255,255,.25);
+    font-size:38px;
+}
+
+.success-banner h1 { margin:0 0 10px; font-size:28px; font-weight:800; }
+.success-banner p  { margin:0; color:#f1f3f9; font-size:14px; }
+
+.success-content { padding:30px; }
+
+.package-box {
+    padding:22px;
+    margin-bottom:22px;
+    border-radius:16px;
+    background:#f8faff;
+    border:1px solid var(--border);
+    text-align:center;
+}
+
+.package-name { color:var(--navy); font-size:22px; font-weight:800; margin-bottom:10px; }
+.package-desc { color:var(--muted); font-size:14px; }
+
+.payment-info { display:grid; gap:14px; }
+
+.info-row {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:15px 17px;
+    border:1px solid var(--border);
+    border-radius:12px;
+    background:white;
+}
+
+.info-label { color:var(--muted); font-size:14px; }
+.info-value { color:var(--navy); font-size:14px; font-weight:700; }
+.info-value.bad { color:#b83c3c; }
+
+.premium-active {
+    margin:25px 0;
+    padding:18px;
+    border-radius:15px;
+    background:#edf8f1;
+    border:1px solid #d5ecd9;
+    color:#26724f;
+}
+
+.premium-active.is-failed {
+    background:#fff4f4;
+    border-color:#f3cccc;
+    color:#984848;
+}
+
+.premium-active h3 { margin:0 0 8px; font-size:16px; }
+.premium-active p  { margin:0; font-size:14px; line-height:1.7; }
+
+.action-buttons { display:flex; justify-content:center; gap:12px; flex-wrap:wrap; }
+
+.action-btn {
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    padding:13px 22px;
+    border-radius:11px;
+    background:var(--navy);
+    color:white;
+    text-decoration:none;
+    font-size:14px;
+    font-weight:700;
+    transition:.2s;
+}
+
+.action-btn:hover { background:var(--navy-dark); transform:translateY(-2px); }
+
+.action-btn.secondary {
+    background:white;
+    color:var(--navy);
+    border:1px solid #d8dfed;
+}
+
+.action-btn.secondary:hover { background:var(--soft); }
+
+@media(max-width:600px){
+    .success-content{ padding:20px 15px; }
+    .info-row{ flex-direction:column; align-items:flex-start; gap:6px; }
+    .action-buttons{ flex-direction:column; }
+    .action-btn{ width:100%; }
+}
+</style>
+
+<div class="payment-success-page">
+<div class="success-card">
+
+{% if error %}
+
+    <div class="success-banner is-failed">
+        <div class="success-icon">✕</div>
+        <h1>Thanh toán không thành công</h1>
+        <p>{{ error }}</p>
+    </div>
+
+    <div class="success-content">
+
+        {% if package %}
+        <div class="package-box">
+            <div class="package-name">{{ package.name }}</div>
+            <div class="package-desc">Gói Premium Hanzii</div>
+        </div>
+        {% endif %}
+
+        {% if payment %}
+        <div class="payment-info">
+            <div class="info-row">
+                <span class="info-label">Số tiền</span>
+                <span class="info-value">{{ payment.amount|floatformat:0 }} VNĐ</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Trạng thái</span>
+                <span class="info-value bad">Chưa thanh toán</span>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="premium-active is-failed">
+            <h3>Premium chưa được kích hoạt</h3>
+            <p>Giao dịch chưa hoàn tất nên tài khoản của bạn chưa được nâng cấp. Bạn có thể chọn lại gói để thử lại.</p>
+        </div>
+
+        <div class="action-buttons">
+            <a href="{% url 'premium_list' %}" class="action-btn">Chọn lại gói</a>
+            <a href="{% url 'home' %}" class="action-btn secondary">Về trang chủ</a>
+        </div>
+
+    </div>
+
+{% else %}
+
+    <div class="success-banner">
+        <div class="success-icon">✓</div>
+        <h1>Thanh toán thành công!</h1>
+        <p>Tài khoản của bạn đã được nâng cấp Premium</p>
+    </div>
+
+    <div class="success-content">
+
+        <div class="package-box">
+            <div class="package-name">{{ package.name }}</div>
+            <div class="package-desc">Gói Premium Hanzii</div>
+        </div>
+
+        <div class="payment-info">
+            <div class="info-row">
+                <span class="info-label">Số tiền thanh toán</span>
+                <span class="info-value">{{ payment.amount|floatformat:0 }} VNĐ</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Trạng thái</span>
+                <span class="info-value">Đã thanh toán</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Ngày bắt đầu</span>
+                <span class="info-value">{{ start_date|date:"d/m/Y H:i" }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Ngày hết hạn</span>
+                <span class="info-value">{{ end_date|date:"d/m/Y H:i" }}</span>
+            </div>
+        </div>
+
+        <div class="premium-active">
+            <h3>Premium đã được kích hoạt</h3>
+            <p>Bạn có thể sử dụng toàn bộ tính năng Premium trong thời gian gói còn hiệu lực.</p>
+        </div>
+
+        <div class="action-buttons">
+            <a href="{% url 'premium_list' %}" class="action-btn secondary">Quản lý Premium</a>
+            <a href="{% url 'home' %}" class="action-btn">Về trang chủ</a>
+        </div>
+
+    </div>
+
+{% endif %}
+
+</div>
+</div>
+
+{% endblock %}

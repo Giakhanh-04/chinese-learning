@@ -1,0 +1,919 @@
+{% comment %} HANZII AI CHAT WIDGET {% endcomment %}
+<style>
+
+#hzChat {
+    --hz-navy: #354a7d;
+    --hz-navy-dark: #25385f;
+    --hz-navy-soft: #eef3fb;
+    --hz-border: #e4e8f0;
+    --hz-text: #293347;
+    --hz-muted: #7b8494;
+
+    position: fixed;
+    right: 22px;
+    bottom: 22px;
+    z-index: 9999;
+    font-family: inherit;
+    color: var(--hz-text);
+}
+
+/* ---------- Nút mở ---------- */
+
+.hz-chat-fab {
+    width: 58px;
+    height: 58px;
+    border: none;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #25385f, #354a7d 60%, #536ba0);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(37, 56, 95, 0.35);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hz-chat-fab:hover {
+    transform: translateY(-2px) scale(1.04);
+    box-shadow: 0 12px 28px rgba(37, 56, 95, 0.42);
+}
+
+.hz-chat-fab svg {
+    width: 26px;
+    height: 26px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.9;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+#hzChat.is-open .hz-chat-fab {
+    display: none;
+}
+
+/* ---------- Khung chat ---------- */
+
+.hz-chat-panel {
+    display: none;
+    width: 390px;
+    height: min(620px, calc(100vh - 44px));
+    background: white;
+    border: 1px solid var(--hz-border);
+    border-radius: 22px;
+    box-shadow: 0 18px 50px rgba(37, 56, 95, 0.22);
+    overflow: hidden;
+    flex-direction: column;
+    animation: hz-pop 0.22s ease;
+}
+
+#hzChat.is-open .hz-chat-panel {
+    display: flex;
+}
+
+@keyframes hz-pop {
+    from { opacity: 0; transform: translateY(12px) scale(0.98); }
+    to   { opacity: 1; transform: none; }
+}
+
+/* ---------- Header ---------- */
+
+.hz-chat-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 14px 14px 18px;
+    color: white;
+    background: linear-gradient(135deg, #25385f, #354a7d 60%, #536ba0);
+}
+
+.hz-chat-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.18);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 15px;
+    letter-spacing: 0.5px;
+}
+
+.hz-chat-title {
+    flex: 1;
+    min-width: 0;
+}
+
+.hz-chat-title strong {
+    display: block;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.hz-chat-title span {
+    font-size: 12px;
+    color: #d9e2f5;
+}
+
+.hz-chat-header-btn {
+    width: 34px;
+    height: 34px;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease;
+}
+
+.hz-chat-header-btn:hover {
+    background: rgba(255, 255, 255, 0.16);
+}
+
+.hz-chat-header-btn svg {
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.9;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* ---------- Tin nhắn ---------- */
+
+.hz-chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 14px;
+    background: #f7f9fd;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    scroll-behavior: smooth;
+}
+
+.hz-msg {
+    max-width: 88%;
+    padding: 10px 14px;
+    border-radius: 16px;
+    font-size: 14.5px;
+    line-height: 1.6;
+    word-break: break-word;
+}
+
+.hz-msg.user {
+    align-self: flex-end;
+    background: var(--hz-navy);
+    color: white;
+    border-bottom-right-radius: 5px;
+    white-space: pre-wrap;
+}
+
+.hz-msg.assistant {
+    align-self: flex-start;
+    background: white;
+    border: 1px solid var(--hz-border);
+    border-bottom-left-radius: 5px;
+}
+
+.hz-msg.error {
+    align-self: flex-start;
+    background: #fff4f4;
+    border: 1px solid #f3cccc;
+    color: #984848;
+    border-bottom-left-radius: 5px;
+}
+
+.hz-msg.premium {
+    align-self: flex-start;
+    background: #fffcf0;
+    border: 1px solid #ecd48a;
+    color: #6f5410;
+    border-bottom-left-radius: 5px;
+}
+
+.hz-msg p {
+    margin: 0 0 8px;
+}
+
+.hz-msg p:last-child,
+.hz-msg ul:last-child,
+.hz-msg ol:last-child {
+    margin-bottom: 0;
+}
+
+.hz-msg ul,
+.hz-msg ol {
+    margin: 0 0 8px;
+    padding-left: 20px;
+}
+
+.hz-msg li {
+    margin-bottom: 3px;
+}
+
+.hz-msg code {
+    background: #eef3fb;
+    border-radius: 5px;
+    padding: 1px 5px;
+    font-size: 0.92em;
+}
+
+.hz-msg .hz-chat-h {
+    font-weight: 700;
+    color: var(--hz-navy-dark);
+}
+
+.hz-msg a.hz-cta {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 8px 16px;
+    border-radius: 999px;
+    background: var(--hz-navy);
+    color: white;
+    font-weight: 600;
+    font-size: 13.5px;
+    text-decoration: none;
+}
+
+/* dấu ba chấm đang gõ */
+
+.hz-typing {
+    display: inline-flex;
+    gap: 4px;
+    padding: 4px 0;
+}
+
+.hz-typing i {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #9fb2d8;
+    animation: hz-bounce 1.1s infinite ease-in-out;
+}
+
+.hz-typing i:nth-child(2) { animation-delay: 0.15s; }
+.hz-typing i:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes hz-bounce {
+    0%, 80%, 100% { transform: translateY(0); opacity: 0.5; }
+    40%           { transform: translateY(-5px); opacity: 1; }
+}
+
+/* ---------- Gợi ý ---------- */
+
+.hz-chat-welcome {
+    text-align: center;
+    padding: 6px 6px 2px;
+}
+
+.hz-chat-welcome h4 {
+    margin: 4px 0 4px;
+    font-size: 16px;
+    color: var(--hz-navy-dark);
+}
+
+.hz-chat-welcome p {
+    margin: 0 0 12px;
+    font-size: 13.5px;
+    color: var(--hz-muted);
+}
+
+.hz-chat-chips {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.hz-chip {
+    border: 1px solid #dbe3f2;
+    background: white;
+    color: var(--hz-navy);
+    padding: 10px 14px;
+    border-radius: 14px;
+    font-family: inherit;
+    font-size: 13.5px;
+    text-align: left;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.hz-chip:hover {
+    background: var(--hz-navy-soft);
+    border-color: #9fb2d8;
+}
+
+/* ---------- Ô nhập ---------- */
+
+.hz-chat-form {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    padding: 10px 12px 12px;
+    background: white;
+    border-top: 1px solid var(--hz-border);
+}
+
+.hz-chat-input {
+    flex: 1;
+    resize: none;
+    border: 1px solid #dbe3f2;
+    border-radius: 16px;
+    padding: 10px 14px;
+    font-family: inherit;
+    font-size: 14.5px;
+    line-height: 1.5;
+    max-height: 110px;
+    outline: none;
+    color: var(--hz-text);
+    background: #f7f9fd;
+    transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.hz-chat-input:focus {
+    border-color: #9fb2d8;
+    background: white;
+}
+
+.hz-chat-send {
+    flex-shrink: 0;
+    width: 42px;
+    height: 42px;
+    border: none;
+    border-radius: 50%;
+    background: var(--hz-navy);
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.hz-chat-send:hover {
+    background: var(--hz-navy-dark);
+}
+
+.hz-chat-send:active {
+    transform: scale(0.92);
+}
+
+.hz-chat-send:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.hz-chat-send svg {
+    width: 19px;
+    height: 19px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.9;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.hz-chat-note {
+    padding: 0 14px 10px;
+    background: white;
+    text-align: center;
+    font-size: 11.5px;
+    color: #9aa2b1;
+}
+
+/* ---------- Mobile ---------- */
+
+@media (max-width: 520px) {
+
+    #hzChat {
+        right: 14px;
+        bottom: 14px;
+    }
+
+    #hzChat.is-open {
+        right: 8px;
+        left: 8px;
+        bottom: 8px;
+    }
+
+    .hz-chat-panel {
+        width: 100%;
+        height: min(640px, calc(100vh - 16px));
+        height: min(640px, calc(100dvh - 16px));
+    }
+
+    .hz-chat-input { font-size: 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hz-chat-panel,
+    .hz-typing i {
+        animation: none;
+    }
+    .hz-chat-messages {
+        scroll-behavior: auto;
+    }
+}
+
+</style>
+
+
+<div id="hzChat">
+
+    {% csrf_token %}
+
+    <!-- Nút mở chat -->
+    <button type="button" class="hz-chat-fab" id="hzChatOpen"
+            aria-label="Mở trợ lý AI" title="Hỏi trợ lý AI">
+        <svg viewBox="0 0 24 24">
+            <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>
+        </svg>
+    </button>
+
+    <!-- Khung chat -->
+    <section class="hz-chat-panel" role="dialog" aria-label="Trợ lý AI Hanzii">
+
+        <header class="hz-chat-header">
+
+            <div class="hz-chat-avatar">AI</div>
+
+            <div class="hz-chat-title">
+                <strong>Trợ lý tiếng Trung</strong>
+                <span>Hỏi từ vựng, ngữ pháp, dịch câu...</span>
+            </div>
+
+            <button type="button" class="hz-chat-header-btn" id="hzChatClear"
+                    title="Xóa cuộc trò chuyện" aria-label="Xóa cuộc trò chuyện">
+                <svg viewBox="0 0 24 24">
+                    <path d="M3 6h18"/>
+                    <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+                    <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                </svg>
+            </button>
+
+            <button type="button" class="hz-chat-header-btn" id="hzChatClose"
+                    title="Thu nhỏ" aria-label="Thu nhỏ">
+                <svg viewBox="0 0 24 24">
+                    <path d="M18 6 6 18"/>
+                    <path d="m6 6 12 12"/>
+                </svg>
+            </button>
+
+        </header>
+
+        <div class="hz-chat-messages" id="hzChatMessages"></div>
+
+        <div class="hz-chat-form">
+
+            <textarea
+                id="hzChatInput"
+                class="hz-chat-input"
+                rows="1"
+                maxlength="1000"
+                placeholder="Nhập câu hỏi..."
+                aria-label="Nhập câu hỏi"
+            ></textarea>
+
+            <button type="button" class="hz-chat-send" id="hzChatSend"
+                    title="Gửi" aria-label="Gửi">
+                <svg viewBox="0 0 24 24">
+                    <path d="m22 2-7 20-4-9-9-4Z"/>
+                    <path d="M22 2 11 13"/>
+                </svg>
+            </button>
+
+        </div>
+
+        <div class="hz-chat-note">
+            Enter để gửi · Shift+Enter xuống dòng
+        </div>
+
+    </section>
+
+</div>
+
+
+<script>
+(function () {
+
+    const root = document.getElementById("hzChat");
+    if (!root) return;
+
+    const STREAM_URL = "{% url 'ai_chat_stream' %}";
+    const LOGIN_URL = "{% url 'login' %}";
+    const PREMIUM_URL = "/premium/";
+
+    const STORAGE_KEY = "hanzii_ai_chat_v1";
+    const OPEN_KEY = "hanzii_ai_chat_open";
+    const MAX_HISTORY = 8;
+
+    const listEl = document.getElementById("hzChatMessages");
+    const inputEl = document.getElementById("hzChatInput");
+    const sendBtn = document.getElementById("hzChatSend");
+    const csrfEl = root.querySelector("[name=csrfmiddlewaretoken]");
+
+    const SUGGESTIONS = [
+        "Giải thích cách dùng chữ 把 (bǎ)",
+        "Phân biệt 了 và 过",
+        "Dịch sang tiếng Trung: Tôi đang học tiếng Trung mỗi ngày",
+        "Mẹo nhớ chữ Hán nhanh"
+    ];
+
+    let messages = [];      // [{role: "user" | "assistant", text: "..."}]
+    let busy = false;
+    let controller = null;
+
+
+    /* ---------------------------------------------------------
+       LƯU / TẢI
+    --------------------------------------------------------- */
+
+    function saveState() {
+        try {
+            sessionStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
+        } catch (e) {}
+    }
+
+    function loadState() {
+        try {
+            const raw = sessionStorage.getItem(STORAGE_KEY);
+            const parsed = raw ? JSON.parse(raw) : [];
+            if (Array.isArray(parsed)) {
+                messages = parsed.filter(function (m) {
+                    return m && (m.role === "user" || m.role === "assistant")
+                        && typeof m.text === "string";
+                });
+            }
+        } catch (e) {
+            messages = [];
+        }
+    }
+
+
+    /* ---------------------------------------------------------
+       MARKDOWN (rút gọn, an toàn: escape trước rồi mới thêm thẻ)
+    --------------------------------------------------------- */
+
+    function esc(s) {
+        return String(s)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;");
+    }
+
+    function inline(s) {
+        return s
+            .replace(/`([^`]+)`/g, "<code>$1</code>")
+            .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
+            .replace(/(^|[^*])\*([^*\n]+)\*/g, "$1<em>$2</em>");
+    }
+
+    function renderMarkdown(src) {
+        const lines = esc(src).split("\n");
+        let html = "";
+        let list = null;
+
+        function closeList() {
+            if (list) {
+                html += "</" + list + ">";
+                list = null;
+            }
+        }
+
+        lines.forEach(function (line) {
+            let m;
+
+            if ((m = line.match(/^\s*[-*•]\s+(.*)$/))) {
+                if (list !== "ul") { closeList(); html += "<ul>"; list = "ul"; }
+                html += "<li>" + inline(m[1]) + "</li>";
+            }
+            else if ((m = line.match(/^\s*\d+[.)]\s+(.*)$/))) {
+                if (list !== "ol") { closeList(); html += "<ol>"; list = "ol"; }
+                html += "<li>" + inline(m[1]) + "</li>";
+            }
+            else if ((m = line.match(/^#{1,6}\s+(.*)$/))) {
+                closeList();
+                html += '<p class="hz-chat-h">' + inline(m[1]) + "</p>";
+            }
+            else if (line.trim() === "") {
+                closeList();
+            }
+            else {
+                closeList();
+                html += "<p>" + inline(line) + "</p>";
+            }
+        });
+
+        closeList();
+        return html;
+    }
+
+
+    /* ---------------------------------------------------------
+       HIỂN THỊ
+    --------------------------------------------------------- */
+
+    function nearBottom() {
+        return listEl.scrollHeight - listEl.scrollTop - listEl.clientHeight < 90;
+    }
+
+    function scrollBottom() {
+        listEl.scrollTop = listEl.scrollHeight;
+    }
+
+    function addBubble(role, text) {
+        const div = document.createElement("div");
+        div.className = "hz-msg " + role;
+
+        if (role === "assistant") {
+            div.innerHTML = renderMarkdown(text);
+        } else {
+            div.textContent = text;
+        }
+
+        listEl.appendChild(div);
+        return div;
+    }
+
+    function showWelcome() {
+        const box = document.createElement("div");
+        box.className = "hz-chat-welcome";
+        box.id = "hzChatWelcome";
+
+        box.innerHTML =
+            "<h4>Xin chào! Mình là trợ lý tiếng Trung</h4>"
+            + "<p>Bạn muốn hỏi gì hôm nay?</p>"
+            + '<div class="hz-chat-chips"></div>';
+
+        const chips = box.querySelector(".hz-chat-chips");
+
+        SUGGESTIONS.forEach(function (text) {
+            const b = document.createElement("button");
+            b.type = "button";
+            b.className = "hz-chip";
+            b.textContent = text;
+            b.addEventListener("click", function () {
+                send(text);
+            });
+            chips.appendChild(b);
+        });
+
+        listEl.appendChild(box);
+    }
+
+    function hideWelcome() {
+        const w = document.getElementById("hzChatWelcome");
+        if (w) w.remove();
+    }
+
+    function renderAll() {
+        listEl.innerHTML = "";
+
+        if (!messages.length) {
+            showWelcome();
+            return;
+        }
+
+        messages.forEach(function (m) {
+            addBubble(m.role, m.text);
+        });
+
+        scrollBottom();
+    }
+
+
+    /* ---------------------------------------------------------
+       THÔNG BÁO ĐẶC BIỆT
+    --------------------------------------------------------- */
+
+    function addNotice(kind, html) {
+        const div = document.createElement("div");
+        div.className = "hz-msg " + kind;
+        div.innerHTML = html;
+        listEl.appendChild(div);
+        scrollBottom();
+        return div;
+    }
+
+
+    /* ---------------------------------------------------------
+       GỬI TIN NHẮN
+    --------------------------------------------------------- */
+
+    function setBusy(state) {
+        busy = state;
+        sendBtn.disabled = state;
+    }
+
+    function historyForRequest() {
+        // chỉ lấy các cặp hỏi đáp đã hoàn tất, tối đa MAX_HISTORY tin gần nhất
+        return messages.slice(-MAX_HISTORY).map(function (m) {
+            return { role: m.role, text: m.text };
+        });
+    }
+
+    async function send(text) {
+
+        text = (text || "").trim();
+        if (!text || busy) return;
+
+        hideWelcome();
+
+        const history = historyForRequest();
+
+        addBubble("user", text);
+        scrollBottom();
+
+        inputEl.value = "";
+        autoGrow();
+
+        const bubble = document.createElement("div");
+        bubble.className = "hz-msg assistant";
+        bubble.innerHTML = '<span class="hz-typing"><i></i><i></i><i></i></span>';
+        listEl.appendChild(bubble);
+        scrollBottom();
+
+        setBusy(true);
+        controller = new AbortController();
+
+        let answer = "";
+
+        try {
+
+            const response = await fetch(STREAM_URL, {
+                method: "POST",
+                credentials: "same-origin",
+                signal: controller.signal,
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": csrfEl ? csrfEl.value : ""
+                },
+                body: JSON.stringify({ message: text, history: history })
+            });
+
+            if (response.status === 401) {
+                bubble.remove();
+                addNotice("error",
+                    "Phiên đăng nhập đã hết hạn. "
+                    + '<a class="hz-cta" href="' + LOGIN_URL + '">Đăng nhập lại</a>');
+                return;
+            }
+
+            if (response.status === 403) {
+                bubble.remove();
+                addNotice("premium",
+                    "<strong>Tính năng Premium</strong><br>"
+                    + "Trợ lý AI dành cho tài khoản Premium."
+                    + '<br><a class="hz-cta" href="' + PREMIUM_URL + '">Nâng cấp Premium</a>');
+                return;
+            }
+
+            if (!response.ok || !response.body) {
+                throw new Error("HTTP " + response.status);
+            }
+
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder("utf-8");
+
+                        let finished = false;
+
+            while (!finished) {
+                const result = await reader.read();
+                if (result.done) break;
+
+                let piece = decoder.decode(result.value, { stream: true });
+                const endAt = piece.indexOf("\x03");
+
+                if (endAt !== -1) {
+                    piece = piece.slice(0, endAt);
+                    finished = true;
+                }
+
+                answer += piece;
+
+                const stick = nearBottom();
+                bubble.innerHTML = renderMarkdown(answer);
+                if (stick) scrollBottom();
+            }
+
+            if (finished) {
+                try { reader.cancel(); } catch (e) {}
+            }
+
+            answer = answer.trim();
+
+            if (!answer || answer.indexOf("⚠️") === 0) {
+                bubble.className = "hz-msg error";
+                bubble.textContent = answer || "AI chưa trả lời. Bạn thử lại nhé.";
+                return;
+            }
+
+            messages.push({ role: "user", text: text });
+            messages.push({ role: "assistant", text: answer });
+            saveState();
+
+        } catch (err) {
+
+            if (err.name === "AbortError") {
+                bubble.remove();
+                return;
+            }
+
+            console.error(err);
+            bubble.className = "hz-msg error";
+            bubble.textContent = "Không thể kết nối với AI. Vui lòng thử lại sau.";
+
+        } finally {
+
+            setBusy(false);
+            controller = null;
+            scrollBottom();
+        }
+    }
+
+
+    /* ---------------------------------------------------------
+       Ô NHẬP
+    --------------------------------------------------------- */
+
+    function autoGrow() {
+        inputEl.style.height = "auto";
+        inputEl.style.height = Math.min(inputEl.scrollHeight, 110) + "px";
+    }
+
+    inputEl.addEventListener("input", autoGrow);
+
+    inputEl.addEventListener("keydown", function (e) {
+        // isComposing: tránh gửi nhầm khi đang gõ tiếng Trung bằng bộ gõ
+        if (e.key === "Enter" && !e.shiftKey && !e.isComposing) {
+            e.preventDefault();
+            send(inputEl.value);
+        }
+    });
+
+    sendBtn.addEventListener("click", function () {
+        send(inputEl.value);
+    });
+
+
+    /* ---------------------------------------------------------
+       MỞ / ĐÓNG / XÓA
+    --------------------------------------------------------- */
+
+    function setOpen(state) {
+        root.classList.toggle("is-open", state);
+
+        try {
+            sessionStorage.setItem(OPEN_KEY, state ? "1" : "0");
+        } catch (e) {}
+
+        if (state) {
+            scrollBottom();
+            setTimeout(function () { inputEl.focus(); }, 60);
+        }
+    }
+
+    document.getElementById("hzChatOpen")
+        .addEventListener("click", function () { setOpen(true); });
+
+    document.getElementById("hzChatClose")
+        .addEventListener("click", function () { setOpen(false); });
+
+    document.getElementById("hzChatClear")
+        .addEventListener("click", function () {
+            if (controller) controller.abort();
+            messages = [];
+            saveState();
+            renderAll();
+        });
+
+    document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape" && root.classList.contains("is-open")) {
+            setOpen(false);
+        }
+    });
+
+
+    /* ---------------------------------------------------------
+       KHỞI TẠO
+    --------------------------------------------------------- */
+
+    loadState();
+    renderAll();
+
+    try {
+        if (sessionStorage.getItem(OPEN_KEY) === "1") {
+            root.classList.add("is-open");
+            scrollBottom();
+        }
+    } catch (e) {}
+
+})();
+</script>

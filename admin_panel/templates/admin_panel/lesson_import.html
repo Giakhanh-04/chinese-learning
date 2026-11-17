@@ -1,0 +1,92 @@
+{% extends "admin_panel/admin_base.html" %}
+
+{% block title %}Nhập bài học từ Excel{% endblock %}
+
+{% block content %}
+
+<div style="color:#777;font-size:14px;margin-bottom:6px;">
+    <a href="{% url 'admin_lessons' course.id %}" style="color:#354a7d;text-decoration:none;">← {{ course.name }}</a>
+</div>
+
+<h1 style="font-size:26px;margin:0 0 20px;">Nhập bài học từ Excel</h1>
+
+<!-- ================= BƯỚC 1 ================= -->
+<div class="adm-card" style="max-width:820px;margin-bottom:16px;">
+    <h2 style="font-size:18px;margin:0 0 8px;">Bước 1: Tải file mẫu</h2>
+    <p style="color:#666;font-size:14px;margin:0 0 14px;line-height:1.6;">
+        File mẫu có 3 sheet: <b>BaiHoc</b> (bài học), <b>TuVung</b> (từ vựng của bài) và
+        <b>CauHoi</b> (bài tập trắc nghiệm), kèm một sheet hướng dẫn. Điền dữ liệu của bạn vào đó.
+    </p>
+    <a href="{% url 'admin_lesson_import_template' %}" class="adm-btn light">Tải file mẫu (.xlsx)</a>
+</div>
+
+<!-- ================= BƯỚC 2 ================= -->
+<div class="adm-card" style="max-width:820px;margin-bottom:16px;">
+    <h2 style="font-size:18px;margin:0 0 8px;">Bước 2: Chọn file đã điền</h2>
+    <p style="color:#666;font-size:14px;margin:0 0 14px;line-height:1.6;">
+        Dữ liệu sẽ được nhập vào khóa học <b>{{ course.name }}</b>.
+    </p>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <input type="file" name="file" accept=".xlsx" class="adm-input" required>
+
+        <div style="margin-top:14px;">
+            <button type="submit" class="adm-btn">Nhập dữ liệu</button>
+            <a href="{% url 'admin_lessons' course.id %}" class="adm-btn light">Hủy</a>
+        </div>
+    </form>
+
+    {% if errors %}
+    <div style="margin-top:18px;padding:14px 16px;border-radius:12px;background:#fdeaea;color:#b42318;">
+        <div style="font-weight:600;margin-bottom:8px;">Chưa nhập gì cả. Hãy sửa các lỗi sau rồi tải lại file:</div>
+
+        <ul style="margin:0;padding-left:20px;line-height:1.7;font-size:14px;">
+            {% for e in errors %}
+                <li>{{ e }}</li>
+            {% endfor %}
+        </ul>
+
+        {% if more_errors %}
+            <div style="margin-top:8px;font-size:14px;">... và {{ more_errors }} lỗi nữa.</div>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+
+<!-- ================= QUY TẮC ================= -->
+<div class="adm-card" style="max-width:820px;">
+    <h2 style="font-size:18px;margin:0 0 10px;">Các cột trong file</h2>
+
+    <div class="adm-table-wrap">
+        <table class="adm-table">
+            <thead>
+                <tr><th>Sheet</th><th>Các cột (giữ nguyên thứ tự)</th></tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><b>BaiHoc</b></td>
+                    <td style="white-space:normal;">thu_tu, tieu_de, mo_ta, trang_thai</td>
+                </tr>
+                <tr>
+                    <td><b>TuVung</b></td>
+                    <td style="white-space:normal;">bai, tu, pinyin, nghia, hsk, danh_muc, cau_vi_du, pinyin_vi_du, nghia_vi_du</td>
+                </tr>
+                <tr>
+                    <td><b>CauHoi</b></td>
+                    <td style="white-space:normal;">bai, ten_bai_tap, cau_hoi, A, B, C, D, dap_an, giai_thich</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <ul style="color:#666;font-size:14px;line-height:1.8;margin:14px 0 0;padding-left:20px;">
+        <li>Cột <b>bai</b> ở TuVung và CauHoi là số thứ tự bài, trùng với <b>thu_tu</b> ở sheet BaiHoc (hoặc bài đã có trong khóa).</li>
+        <li>Bài học đã có cùng thứ tự được giữ nguyên, chỉ bổ sung từ vựng và bài tập mới.</li>
+        <li>Từ vựng đã có trong hệ thống (cùng chữ Hán và pinyin) được dùng lại, không bị nhân đôi.</li>
+        <li>Có lỗi ở bất kỳ dòng nào thì hệ thống báo rõ dòng đó và <b>không nhập gì</b>.</li>
+    </ul>
+</div>
+
+{% endblock %}

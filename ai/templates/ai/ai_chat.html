@@ -1,0 +1,141 @@
+
+{% extends "core/base.html" %}
+
+{% block title %}AI Trợ lý - Hanzii{% endblock %}
+
+{% block content %}
+
+<div class="ai-page">
+
+    <div class="ai-container">
+
+        <!-- HEADER -->
+        <header class="ai-page-header">
+            <div class="ai-label">HANZII INTELLIGENCE</div>
+            <h1>Trợ lý tiếng Trung</h1>
+            <p>
+                Học tiếng Trung theo cách của bạn.
+                Hỏi đáp kiến thức, luyện dịch và xây dựng lộ trình học tập cùng AI.
+            </p>
+        </header>
+
+        <!-- INTRO -->
+        <section class="ai-welcome">
+            <div class="ai-welcome-content">
+                <span class="ai-welcome-label">YOUR CHINESE LEARNING PARTNER</span>
+                <h2>Xin chào! Hôm nay bạn muốn tìm hiểu điều gì?</h2>
+                <p>
+                    Từ một từ vựng chưa hiểu, cấu trúc ngữ pháp khó
+                    đến kế hoạch ôn luyện HSK, hãy bắt đầu bằng câu hỏi của bạn.
+                </p>
+            </div>
+            <div class="ai-welcome-mark">AI</div>
+        </section>
+
+        <!-- QUICK TOPICS -->
+        <section class="ai-topics">
+            <div class="ai-topics-heading">Bạn có thể hỏi về</div>
+
+            <div class="ai-topics-grid">
+                <div class="ai-topic">
+                    <span class="ai-topic-number">01</span>
+                    <div>
+                        <h3>Từ vựng</h3>
+                        <p>Ý nghĩa, cách dùng và ví dụ</p>
+                    </div>
+                </div>
+
+                <div class="ai-topic">
+                    <span class="ai-topic-number">02</span>
+                    <div>
+                        <h3>Ngữ pháp</h3>
+                        <p>Giải thích cấu trúc câu</p>
+                    </div>
+                </div>
+
+                <div class="ai-topic">
+                    <span class="ai-topic-number">03</span>
+                    <div>
+                        <h3>Luyện dịch</h3>
+                        <p>Dịch và phân tích câu</p>
+                    </div>
+                </div>
+
+                <div class="ai-topic">
+                    <span class="ai-topic-number">04</span>
+                    <div>
+                        <h3>Lộ trình học</h3>
+                        <p>Định hướng ôn luyện HSK</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- QUESTION FORM -->
+        {% if not answer or "Tính năng Premium" not in answer %}
+        <section class="ai-chat-panel">
+
+            <div class="ai-panel-heading">
+                <div>
+                    <span class="ai-section-label">ASK HANZII AI</span>
+                    <h2>Đặt câu hỏi của bạn</h2>
+                </div>
+                <span class="ai-status">Sẵn sàng hỗ trợ</span>
+            </div>
+
+            <form method="post" class="ai-form">
+                {% csrf_token %}
+
+                <label for="question">Nội dung câu hỏi</label>
+
+                <textarea
+                    id="question"
+                    name="question"
+                    rows="5"
+                    placeholder="Ví dụ: Phân biệt 会 và 能, giải thích cấu trúc 是……的 hoặc lập lộ trình từ HSK 2 lên HSK 3."
+                    required
+                ></textarea>
+
+                <div class="ai-form-footer">
+                    <p>Hãy viết câu hỏi cụ thể để nhận được câu trả lời phù hợp.</p>
+                    <button type="submit" class="ai-submit-btn">
+                        Gửi câu hỏi
+                        <span aria-hidden="true">→</span>
+                    </button>
+                </div>
+            </form>
+
+        </section>
+        {% endif %}
+
+        <!-- ANSWER -->
+        {% if answer %}
+        <section class="ai-result-panel">
+
+            <div class="ai-result-heading">
+                <div>
+                    <span class="ai-section-label">HANZII AI RESPONSE</span>
+                    <h2>Kết quả trả lời</h2>
+                </div>
+                <span class="ai-result-tag">Phản hồi AI</span>
+            </div>
+
+            <div class="ai-result-content">
+                {{ answer|safe }}
+            </div>
+
+            <div class="ai-result-footer">
+                Nội dung được cung cấp nhằm hỗ trợ quá trình học tiếng Trung.
+            </div>
+
+        </section>
+        {% endif %}
+
+        <div class="ai-bottom-note">
+            HANZII — HỌC TẬP THÔNG MINH HƠN MỖI NGÀY
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

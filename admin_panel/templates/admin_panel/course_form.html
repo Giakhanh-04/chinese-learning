@@ -1,0 +1,48 @@
+{% extends "admin_panel/admin_base.html" %}
+
+{% block title %}{% if course %}Sửa khóa học{% else %}Thêm khóa học{% endif %}{% endblock %}
+
+{% block content %}
+
+<h1 style="font-size:26px;margin:0 0 20px;">
+    {% if course %}Sửa khóa học: {{ course.name }}{% else %}Thêm khóa học{% endif %}
+</h1>
+
+<form method="post" class="adm-card" style="max-width:720px;">
+    {% csrf_token %}
+
+    <label class="adm-label" style="margin-top:0;">Tên khóa học *</label>
+    <input type="text" name="name" class="adm-input" value="{{ values.name }}" required>
+
+    <label class="adm-label">Mô tả</label>
+    <textarea name="description" class="adm-input" rows="4">{{ values.description }}</textarea>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div>
+            <label class="adm-label">Trình độ HSK *</label>
+            <select name="hsk_level" class="adm-input">
+                {% for l in levels %}
+                    <option value="{{ l }}" {% if l|stringformat:"s" == values.hsk_level|stringformat:"s" %}selected{% endif %}>HSK {{ l }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label class="adm-label">Trạng thái *</label>
+            <select name="status" class="adm-input">
+                {% for s in statuses %}
+                    <option value="{{ s }}" {% if s == values.status %}selected{% endif %}>{{ s }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+
+    <label class="adm-label">Ảnh khóa học (đường dẫn hoặc URL)</label>
+    <input type="text" name="image" class="adm-input" value="{{ values.image }}">
+
+    <div style="display:flex;gap:10px;margin-top:20px;">
+        <button type="submit" class="adm-btn">Lưu</button>
+        <a href="{% url 'admin_courses' %}" class="adm-btn light">Hủy</a>
+    </div>
+</form>
+
+{% endblock %}

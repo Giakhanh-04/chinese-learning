@@ -1,0 +1,91 @@
+{% extends "admin_panel/admin_base.html" %}
+
+{% block title %}Từ vựng{% endblock %}
+
+{% block content %}
+
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+    <h1 style="font-size:26px;margin:0;">Quản lý từ vựng</h1>
+    <a href="{% url 'admin_vocab_create' %}" class="adm-btn">+ Thêm từ</a>
+</div>
+
+<form method="get" class="adm-card" style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;">
+    <input type="text" name="q" value="{{ q }}" class="adm-input"
+           placeholder="Tìm theo chữ Hán, pinyin hoặc nghĩa..." style="flex:1;min-width:220px;">
+
+    <select name="level" class="adm-input" style="width:auto;">
+        <option value="">Mọi cấp HSK</option>
+        {% for l in levels %}
+            <option value="{{ l }}" {% if l|stringformat:"s" == level %}selected{% endif %}>HSK {{ l }}</option>
+        {% endfor %}
+    </select>
+
+    <select name="category" class="adm-input" style="width:auto;">
+        <option value="">Mọi danh mục</option>
+        {% for c in categories %}
+            <option value="{{ c.id }}" {% if c.id|stringformat:"s" == category %}selected{% endif %}>{{ c.name }}</option>
+        {% endfor %}
+    </select>
+
+    <button type="submit" class="adm-btn">Tìm</button>
+    <a href="{% url 'admin_vocab' %}" class="adm-btn light">Xóa lọc</a>
+</form>
+
+<div class="adm-card">
+    <div style="color:#777;font-size:14px;margin-bottom:10px;">{{ total }} từ vựng</div>
+
+    <div class="adm-table-wrap">
+        <table class="adm-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Từ</th>
+                    <th>Pinyin</th>
+                    <th>Nghĩa</th>
+                    <th>HSK</th>
+                    <th>Danh mục</th>
+                    <th>Dùng trong</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for v in rows %}
+                <tr>
+                    <td>{{ v.id }}</td>
+                    <td style="font-size:20px;">{{ v.word }}</td>
+                    <td>{{ v.pinyin }}</td>
+                    <td style="white-space:normal;min-width:180px;">{{ v.meaning }}</td>
+                    <td><span class="adm-badge">HSK {{ v.hsk_level }}</span></td>
+                    <td>{{ v.category.name|default:"-" }}</td>
+                    <td>{% if v.used_in %}{{ v.used_in }} bài{% else %}-{% endif %}</td>
+                    <td style="text-align:right;">
+                        <a href="{% url 'admin_vocab_edit' v.id %}" class="adm-btn light">Sửa</a>
+
+                        <form method="post" action="{% url 'admin_vocab_delete' v.id %}" style="display:inline;"
+                              onsubmit="return confirm('Xóa từ {{ v.word|escapejs }}? Không thể hoàn tác.');">
+                            {% csrf_token %}
+                            <button type="submit" class="adm-btn danger">Xóa</button>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="8" style="text-align:center;color:#777;padding:30px;">Không có từ vựng nào.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% if page_obj.paginator.num_pages > 1 %}
+    <div style="display:flex;gap:10px;align-items:center;justify-content:center;margin-top:16px;">
+        {% if page_obj.has_previous %}
+            <a class="adm-btn light" href="?page={{ page_obj.previous_page_number }}&q={{ q|urlencode }}&level={{ level }}&category={{ category }}">← Trước</a>
+        {% endif %}
+        <span style="color:#777;">Trang {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+        {% if page_obj.has_next %}
+            <a class="adm-btn light" href="?page={{ page_obj.next_page_number }}&q={{ q|urlencode }}&level={{ level }}&category={{ category }}">Sau →</a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}

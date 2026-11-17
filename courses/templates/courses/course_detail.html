@@ -1,0 +1,665 @@
+{% extends "core/base.html" %}
+
+{% block title %}{{ course.name }} - Học tiếng Trung{% endblock %}
+
+
+{% block content %}
+
+
+<style>
+
+.course-detail-page {
+
+
+    max-width:1000px;
+
+    margin:auto;
+
+    padding:35px 20px 60px;
+
+
+    color:#293347;
+
+
+}
+
+
+
+.course-header {
+
+
+    padding:35px;
+
+
+    border-radius:24px;
+
+
+    background:
+
+    linear-gradient(
+        135deg,
+        #25385f,
+        #526ba0
+    );
+
+
+    color:white;
+
+
+    margin-bottom:30px;
+
+
+    position:relative;
+
+
+    overflow:hidden;
+
+
+}
+
+
+
+.course-header::before {
+
+
+    content:"";
+
+
+    position:absolute;
+
+
+    width:250px;
+
+    height:250px;
+
+
+    border-radius:50%;
+
+
+    border:1px solid rgba(255,255,255,.15);
+
+
+    right:-80px;
+
+    top:-90px;
+
+
+}
+
+
+
+.course-header::after {
+
+
+    content:"";
+
+
+    position:absolute;
+
+
+    width:180px;
+
+    height:180px;
+
+
+    border-radius:50%;
+
+
+    border:1px solid rgba(255,255,255,.12);
+
+
+    left:-60px;
+
+    bottom:-80px;
+
+
+}
+
+
+
+.course-hsk {
+
+
+    position:relative;
+
+    z-index:1;
+
+
+    display:inline-flex;
+
+
+    padding:7px 15px;
+
+
+    border-radius:30px;
+
+
+    background:rgba(255,255,255,.15);
+
+
+    border:1px solid rgba(255,255,255,.2);
+
+
+    font-size:13px;
+
+
+    font-weight:700;
+
+
+    margin-bottom:15px;
+
+
+}
+
+
+
+.course-header h1 {
+
+
+    position:relative;
+
+    z-index:1;
+
+
+    margin:0 0 12px;
+
+
+    font-size:32px;
+
+
+    font-weight:800;
+
+
+}
+
+
+
+.course-description {
+
+
+    position:relative;
+
+    z-index:1;
+
+
+    margin:0;
+
+
+    max-width:700px;
+
+
+    color:#e4eaf7;
+
+
+    line-height:1.8;
+
+
+    font-size:15px;
+
+
+}
+
+
+
+
+
+.lesson-section {
+
+
+    margin-top:25px;
+
+
+}
+
+
+
+.lesson-title {
+
+
+    margin-bottom:18px;
+
+
+    color:#25385f;
+
+
+    font-size:22px;
+
+
+    font-weight:800;
+
+
+}
+
+
+
+
+
+.lesson-list {
+
+
+    display:flex;
+
+
+    flex-direction:column;
+
+
+    gap:16px;
+
+
+}
+
+
+
+
+
+.lesson-card {
+
+
+    display:flex;
+
+
+    justify-content:space-between;
+
+
+    align-items:center;
+
+
+    gap:20px;
+
+
+    padding:22px;
+
+
+    background:white;
+
+
+    border:1px solid #e5e8ef;
+
+
+    border-radius:18px;
+
+
+    box-shadow:
+    0 8px 25px rgba(37,56,95,.05);
+
+
+    transition:.25s;
+
+
+}
+
+
+
+.lesson-card:hover {
+
+
+    transform:translateY(-3px);
+
+
+    box-shadow:
+    0 12px 30px rgba(37,56,95,.1);
+
+
+}
+
+
+
+.lesson-info h3 {
+
+
+    margin:0 0 8px;
+
+
+    color:#304575;
+
+
+    font-size:18px;
+
+
+}
+
+
+
+.lesson-info p {
+
+
+    margin:0;
+
+
+    color:#77808f;
+
+
+    font-size:14px;
+
+
+    line-height:1.7;
+
+
+}
+
+
+
+.lesson-actions {
+
+
+    display:flex;
+
+
+    gap:10px;
+
+
+    flex-wrap:wrap;
+
+
+}
+
+
+
+
+
+.course-btn {
+
+
+    display:inline-flex;
+
+
+    align-items:center;
+
+
+    justify-content:center;
+
+
+    min-height:42px;
+
+
+    padding:10px 17px;
+
+
+    border-radius:11px;
+
+
+    text-decoration:none;
+
+
+    font-size:13px;
+
+
+    font-weight:700;
+
+
+    transition:.2s;
+
+
+}
+
+
+
+
+
+.btn-primary {
+
+
+    background:#304575;
+
+
+    color:white;
+
+
+}
+
+
+
+.btn-primary:hover {
+
+
+    background:#25385f;
+
+
+    color:white;
+
+
+}
+
+
+
+.btn-outline {
+
+
+    background:white;
+
+
+    color:#304575;
+
+
+    border:1px solid #d6ddea;
+
+
+}
+
+
+
+.btn-outline:hover {
+
+
+    background:#eef3fb;
+
+
+}
+
+
+
+
+
+.empty-course {
+
+
+    padding:25px;
+
+
+    border-radius:15px;
+
+
+    background:#f8fafc;
+
+
+    color:#77808f;
+
+
+    text-align:center;
+
+
+}
+
+
+
+
+
+@media(max-width:700px){
+
+
+.lesson-card {
+
+
+    flex-direction:column;
+
+
+    align-items:flex-start;
+
+
+}
+
+
+
+.lesson-actions {
+
+
+    width:100%;
+
+
+}
+
+
+
+.course-btn {
+
+
+    flex:1;
+
+
+}
+
+
+
+.course-header {
+
+
+    padding:25px;
+
+
+}
+
+
+}
+
+
+</style>
+
+
+
+
+<div class="course-detail-page">
+
+
+
+<div class="course-header">
+
+
+<span class="course-hsk">
+
+HSK {{ course.hsk_level }}
+
+</span>
+
+
+<h1>
+
+{{ course.name }}
+
+</h1>
+
+
+<p class="course-description">
+
+{{ course.description|default:"Chưa có mô tả cho khóa học này." }}
+
+</p>
+
+
+</div>
+
+
+
+
+
+<div class="lesson-section">
+
+
+<h2 class="lesson-title">
+
+Danh sách bài học
+
+</h2>
+
+
+
+<div class="lesson-list">
+
+
+
+{% for lesson in lessons %}
+
+
+
+<div class="lesson-card">
+
+
+<div class="lesson-info">
+
+
+<h3>
+
+{{ lesson.title }}
+
+</h3>
+
+
+<p>
+
+{{ lesson.description|default:"Chưa có mô tả cho bài học này." }}
+
+</p>
+
+
+</div>
+
+
+
+<div class="lesson-actions">
+
+
+
+<a href="{% url 'lesson_detail' lesson.id %}"
+
+class="course-btn btn-primary">
+
+Học bài
+
+</a>
+
+
+
+
+{% if lesson.id == 1 %}
+
+
+
+{% endif %}
+
+
+
+
+</div>
+
+
+</div>
+
+
+
+
+{% empty %}
+
+
+
+<div class="empty-course">
+
+Khóa học này chưa có bài học nào.
+
+</div>
+
+
+
+{% endfor %}
+
+
+
+</div>
+
+
+</div>
+
+
+
+</div>
+
+
+{% endblock %}

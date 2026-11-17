@@ -1,0 +1,283 @@
+{% extends "core/base.html" %}
+
+{% block title %}Từ vựng HSK - Hanzii{% endblock %}
+
+{% block content %}
+<style>
+.vocab-page {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 32px 22px 50px;
+    color: #293347;
+}
+.vocab-page * { box-sizing: border-box; }
+
+.vocab-heading { margin-bottom: 28px; }
+.vocab-eyebrow {
+    margin-bottom: 10px;
+    color: #304575;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+}
+.vocab-heading h1 {
+    margin: 0 0 9px;
+    font-size: 29px;
+    font-weight: 750;
+}
+.vocab-heading p {
+    margin: 0;
+    color: #777f8d;
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+.hsk-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 17px;
+    margin-bottom: 32px;
+}
+.hsk-card {
+    display: block;
+    padding: 22px;
+    border: 1px solid #e5e8ef;
+    border-radius: 14px;
+    background: #fff;
+    color: inherit;
+    text-decoration: none;
+    transition: .2s ease;
+}
+.hsk-card:hover {
+    transform: translateY(-3px);
+    border-color: #cbd4e5;
+    box-shadow: 0 10px 25px rgba(36, 54, 91, .08);
+}
+.hsk-card.active {
+    border-color: #304575;
+    background: #f4f6fb;
+    box-shadow: 0 0 0 1px #304575 inset;
+}
+.hsk-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 22px;
+}
+.hsk-number {
+    color: #304575;
+    font-size: 23px;
+    font-weight: 800;
+}
+.hsk-tag {
+    padding: 5px 9px;
+    border-radius: 6px;
+    background: #e9eef8;
+    color: #304575;
+    font-size: 11px;
+    font-weight: 700;
+}
+.hsk-card h2 {
+    margin: 0 0 7px;
+    font-size: 16px;
+}
+.hsk-count {
+    margin: 0;
+    color: #777f8d;
+    font-size: 13px;
+}
+.hsk-count strong {
+    color: #304575;
+    font-size: 21px;
+    margin-right: 4px;
+}
+.hsk-card-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    margin-top: 18px;
+    padding-top: 13px;
+    border-top: 1px solid #e8ebf2;
+    color: #304575;
+    font-size: 12px;
+    font-weight: 650;
+}
+
+/* Danh sách từ */
+.vocab-list-section {
+    display: block;
+    width: 100%;
+    overflow: hidden;
+    border: 1px solid #e5e8ef;
+    border-radius: 14px;
+    background: #fff;
+}
+
+.vocab-list-heading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 12px;
+    padding: 24px;
+    border-bottom: 1px solid #e9ebf1;
+}
+.vocab-list-heading h2 {
+    margin: 0 0 5px;
+    font-size: 19px;
+}
+.vocab-list-heading p {
+    margin: 0;
+    color: #777f8d;
+    font-size: 13px;
+}
+.vocab-reset {
+    color: #304575;
+    font-size: 13px;
+    font-weight: 650;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.vocab-table-wrap {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+.vocabulary-table {
+    width: 100%;
+    min-width: 700px;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+.vocabulary-table th {
+    padding: 14px 16px;
+    background: #f7f8fb;
+    color: #586174;
+    font-size: 12px;
+    text-align: left;
+    white-space: nowrap;
+}
+.vocabulary-table td {
+    padding: 14px 16px;
+    border-top: 1px solid #edf0f5;
+    line-height: 1.6;
+}
+.vocabulary-table tbody tr:hover { background: #fafbfe; }
+.vocab-word {
+    color: #304575;
+    font-size: 17px;
+    font-weight: 750;
+}
+.vocab-pinyin { color: #6b7485; }
+.vocab-empty {
+    padding: 35px 20px !important;
+    color: #777f8d;
+    text-align: center;
+}
+
+@media (max-width: 800px) {
+    .hsk-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 600px) {
+    .vocabulary-table { min-width: 0; }
+    .vocabulary-table .col-id,
+    .vocabulary-table .col-hsk { display: none; }
+    .vocab-word { font-size: 18px; }
+}
+
+@media (max-width: 520px) {
+    .vocab-page { padding: 24px 14px 35px; }
+    .vocab-heading h1 { font-size: 24px; }
+    .hsk-grid { gap: 11px; }
+    .hsk-card { padding: 15px; }
+    .hsk-card-top { margin-bottom: 16px; }
+    .hsk-number { font-size: 20px; }
+    .vocab-list-heading { padding: 17px; }
+    .vocabulary-table th,
+    .vocabulary-table td { padding: 12px; }
+}
+</style>
+
+<div class="vocab-page">
+
+    <header class="vocab-heading">
+        <div class="vocab-eyebrow">HANZII · VOCABULARY</div>
+        <h1>Từ vựng tiếng Trung</h1>
+        <p>Chọn cấp độ HSK để khám phá từ vựng và ôn tập theo trình độ của bạn.</p>
+    </header>
+
+    <section class="hsk-grid">
+        {% for item in hsk_levels %}
+        <a href="?hsk={{ item.level }}#vocab-list"
+           class="hsk-card {% if selected_hsk == item.level %}active{% endif %}">
+            <div class="hsk-card-top">
+                <span class="hsk-number">HSK {{ item.level }}</span>
+                <span class="hsk-tag">CẤP ĐỘ {{ item.level }}</span>
+            </div>
+
+            <h2>Từ vựng HSK {{ item.level }}</h2>
+            <p class="hsk-count">
+                <strong>{{ item.count }}</strong> từ vựng
+            </p>
+
+            <div class="hsk-card-bottom">
+                <span>Xem danh sách từ</span>
+                <span aria-hidden="true">→</span>
+            </div>
+        </a>
+        {% endfor %}
+    </section>
+
+    {% if selected_hsk %}
+    <section class="vocab-list-section" id="vocab-list">
+
+        <div class="vocab-list-heading">
+            <div>
+                <h2>Từ vựng HSK {{ selected_hsk }}</h2>
+                <p>Danh sách từ thuộc cấp độ HSK {{ selected_hsk }}.</p>
+            </div>
+
+            <a href="{% url 'vocabulary_list' %}" class="vocab-reset">
+                Quay lại các cấp độ HSK
+            </a>
+        </div>
+
+        <div class="vocab-table-wrap">
+            <table class="vocabulary-table">
+                <thead>
+                    <tr>
+                        <th class="col-id">ID</th>
+                        <th>Từ tiếng Trung</th>
+                        <th>Pinyin</th>
+                        <th>Nghĩa tiếng Việt</th>
+                        <th class="col-hsk">HSK</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for vocabulary in vocabularies %}
+                    <tr>
+                        <td class="col-id">{{ vocabulary.id }}</td>
+                        <td><span class="vocab-word">{{ vocabulary.word }}</span></td>
+                        <td class="vocab-pinyin">{{ vocabulary.pinyin }}</td>
+                        <td>{{ vocabulary.meaning }}</td>
+                        <td class="col-hsk">HSK {{ vocabulary.hsk_level }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="vocab-empty">Chưa có từ vựng ở cấp độ này.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </section>
+    {% endif %}
+
+</div>
+{% endblock %}

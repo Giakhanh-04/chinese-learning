@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Quản trị{% endblock %} - Hanzii</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #f5f6fa;
+            color: #202124;
+            display: flex;
+            min-height: 100vh;
+        }
+        .adm-side {
+            width: 240px;
+            background: #354a7d;
+            color: white;
+            padding: 24px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+        }
+        .adm-brand { font-size: 20px; font-weight: 700; padding: 0 12px 18px; }
+        .adm-link {
+            display: block;
+            padding: 11px 14px;
+            border-radius: 12px;
+            color: #dbe3f5;
+            text-decoration: none;
+            font-size: 15px;
+        }
+        .adm-link:hover { background: rgba(255,255,255,0.12); color: white; }
+        .adm-link.active { background: white; color: #354a7d; font-weight: 600; }
+        .adm-spacer { flex: 1; }
+        .adm-main { flex: 1; padding: 28px 32px 60px; min-width: 0; }
+        .adm-msg {
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            background: #e8eef9;
+            color: #354a7d;
+        }
+        .adm-msg.error { background: #fdeaea; color: #b42318; }
+        .adm-msg.success { background: #e3f6ea; color: #1f8a57; }
+                .adm-card { background:#fff; border-radius:18px; padding:20px; border:1px solid #f0f1f4; }
+        .adm-table-wrap { overflow-x:auto; }
+        .adm-table { width:100%; border-collapse:collapse; }
+        .adm-table th, .adm-table td { text-align:left; padding:12px 10px; border-bottom:1px solid #eceef2; font-size:14px; white-space:nowrap; }
+        .adm-table th { color:#777; font-weight:600; }
+        .adm-btn { display:inline-block; border:none; border-radius:10px; padding:9px 16px; font-size:14px; font-family:inherit; cursor:pointer; text-decoration:none; background:#354a7d; color:#fff; }
+        .adm-btn:hover { background:#293b68; }
+        .adm-btn.light { background:#eef2fa; color:#354a7d; }
+        .adm-btn.danger { background:#fdeaea; color:#b42318; }
+        .adm-input { border:1px solid #e0e3ea; border-radius:10px; padding:10px 12px; font-size:14px; font-family:inherit; background:#fff; width:100%; }
+        .adm-badge { display:inline-block; padding:3px 10px; border-radius:999px; font-size:12px; font-weight:600; background:#eef2fa; color:#354a7d; }
+        .adm-badge.admin { background:#fff3d6; color:#9a6700; }
+        .adm-badge.premium { background:#e3f6ea; color:#1f8a57; }
+        .adm-label { display:block; font-size:14px; color:#555; margin:14px 0 6px; }
+        @media (max-width: 800px) {
+            body { flex-direction: column; }
+            .adm-side { width: 100%; height: auto; position: static; flex-direction: row; flex-wrap: wrap; }
+            .adm-spacer { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<aside class="adm-side">
+    <div class="adm-brand">Hanzii Admin</div>
+
+    <a href="{% url 'admin_dashboard' %}"
+       class="adm-link {% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}">
+        Tổng quan
+    </a>
+    <a href="{% url 'admin_users' %}"
+       class="adm-link {% if request.resolver_match.url_name == 'admin_users' or request.resolver_match.url_name == 'admin_user_edit' %}active{% endif %}">
+        Người dùng
+    </a>
+        <a href="{% url 'admin_payments' %}"
+       class="adm-link {% if request.resolver_match.url_name == 'admin_payments' %}active{% endif %}">
+        Doanh thu & Giao dịch
+    </a>
+
+    <a href="{% url 'admin_packages' %}"
+       class="adm-link {% if request.resolver_match.url_name == 'admin_packages' or request.resolver_match.url_name == 'admin_package_create' or request.resolver_match.url_name == 'admin_package_edit' %}active{% endif %}">
+        Gói Premium
+    </a>
+
+    <a href="{% url 'admin_premium_users' %}"
+       class="adm-link {% if request.resolver_match.url_name == 'admin_premium_users' %}active{% endif %}">
+        Người dùng Premium
+    </a>
+        <a href="{% url 'admin_vocab' %}"
+       class="adm-link {% if request.resolver_match.url_name == 'admin_vocab' or request.resolver_match.url_name == 'admin_vocab_create' or request.resolver_match.url_name == 'admin_vocab_edit' %}active{% endif %}">
+        Từ vựng
+    </a>
+
+    <a href="{% url 'admin_categories' %}"
+       class="adm-link {% if request.resolver_match.url_name == 'admin_categories' %}active{% endif %}">
+        Danh mục từ vựng
+    </a>
+        <a href="{% url 'admin_courses' %}"
+       class="adm-link {% if '/quan-tri/khoa-hoc/' in request.path or '/quan-tri/bai-hoc/' in request.path %}active{% endif %}">
+        Khóa học & Bài học
+    </a>
+        <a href="{% url 'admin_grammar' %}"
+       class="adm-link {% if request.resolver_match.url_name == 'admin_grammar' or request.resolver_match.url_name == 'admin_grammar_create' or request.resolver_match.url_name == 'admin_grammar_edit' %}active{% endif %}">
+        Ngữ pháp
+    </a>
+        <a href="{% url 'admin_exercises' %}"
+       class="adm-link {% if '/quan-tri/bai-tap/' in request.path or '/quan-tri/cau-hoi/bai-tap/' in request.path %}active{% endif %}">
+        Bài tập
+    </a>
+
+    <a href="{% url 'admin_tests' %}"
+       class="adm-link {% if '/quan-tri/kiem-tra/' in request.path or '/quan-tri/cau-hoi/kiem-tra/' in request.path %}active{% endif %}">
+        Bài kiểm tra
+    </a>
+    <div class="adm-spacer"></div>
+
+    <a href="{% url 'home' %}" class="adm-link">← Về trang học</a>
+    <a href="{% url 'logout' %}" class="adm-link">Đăng xuất</a>
+</aside>
+
+<main class="adm-main">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="adm-msg {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    {% block content %}{% endblock %}
+</main>
+
+</body>
+</html>

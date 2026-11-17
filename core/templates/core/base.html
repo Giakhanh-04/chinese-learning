@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="icon" type="image/svg+xml" href="{% static 'images/logo.svg' %}">
+    <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=23">
+    {% block extra_head %}{% endblock %}
+
+    <title>{% block title %}Hanzii - Học tiếng Trung{% endblock %}</title>
+</head>
+
+<body>
+
+       <header class="site-header">
+        <div class="header-inner">
+
+            <a href="{% url 'home' %}" class="logo">
+                <img src="{% static 'images/logo.svg' %}" alt="Hanzii" class="brand-logo">
+                <span class="logo-text">Hanzii</span>
+            </a>
+
+            <nav class="main-nav" id="mainNav">
+
+                <a href="{% url 'home' %}"
+                   class="nav-item {% if request.resolver_match.url_name == 'home' %}active{% endif %}">
+                    <svg class="nav-ico" viewBox="0 0 24 24"><path d="m3 11 9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
+                    <span>Trang chủ</span>
+                </a>
+
+                <a href="{% url 'translation_page' %}"
+                   class="nav-item {% if request.resolver_match.url_name == 'translation_page' %}active{% endif %}">
+                    <svg class="nav-ico" viewBox="0 0 24 24"><path d="M4 5h9M8 3v2M6 5c1 4 4 7 7 8M12 5c-1 4-4 7-8 9"/><path d="m14 20 4-9 4 9M15.5 17h5"/></svg>
+                    <span>Dịch</span>
+                </a>
+
+                <a href="{% url 'test_list' %}"
+                   class="nav-item {% if request.resolver_match.url_name == 'test_list' %}active{% endif %}">
+                    <svg class="nav-ico" viewBox="0 0 24 24"><path d="M9 3h6v4H9z"/><path d="M7 5H5v16h14V5h-2"/><path d="m9 14 2 2 4-4"/></svg>
+                    <span>Thi thử</span>
+                </a>
+
+                <a href="{% url 'course_list' %}"
+                   class="nav-item {% if request.resolver_match.url_name == 'course_list' %}active{% endif %}">
+                    <svg class="nav-ico" viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21z"/><path d="M8 7h8M8 11h6"/></svg>
+                    <span>Học tập</span>
+                </a>
+
+                <a href="{% url 'ai_chat' %}"
+                   class="nav-item {% if request.resolver_match.url_name == 'ai_chat' %}active{% endif %}">
+                    <svg class="nav-ico" viewBox="0 0 24 24"><path d="m12 3 2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/></svg>
+                    <span>AI</span>
+                </a>
+
+                <a href="{% url 'community_home' %}"
+                   class="nav-item {% if '/community/' in request.path %}active{% endif %}">
+                    <svg class="nav-ico" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
+                    <span>Cộng đồng</span>
+                </a>
+
+                <a href="{% url 'premium_list' %}"
+                   class="nav-item {% if request.resolver_match.url_name == 'premium_list' %}active{% endif %}">
+                    <svg class="nav-ico" viewBox="0 0 24 24"><path d="m3 8 4 4 5-7 5 7 4-4-2 12H5z"/></svg>
+                    <span>Nâng cấp</span>
+                </a>
+
+                {% if not request.session.user_id %}
+                <div class="nav-mobile-only">
+                    <a href="{% url 'login' %}" class="nav-item">Đăng nhập</a>
+                    <a href="{% url 'register' %}" class="nav-item nav-cta">Đăng ký</a>
+                </div>
+                {% endif %}
+
+            </nav>
+
+            <div class="header-right">
+
+                <div class="tool-pill">
+                    <button type="button" class="tool-btn" title="Thông báo" aria-label="Thông báo">
+                        <svg viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.9 1.9 0 0 0 3.4 0"/></svg>
+                    </button>
+
+                    <span class="tool-sep"></span>
+
+                    <button type="button" class="tool-btn" title="Ngôn ngữ: Tiếng Việt" aria-label="Ngôn ngữ">
+                        <svg class="flag" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10" fill="#da251d"/>
+                            <path fill="#ffff00" d="m12 6.2 1.6 4.2h4.5l-3.6 2.7 1.4 4.3L12 14.8l-3.9 2.6 1.4-4.3-3.6-2.7h4.5z"/>
+                        </svg>
+                    </button>
+
+                    <span class="tool-sep"></span>
+
+                    <button type="button" class="tool-btn" title="Cài đặt" aria-label="Cài đặt">
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+                    </button>
+                </div>
+
+                {% if request.session.user_id %}
+                <div class="user-menu" id="userMenu">
+                    <button type="button" class="avatar-btn" id="avatarBtn"
+                            aria-label="Tài khoản" aria-expanded="false">
+                        {{ request.session.full_name|default:request.session.username|slice:":1"|upper }}
+                    </button>
+
+                    <div class="user-dropdown" id="userDropdown">
+                        <div class="user-dropdown-name">
+                            {{ request.session.full_name|default:request.session.username }}
+                        </div>
+                        <a href="{% url 'profile' %}">Hồ sơ</a>
+                        {% if request.session.role == "admin" %}
+                            <a href="{% url 'admin_dashboard' %}">Quản lý</a>
+                        {% endif %}
+                        <a href="{% url 'logout' %}" class="danger">Đăng xuất</a>
+                    </div>
+                </div>
+                {% else %}
+                <div class="auth-links">
+                    <a href="{% url 'login' %}" class="auth-login">Đăng nhập</a>
+                    <a href="{% url 'register' %}" class="auth-register">Đăng ký</a>
+                </div>
+                {% endif %}
+
+                <button type="button" class="nav-toggle" id="navToggle"
+                        aria-label="Mở menu" aria-expanded="false" aria-controls="mainNav">
+                    <span></span><span></span><span></span>
+                </button>
+
+            </div>
+
+        </div>
+    </header>
+
+    <main class="site-main">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <div class="footer-logo">
+                    <img src="{% static 'images/logo.png' %}" alt="Hanzii"
+                         style="width:44px;height:44px;border-radius:12px;display:block;">
+                    <strong>Hanzii</strong>
+                </div>
+                <p>Website học tiếng Trung tích hợp AI.</p>
+            </div>
+
+            <div class="footer-description">
+                <p>Học tiếng Trung thông minh hơn mỗi ngày.</p>
+            </div>
+        </div>
+    </footer>
+
+    {% block chat_widget %}
+    {% if request.session.user_id %}{% include "ai/chat_widget.html" %}{% endif %}
+    {% endblock %}
+
+       <script>
+    (function () {
+        var btn = document.getElementById("navToggle");
+        var nav = document.getElementById("mainNav");
+        var avBtn = document.getElementById("avatarBtn");
+        var avMenu = document.getElementById("userMenu");
+
+        function setNav(open) {
+            if (!nav || !btn) return;
+            nav.classList.toggle("is-open", open);
+            btn.setAttribute("aria-expanded", open ? "true" : "false");
+        }
+
+        function setUser(open) {
+            if (!avMenu) return;
+            avMenu.classList.toggle("is-open", open);
+            avBtn.setAttribute("aria-expanded", open ? "true" : "false");
+        }
+
+        if (btn) btn.addEventListener("click", function (e) {
+            e.stopPropagation();
+            setUser(false);
+            setNav(!nav.classList.contains("is-open"));
+        });
+
+        if (avBtn) avBtn.addEventListener("click", function (e) {
+            e.stopPropagation();
+            setNav(false);
+            setUser(!avMenu.classList.contains("is-open"));
+        });
+
+        document.addEventListener("click", function (e) {
+            if (nav && !nav.contains(e.target) && !btn.contains(e.target)) setNav(false);
+            if (avMenu && !avMenu.contains(e.target)) setUser(false);
+        });
+
+        document.addEventListener("keydown", function (e) {
+            if (e.key === "Escape") { setNav(false); setUser(false); }
+        });
+
+        window.addEventListener("resize", function () {
+            if (window.innerWidth > 1024) setNav(false);
+        });
+    })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,205 @@
+
+{% extends "core/base.html" %}
+
+{% block title %}Trang chủ - Hanzii{% endblock %}
+
+{% block content %}
+
+<div class="home-page">
+
+    <section class="home-hero">
+        <div class="home-hero-content">
+            <span class="home-eyebrow">HANZII · HỌC TIẾNG TRUNG CÙNG AI</span>
+
+            <h1>
+                Chinh phục tiếng Trung,
+                <span>theo cách của riêng bạn.</span>
+            </h1>
+
+            <p class="home-hero-desc">
+                Học từ vựng, ngữ pháp, luyện dịch và kiểm tra trình độ
+                với lộ trình học tập phù hợp với mục tiêu của bạn.
+            </p>
+
+            <div class="home-hero-actions">
+                <a href="{% url 'course_list' %}" class="home-btn home-btn-primary">
+                    Bắt đầu học
+                </a>
+
+                <a href="#home-features" class="home-btn home-btn-secondary">
+                    Khám phá tính năng
+                </a>
+            </div>
+
+            <div class="home-trust">
+                <strong>Học từng bước, tiến bộ mỗi ngày</strong>
+                <p>Phù hợp với nhiều trình độ HSK</p>
+            </div>
+        </div>
+
+        <div class="home-hero-visual">
+            <div class="home-chinese-card">
+                <span class="home-card-label">TỪ VỰNG TIÊU BIỂU</span>
+                <div class="home-big-character">学习</div>
+                <div class="home-pinyin">xué xí</div>
+                <div class="home-meaning">Học tập · Learning</div>
+
+                <div class="home-card-divider"></div>
+
+                <div class="home-example">
+                    <span>VÍ DỤ</span>
+                    <p>我喜欢学习中文。</p>
+                    <small>Tôi thích học tiếng Trung.</small>
+                </div>
+            </div>
+
+            <div class="home-floating home-floating-top">
+                <strong>AI Learning</strong>
+                <small>Lộ trình học cá nhân hóa</small>
+            </div>
+
+            <div class="home-floating home-floating-bottom">
+                <strong>Học mỗi ngày</strong>
+                <small>Tích lũy kiến thức mới</small>
+            </div>
+        </div>
+    </section>
+
+    <section class="home-learning" id="home-features">
+        <div class="home-section-heading">
+            <span class="home-section-label">LEARNING CENTER</span>
+            <h2>Hôm nay bạn muốn học gì?</h2>
+            <p>Chọn nội dung phù hợp và bắt đầu hành trình học tập.</p>
+        </div>
+
+        <div class="home-learning-grid">
+            <a href="{% url 'vocabulary_list' %}" class="home-learning-card">
+                <span class="home-learning-tag">01 · VOCABULARY</span>
+                <h3>Từ vựng</h3>
+                <p>Mở rộng vốn từ theo cấp độ HSK và chủ đề.</p>
+                <span class="home-card-link">Học từ vựng →</span>
+            </a>
+
+            <a href="{% url 'course_list' %}" class="home-learning-card">
+                <span class="home-learning-tag">02 · COURSES</span>
+                <h3>Khóa học</h3>
+                <p>Khám phá bài học tiếng Trung theo trình độ.</p>
+                <span class="home-card-link">Xem khóa học →</span>
+            </a>
+
+            <a href="{% url 'translation_page' %}" class="home-learning-card">
+                <span class="home-learning-tag">03 · TRANSLATION</span>
+                <h3>Luyện dịch</h3>
+                <p>Thực hành dịch giữa tiếng Trung và tiếng Việt.</p>
+                <span class="home-card-link">Bắt đầu dịch →</span>
+            </a>
+
+            <a href="{% url 'test_list' %}" class="home-learning-card">
+                <span class="home-learning-tag">04 · PRACTICE</span>
+                <h3>Luyện tập & kiểm tra</h3>
+                <p>Ôn tập kiến thức và theo dõi kết quả học tập.</p>
+                <span class="home-card-link">Làm bài kiểm tra →</span>
+            </a>
+        </div>
+    </section>
+
+    <section class="home-ai-section">
+        <div class="home-ai-copy">
+            <span class="home-section-label">SMART LEARNING</span>
+            <h2>Học thông minh hơn với trợ lý AI</h2>
+            <p>
+                AI hỗ trợ bạn định hướng việc học và giải đáp
+                những thắc mắc về từ vựng, ngữ pháp tiếng Trung.
+            </p>
+
+            <div class="home-ai-benefit">
+                <strong>Lộ trình học cá nhân hóa</strong>
+                <p>Định hướng nội dung dựa trên trình độ và mục tiêu.</p>
+            </div>
+
+            <div class="home-ai-benefit">
+                <strong>Giải đáp kiến thức</strong>
+                <p>Tìm hiểu cách dùng từ, cấu trúc và ví dụ thực tế.</p>
+            </div>
+        </div>
+
+        <div class="home-ai-visual">
+            <div class="home-ai-window">
+                <div class="home-ai-window-head">
+                    <div>
+                        <strong>Hanzii Assistant</strong>
+                        <small>Trợ lý học tiếng Trung</small>
+                    </div>
+                </div>
+
+                <div class="home-ai-message home-ai-user">
+                    Phân biệt 会 và 能 như thế nào?
+                </div>
+
+                <div class="home-ai-message home-ai-response">
+                    <strong>Cùng tìm hiểu nhé!</strong>
+                    <p><b>会</b> thường nói về kỹ năng đã học được.</p>
+                    <p><b>能</b> thường nói về khả năng hoặc điều kiện cho phép.</p>
+                    <div class="home-ai-example">
+                        我会说中文。
+                        <span>Tôi biết nói tiếng Trung.</span>
+                    </div>
+                </div>
+
+                <div class="home-ai-input">
+                    Ví dụ minh họa giao diện AI
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="home-study-path">
+        <div class="home-section-heading">
+            <span class="home-section-label">YOUR LEARNING JOURNEY</span>
+            <h2>Học tập theo từng bước</h2>
+            <p>Từng bước tiếp thu, thực hành và củng cố kiến thức.</p>
+        </div>
+
+        <div class="home-path-grid">
+            <div class="home-path-item">
+                <span class="home-path-number">01</span>
+                <h3>Tiếp thu</h3>
+                <p>Học từ vựng và ngữ pháp mới.</p>
+            </div>
+
+            <div class="home-path-item">
+                <span class="home-path-number">02</span>
+                <h3>Thực hành</h3>
+                <p>Vận dụng kiến thức qua bài tập và luyện dịch.</p>
+            </div>
+
+            <div class="home-path-item">
+                <span class="home-path-number">03</span>
+                <h3>Đánh giá</h3>
+                <p>Làm bài kiểm tra để ôn lại kiến thức.</p>
+            </div>
+
+            <div class="home-path-item">
+                <span class="home-path-number">04</span>
+                <h3>Cải thiện</h3>
+                <p>Tiếp tục học theo mục tiêu cá nhân.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="home-final-cta">
+        <div>
+            <span class="home-section-label">START YOUR JOURNEY</span>
+            <h2>Bắt đầu hành trình chinh phục tiếng Trung</h2>
+            <p>Duy trì thói quen học tập và tiến bộ mỗi ngày.</p>
+        </div>
+
+        <a href="{% url 'course_list' %}" class="home-btn home-btn-primary">
+            Bắt đầu ngay
+        </a>
+    </section>
+
+</div>
+
+{% endblock %}
+```

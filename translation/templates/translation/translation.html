@@ -1,0 +1,1332 @@
+{% extends "core/base.html" %}
+
+{% block title %}Dịch - Hanzii{% endblock %}
+
+{% block content %}
+
+<style>
+
+/* =========================================================
+   TRANSLATION PAGE
+========================================================= */
+
+.translation-page {
+    width: 100%;
+    max-width: 1480px;
+    margin: 0 auto;
+    padding: 24px 0 60px;
+    color: #202124;
+}
+
+
+/* =========================================================
+   TOP TOOLBAR
+========================================================= */
+
+.translation-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.translation-tabs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.translation-tab {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 11px 18px;
+    border-radius: 14px;
+    color: #666;
+    font-size: 16px;
+    text-decoration: none;
+    transition: 0.2s ease;
+}
+
+.translation-tab:hover {
+    background: #eef2fa;
+    color: #354a7d;
+}
+
+.translation-tab.active {
+    background: #e8eef9;
+    color: #354a7d;
+    font-weight: 600;
+}
+
+.translation-tab-icon {
+    width: 20px;
+    height: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+/* =========================================================
+   SETTINGS
+========================================================= */
+
+.translation-settings {
+    border: none;
+    background: white;
+    border-radius: 999px;
+    padding: 11px 20px;
+    font-size: 15px;
+    color: #202124;
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(40, 50, 80, 0.04);
+    transition: 0.2s ease;
+}
+
+.translation-settings:hover {
+    background: #f0f3f9;
+}
+
+
+/* =========================================================
+   TRANSLATION AREA
+========================================================= */
+
+.translation-workspace {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 16px;
+    position: relative;
+}
+
+
+/* =========================================================
+   TRANSLATION CARD
+========================================================= */
+
+.translation-card {
+    min-height: 390px;
+    background: #ffffff;
+    border-radius: 22px;
+    padding: 18px;
+    box-shadow: 0 3px 18px rgba(38, 51, 77, 0.04);
+    border: 1px solid #f0f1f4;
+}
+
+
+/* =========================================================
+   LANGUAGE BAR
+========================================================= */
+
+.language-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 54px;
+    border-bottom: 1px solid #eceef2;
+    padding-bottom: 12px;
+}
+
+.language-option {
+    border: 1px solid #e7e9ee;
+    background: white;
+    color: #666;
+    padding: 10px 16px;
+    border-radius: 12px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.language-option:hover {
+    background: #f7f8fb;
+    border-color: #d9deea;
+}
+
+.language-option.active {
+    background: #f0f1f4;
+    border-color: #f0f1f4;
+    color: #202124;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   LANGUAGE SELECT
+========================================================= */
+
+.language-select-wrap {
+    margin-left: auto;
+    position: relative;
+}
+
+.language-select {
+    appearance: none;
+    border: none;
+    background: transparent;
+    padding: 8px 28px 8px 10px;
+    font-size: 15px;
+    color: #555;
+    outline: none;
+    cursor: pointer;
+}
+
+.language-select-arrow {
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: #333;
+}
+
+
+/* =========================================================
+   SWAP BUTTON
+========================================================= */
+
+.swap-button-wrapper {
+    position: absolute;
+    left: 50%;
+    top: 48px;
+    transform: translateX(-50%);
+    z-index: 10;
+}
+
+.swap-button {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: 5px solid #f5f6fa;
+    background: #354a7d;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(50, 70, 120, 0.18);
+    transition: 0.2s ease;
+}
+
+.swap-button:hover {
+    transform: rotate(180deg);
+    background: #293b68;
+}
+
+.swap-icon {
+    font-size: 24px;
+    line-height: 1;
+}
+
+
+/* =========================================================
+   INPUT / OUTPUT
+========================================================= */
+
+.translation-input-area {
+    position: relative;
+    height: 310px;
+    padding-top: 18px;
+}
+
+.translation-input {
+    width: 100%;
+    height: 235px;
+    border: none;
+    outline: none;
+    resize: none;
+    font-family: inherit;
+    font-size: 18px;
+    line-height: 1.7;
+    color: #222;
+    background: transparent;
+}
+
+.translation-input::placeholder {
+    color: #9a9da5;
+}
+
+.translation-output-area {
+    position: relative;
+    height: 310px;
+    padding: 18px 4px 0;
+}
+
+.translation-output {
+    width: 100%;
+    height: 235px;
+    overflow-y: auto;
+    font-size: 18px;
+    line-height: 1.7;
+    color: #202124;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.translation-output.empty {
+    color: #9a9da5;
+}
+
+
+/* =========================================================
+   BOTTOM ACTIONS
+========================================================= */
+
+.input-bottom {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.input-tools {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.tool-button {
+    width: 38px;
+    height: 38px;
+    border: none;
+    background: transparent;
+    border-radius: 10px;
+    cursor: pointer;
+    color: #333;
+    font-size: 20px;
+    transition: 0.2s ease;
+}
+
+.tool-button:hover {
+    background: #f1f3f7;
+}
+
+.character-count {
+    color: #555;
+    font-size: 14px;
+}
+
+.translate-submit {
+    border: none;
+    background: #354a7d;
+    color: white;
+    padding: 10px 18px;
+    border-radius: 999px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.translate-submit:hover {
+    background: #293b68;
+}
+
+.translate-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+
+/* =========================================================
+   OUTPUT ACTIONS
+========================================================= */
+
+.output-bottom {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.output-button {
+    width: 38px;
+    height: 38px;
+    border: none;
+    background: transparent;
+    border-radius: 10px;
+    cursor: pointer;
+    color: #333;
+    transition: 0.2s ease;
+}
+
+.output-button:hover {
+    background: #f1f3f7;
+}
+
+/* ICON BUTTONS */
+
+.icon-btn {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    color: #4a5670;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease;
+}
+
+.icon-btn svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.icon-btn:hover { background: #eef2fa; color: #354a7d; }
+.icon-btn:active { transform: scale(0.92); }
+.icon-btn.is-active { background: #354a7d; color: white; }
+
+.icon-btn.is-recording {
+    background: #e5484d;
+    color: white;
+    animation: mic-pulse 1.4s ease-out infinite;
+}
+
+@keyframes mic-pulse {
+    0%   { box-shadow: 0 0 0 0 rgba(229, 72, 77, 0.45); }
+    100% { box-shadow: 0 0 0 12px rgba(229, 72, 77, 0); }
+}
+
+.icon-btn .icon-check { display: none; }
+.icon-btn.is-done { background: #e3f6ea; color: #1f8a57; }
+.icon-btn.is-done .icon-copy { display: none; }
+.icon-btn.is-done .icon-check { display: block; }
+
+.swap-button svg { width: 22px; height: 22px; }
+
+/* PINYIN */
+
+.pinyin-box {
+    margin-top: 6px;
+    padding: 12px 6px 4px;
+    border-top: 1px dashed #dde2ee;
+    max-height: 170px;
+    overflow-y: auto;
+    font-size: 20px;
+    line-height: 2.4;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.pinyin-box[hidden] { display: none; }
+.pinyin-box ruby { ruby-position: over; margin: 0 1px; }
+.pinyin-box rt { font-size: 0.6em; color: #5c75b0; font-weight: 500; }
+
+.toolbar-actions { display: flex; align-items: center; gap: 10px; }
+
+.pinyin-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    border: none;
+    background: white;
+    border-radius: 999px;
+    padding: 9px 16px 9px 11px;
+    font-size: 15px;
+    font-family: inherit;
+    color: #202124;
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(40, 50, 80, 0.04);
+}
+
+.pinyin-switch {
+    position: relative;
+    width: 34px;
+    height: 20px;
+    border-radius: 999px;
+    background: #cfd5e3;
+    transition: background 0.2s ease;
+}
+
+.pinyin-switch::after {
+    content: "";
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: white;
+    transition: transform 0.2s ease;
+}
+
+.pinyin-toggle.is-on .pinyin-switch { background: #354a7d; }
+.pinyin-toggle.is-on .pinyin-switch::after { transform: translateX(14px); }
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+.translation-status {
+    text-align: center;
+    min-height: 24px;
+    margin-top: 12px;
+    color: #777;
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .translation-page { padding: 18px 14px 40px; }
+
+    .translation-workspace {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .translation-workspace > .source-card { order: 1; }
+    .translation-workspace > .target-card { order: 3; }
+
+    .swap-button-wrapper {
+        position: static;
+        transform: none;
+        order: 2;
+        align-self: center;
+        margin: -6px 0;
+    }
+
+    .swap-button svg { transform: rotate(90deg); }
+    .swap-button:hover { transform: none; }
+
+    .translation-card { min-height: 360px; }
+
+    .translation-toolbar {
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+}
+
+@media (max-width: 600px) {
+
+    .translation-page { padding: 12px 8px 30px; }
+
+    .translation-toolbar { align-items: stretch; }
+
+    .translation-tabs { width: 100%; }
+
+    .translation-tab {
+        flex: 1;
+        justify-content: center;
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    .translation-card {
+        border-radius: 16px;
+        padding: 12px;
+    }
+
+    .translation-input-area,
+    .translation-output-area { height: 300px; }
+
+    .translation-input,
+    .translation-output { font-size: 16px; }
+
+    .swap-button {
+        width: 48px;
+        height: 48px;
+    }
+
+    .language-option { display: none; }
+
+    .language-select-wrap {
+        width: 100%;
+        margin-left: 0;
+    }
+
+    .language-select {
+        width: 100%;
+        padding-left: 4px;
+    }
+
+    .toolbar-actions { width: 100%; }
+    .translation-settings { width: auto; flex: 1; }
+    .pinyin-toggle { flex: 1; justify-content: center; }
+
+    .input-tools { gap: 2px; }
+    .character-count { font-size: 12px; }
+    .translate-submit { padding: 10px 14px; }
+}
+</style>
+
+
+<div class="translation-page">
+
+    <!-- ===================== TOOLBAR ===================== -->
+
+    <div class="translation-toolbar">
+
+        <div class="translation-tabs">
+
+            <div class="translation-tab active">
+                <span class="translation-tab-icon">⇄</span>
+                <span>Văn bản</span>
+            </div>
+
+            <div class="translation-tab">
+                <span class="translation-tab-icon">↑</span>
+                <span>Tài liệu</span>
+            </div>
+
+        </div>
+
+        <div class="toolbar-actions">
+
+            <button type="button" id="pinyinToggle" class="pinyin-toggle is-on"
+                    aria-pressed="true" onclick="togglePinyin()" title="Hiện hoặc ẩn pinyin">
+                <span class="pinyin-switch"></span>
+                <span>Pinyin</span>
+            </button>
+
+            <button type="button" class="translation-settings" title="Cài đặt dịch">
+                ⚙ Cài đặt
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= TRANSLATION WORKSPACE ================= -->
+
+    <div class="translation-workspace">
+
+        <!-- SWAP -->
+        <div class="swap-button-wrapper">
+            <button type="button" class="swap-button" onclick="swapLanguages()" title="Đổi ngôn ngữ">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M8 3 4 7l4 4"/><path d="M4 7h16"/>
+                    <path d="m16 21 4-4-4-4"/><path d="M20 17H4"/>
+                </svg>
+            </button>
+        </div>
+
+
+        <!-- SOURCE -->
+        <div class="translation-card source-card">
+
+            <div class="language-bar">
+
+                <button type="button" class="language-option active"
+                        data-language="zh" onclick="setSourceLanguage('zh')">
+                    Trung (Giản thể)
+                </button>
+
+                <button type="button" class="language-option"
+                        data-language="zh-TW" onclick="setSourceLanguage('zh-TW')">
+                    Trung (Phồn thể)
+                </button>
+
+                <button type="button" class="language-option"
+                        data-language="vi" onclick="setSourceLanguage('vi')">
+                    Việt
+                </button>
+
+                <div class="language-select-wrap">
+                    <select id="sourceLanguage" class="language-select" onchange="updateSourceLanguage()">
+                        <option value="zh">Trung (Giản thể)</option>
+                        <option value="zh-TW">Trung (Phồn thể)</option>
+                        <option value="vi">Việt</option>
+                        <option value="en">English</option>
+                    </select>
+                    <span class="language-select-arrow">▾</span>
+                </div>
+
+            </div>
+
+            <div class="translation-input-area">
+
+                <textarea
+                    id="translateInput"
+                    class="translation-input"
+                    maxlength="800"
+                    placeholder="Nhập văn bản..."
+                    oninput="onInputChange()"
+                ></textarea>
+
+                <div class="input-bottom">
+
+                    <div class="input-tools">
+
+                        <button type="button" id="micButton" class="icon-btn" onclick="toggleRecording()"
+                                title="Nói để nhập văn bản" aria-label="Ghi âm">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
+                                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                                <line x1="12" x2="12" y1="19" y2="22"/>
+                            </svg>
+                        </button>
+
+                        <button type="button" id="speakInputButton" class="icon-btn" onclick="speakInput()"
+                                title="Nghe phát âm" aria-label="Nghe phát âm">
+                            <svg viewBox="0 0 24 24">
+                                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+                                <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+                                <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+                            </svg>
+                        </button>
+
+                    </div>
+
+                    <span id="characterCount" class="character-count">0/800</span>
+
+                    <button type="button" id="translateButton" class="translate-submit"
+                            onclick="translateText()">
+                        ⇄ Dịch
+                    </button>
+
+                </div>
+
+            </div>
+
+            <!-- Pinyin của văn bản nhập -->
+            <div id="inputPinyin" class="pinyin-box" hidden></div>
+
+        </div>
+
+
+        <!-- TARGET -->
+        <div class="translation-card target-card">
+
+            <div class="language-bar">
+
+                <button type="button" class="language-option"
+                        data-target-language="zh" onclick="setTargetLanguage('zh')">
+                    Trung (Giản thể)
+                </button>
+
+                <button type="button" class="language-option"
+                        data-target-language="zh-TW" onclick="setTargetLanguage('zh-TW')">
+                    Trung (Phồn thể)
+                </button>
+
+                <button type="button" class="language-option active"
+                        data-target-language="vi" onclick="setTargetLanguage('vi')">
+                    Việt
+                </button>
+
+                <div class="language-select-wrap">
+                    <select id="targetLanguage" class="language-select" onchange="updateTargetLanguage()">
+                        <option value="vi">Việt</option>
+                        <option value="zh">Trung (Giản thể)</option>
+                        <option value="zh-TW">Trung (Phồn thể)</option>
+                        <option value="en">English</option>
+                    </select>
+                    <span class="language-select-arrow">▾</span>
+                </div>
+
+            </div>
+
+            <div class="translation-output-area">
+
+                <div id="translateOutput" class="translation-output empty">
+                    Bản dịch sẽ xuất hiện ở đây...
+                </div>
+
+                <div class="output-bottom">
+
+                    <button type="button" id="speakOutputButton" class="icon-btn" onclick="speakTranslation()"
+                            title="Nghe bản dịch" aria-label="Nghe bản dịch">
+                        <svg viewBox="0 0 24 24">
+                            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+                            <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+                            <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+                        </svg>
+                    </button>
+
+                    <button type="button" id="copyButton" class="icon-btn" onclick="copyTranslation()"
+                            title="Sao chép bản dịch" aria-label="Sao chép bản dịch">
+                        <svg class="icon-copy" viewBox="0 0 24 24">
+                            <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+                            <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+                        </svg>
+                        <svg class="icon-check" viewBox="0 0 24 24">
+                            <path d="M20 6 9 17l-5-5"/>
+                        </svg>
+                    </button>
+
+                </div>
+
+            </div>
+
+            <!-- Pinyin của bản dịch -->
+            <div id="outputPinyin" class="pinyin-box" hidden></div>
+
+        </div>
+
+    </div>
+
+
+    <!-- STATUS -->
+    <div id="translateStatus" class="translation-status"></div>
+
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/pinyin-pro@3.19.6/dist/index.js"></script>
+
+<script>
+
+/* =========================================================
+   HẰNG SỐ & TRẠNG THÁI
+========================================================= */
+
+const PLACEHOLDER = "Bản dịch sẽ xuất hiện ở đây...";
+const HAN = /[\u3400-\u9fff]/;
+const SPEECH_LANG = { "zh": "zh-CN", "zh-TW": "zh-TW", "en": "en-US", "vi": "vi-VN" };
+const TRANSLATE_TIMEOUT_MS = 45000;
+
+let currentSourceLanguage = "zh";
+let currentTargetLanguage = "vi";
+let showPinyin = true;
+let translateToken = 0;        // dùng để bỏ qua kết quả của lần dịch đã bị hủy
+let translateController = null;
+
+/* =========================================================
+   OUTPUT: luôn đặt kèm trạng thái
+   state: "ok" | "error" | "loading" | "empty"
+========================================================= */
+
+function setOutput(text, state) {
+    const out = document.getElementById("translateOutput");
+    out.innerText = text;
+    out.dataset.state = state;
+    out.classList.toggle("empty", state === "empty");
+}
+
+// Chỉ trả về chữ khi đó là bản dịch thật (không phải lỗi / placeholder)
+function getTranslationText() {
+    const out = document.getElementById("translateOutput");
+    return out.dataset.state === "ok" ? out.innerText.trim() : "";
+}
+
+
+/* =========================================================
+   CHỌN NGÔN NGỮ
+========================================================= */
+
+function setSourceLanguage(language) {
+    currentSourceLanguage = language;
+    document.getElementById("sourceLanguage").value = language;
+    updateSourceButtons();
+    refreshInputPinyin();
+}
+
+function setTargetLanguage(language) {
+    currentTargetLanguage = language;
+    document.getElementById("targetLanguage").value = language;
+    updateTargetButtons();
+    refreshOutputPinyin();
+}
+
+function updateSourceLanguage() {
+    currentSourceLanguage = document.getElementById("sourceLanguage").value;
+    updateSourceButtons();
+    refreshInputPinyin();
+}
+
+function updateTargetLanguage() {
+    currentTargetLanguage = document.getElementById("targetLanguage").value;
+    updateTargetButtons();
+    refreshOutputPinyin();
+}
+
+function updateSourceButtons() {
+    document.querySelectorAll("[data-language]").forEach(function (button) {
+        button.classList.toggle("active", button.dataset.language === currentSourceLanguage);
+    });
+}
+
+function updateTargetButtons() {
+    document.querySelectorAll("[data-target-language]").forEach(function (button) {
+        button.classList.toggle("active", button.dataset.targetLanguage === currentTargetLanguage);
+    });
+}
+
+
+/* =========================================================
+   ĐẾM KÝ TỰ
+========================================================= */
+
+function updateCharacterCount() {
+    const input = document.getElementById("translateInput");
+    document.getElementById("characterCount").innerText = input.value.length + "/800";
+}
+
+
+/* =========================================================
+   ĐỔI CHIỀU
+========================================================= */
+
+function swapLanguages() {
+    const source = document.getElementById("sourceLanguage");
+    const target = document.getElementById("targetLanguage");
+    const input = document.getElementById("translateInput");
+
+    // đổi ngôn ngữ
+    const oldSource = source.value;
+    source.value = target.value;
+    target.value = oldSource;
+
+    currentSourceLanguage = source.value;
+    currentTargetLanguage = target.value;
+
+    updateSourceButtons();
+    updateTargetButtons();
+
+    // đổi nội dung: CHỈ khi output là bản dịch thật
+    const translated = getTranslationText();
+
+    if (translated) {
+        const oldInput = input.value.trim();
+        input.value = translated.slice(0, 800);
+
+        if (oldInput) {
+            setOutput(oldInput, "ok");
+        } else {
+            setOutput(PLACEHOLDER, "empty");
+        }
+    }
+
+    updateCharacterCount();
+    refreshInputPinyin();
+    refreshOutputPinyin();
+}
+
+
+/* =========================================================
+   PINYIN
+========================================================= */
+
+function escapeHtml(v) {
+    return String(v).replace(/&/g, "&amp;").replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+function renderPinyin(boxId, text, lang) {
+    const box = document.getElementById(boxId);
+    const isChinese = (lang === "zh" || lang === "zh-TW");
+
+    if (!showPinyin || !isChinese || !text || !HAN.test(text)) {
+        box.hidden = true;
+        box.innerHTML = "";
+        return;
+    }
+
+    if (!window.pinyinPro) {
+        box.hidden = false;
+        box.textContent = "Chưa tải được thư viện pinyin. Hãy kiểm tra mạng rồi tải lại trang.";
+        return;
+    }
+
+    const chars = Array.from(text);
+    let syl = null;
+
+    try { syl = pinyinPro.pinyin(text, { type: "array" }); } catch (e) {}
+
+    if (!syl || syl.length !== chars.length) {
+        syl = chars.map(function (c) {
+            return HAN.test(c) ? pinyinPro.pinyin(c, { type: "array" })[0] : c;
+        });
+    }
+
+    let html = "";
+    chars.forEach(function (c, i) {
+        html += HAN.test(c)
+            ? "<ruby>" + escapeHtml(c) + "<rt>" + escapeHtml(syl[i]) + "</rt></ruby>"
+            : escapeHtml(c);
+    });
+
+    box.innerHTML = html;
+    box.hidden = false;
+}
+
+function refreshInputPinyin() {
+    renderPinyin("inputPinyin",
+        document.getElementById("translateInput").value, currentSourceLanguage);
+}
+
+function refreshOutputPinyin() {
+    renderPinyin("outputPinyin", getTranslationText(), currentTargetLanguage);
+}
+
+function togglePinyin() {
+    showPinyin = !showPinyin;
+    const t = document.getElementById("pinyinToggle");
+    t.classList.toggle("is-on", showPinyin);
+    t.setAttribute("aria-pressed", showPinyin ? "true" : "false");
+    refreshInputPinyin();
+    refreshOutputPinyin();
+}
+
+let pinyinTimer = null;
+
+function onInputChange() {
+    updateCharacterCount();
+
+    // gõ chữ mới thì luôn mở lại nút Dịch (lưới an toàn)
+    document.getElementById("translateButton").disabled = false;
+
+    // xóa hết chữ ở ô nhập thì xóa luôn bản dịch và pinyin
+    if (!document.getElementById("translateInput").value.trim()) {
+        translateToken++;   // bỏ kết quả của lần dịch đang chạy (nếu có)
+
+        if (translateController) {
+            translateController.abort();
+            translateController = null;
+        }
+
+        setOutput(PLACEHOLDER, "empty");
+        refreshOutputPinyin();
+        showStatus("");
+    }
+
+    clearTimeout(pinyinTimer);
+    pinyinTimer = setTimeout(refreshInputPinyin, 250);
+}
+
+
+/* =========================================================
+   SAO CHÉP
+========================================================= */
+
+let copyTimer = null;
+
+function copyTranslation() {
+    const text = getTranslationText();
+    if (!text) return;
+
+    navigator.clipboard.writeText(text).then(function () {
+        const btn = document.getElementById("copyButton");
+        btn.classList.add("is-done");
+        clearTimeout(copyTimer);
+        copyTimer = setTimeout(function () { btn.classList.remove("is-done"); }, 1600);
+        showStatus("Đã sao chép bản dịch.");
+    }).catch(function () {
+        showStatus("Không thể sao chép.");
+    });
+}
+
+
+/* =========================================================
+   NGHE PHÁT ÂM
+========================================================= */
+
+let currentUtterance = null;
+let speakingButton = null;
+
+function stopSpeakingState() {
+    if (speakingButton) speakingButton.classList.remove("is-active");
+    speakingButton = null;
+    currentUtterance = null;
+}
+
+function speak(text, lang, button) {
+    if (!("speechSynthesis" in window)) {
+        showStatus("Trình duyệt này không hỗ trợ phát âm.");
+        return;
+    }
+
+    // bấm lần nữa vào cùng nút thì dừng
+    if (speakingButton === button && speechSynthesis.speaking) {
+        speechSynthesis.cancel();
+        stopSpeakingState();
+        return;
+    }
+
+    speechSynthesis.cancel();
+    stopSpeakingState();
+
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = SPEECH_LANG[lang] || "vi-VN";
+    u.onend = u.onerror = function () {
+        if (currentUtterance === u) stopSpeakingState();
+    };
+
+    currentUtterance = u;
+    speakingButton = button;
+    button.classList.add("is-active");
+    speechSynthesis.speak(u);
+}
+
+function speakTranslation() {
+    const text = getTranslationText();
+    if (!text) return;
+    speak(text, document.getElementById("targetLanguage").value,
+          document.getElementById("speakOutputButton"));
+}
+
+function speakInput() {
+    const text = document.getElementById("translateInput").value.trim();
+    if (!text) return;
+    speak(text, document.getElementById("sourceLanguage").value,
+          document.getElementById("speakInputButton"));
+}
+
+
+/* =========================================================
+   GHI ÂM
+========================================================= */
+
+const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
+let recognition = null;
+let isRecording = false;
+
+function setRecording(state) {
+    isRecording = state;
+    document.getElementById("micButton").classList.toggle("is-recording", state);
+}
+
+function toggleRecording() {
+    if (!SpeechRecognitionAPI) {
+        showStatus("Trình duyệt này chưa hỗ trợ ghi âm. Hãy thử Chrome hoặc Edge.");
+        return;
+    }
+
+    if (isRecording && recognition) {
+        recognition.stop();
+        return;
+    }
+
+    const input = document.getElementById("translateInput");
+    const baseText = input.value;
+
+    recognition = new SpeechRecognitionAPI();
+    recognition.lang = SPEECH_LANG[document.getElementById("sourceLanguage").value] || "vi-VN";
+    recognition.interimResults = true;
+    recognition.continuous = false;
+
+    recognition.onstart = function () {
+        setRecording(true);
+        showStatus("Đang nghe... hãy nói vào micro.");
+    };
+
+    recognition.onresult = function (event) {
+        let transcript = "";
+        for (let i = 0; i < event.results.length; i++) {
+            transcript += event.results[i][0].transcript;
+        }
+        const sep = baseText && !/\s$/.test(baseText) ? " " : "";
+        input.value = (baseText + sep + transcript).slice(0, 800);
+        updateCharacterCount();
+        refreshInputPinyin();
+    };
+
+    recognition.onerror = function (event) {
+        const msg = {
+            "not-allowed": "Chưa được cấp quyền dùng micro.",
+            "no-speech": "Không nghe thấy giọng nói nào.",
+            "audio-capture": "Không tìm thấy micro.",
+            "network": "Không kết nối được dịch vụ nhận giọng nói."
+        };
+        showStatus(msg[event.error] || "Không thể ghi âm: " + event.error);
+    };
+
+    recognition.onend = function () { setRecording(false); };
+
+    try { recognition.start(); } catch (e) { setRecording(false); }
+}
+
+
+/* =========================================================
+   DỊCH
+========================================================= */
+
+async function translateText() {
+
+    const input = document.getElementById("translateInput");
+    const button = document.getElementById("translateButton");
+    const text = input.value.trim();
+
+    if (!text) {
+        setOutput("Vui lòng nhập nội dung cần dịch.", "error");
+        refreshOutputPinyin();
+        return;
+    }
+
+    if (button.disabled) return;
+
+    setOutput("Đang dịch...", "loading");
+    refreshOutputPinyin();
+    button.disabled = true;
+    showStatus("Đang kết nối với AI...");
+
+    const source = document.getElementById("sourceLanguage").value;
+    const target = document.getElementById("targetLanguage").value;
+
+    const myToken = ++translateToken;
+    const controller = new AbortController();
+    translateController = controller;
+    const timer = setTimeout(function () { controller.abort(); }, TRANSLATE_TIMEOUT_MS);
+
+    let result = "";
+
+    try {
+
+        const response = await fetch("{% url 'translation_page' %}", {
+            method: "POST",
+            cache: "no-store",
+            signal: controller.signal,
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": getCookie("csrftoken")
+            },
+            body: JSON.stringify({
+                text: text,
+                source: source,
+                target: target
+            })
+        });
+
+        if (!response.ok) {
+            let msg = "Lỗi máy chủ (" + response.status + ")";
+            try {
+                const data = await response.json();
+                if (data && data.error) msg = data.error;
+            } catch (e) {}
+            throw new Error(msg);
+        }
+
+        const out = document.getElementById("translateOutput");
+        setOutput("", "ok");
+
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder("utf-8");
+
+        while (true) {
+            const { value, done } = await reader.read();
+            if (done) break;
+
+            if (myToken !== translateToken) return;
+
+            result += decoder.decode(value, { stream: true });
+            out.innerText = result;
+        }
+
+        result += decoder.decode();
+
+        if (myToken !== translateToken) return;
+
+        if (!result.trim()) {
+            throw new Error("Không nhận được bản dịch.");
+        }
+
+        setOutput(result, "ok");
+        refreshOutputPinyin();
+        showStatus("Dịch hoàn tất.");
+
+    } catch (error) {
+
+        if (myToken !== translateToken) return;
+
+        console.error(error);
+
+        if (error.name === "AbortError" && result.trim()) {
+            setOutput(result, "ok");
+            refreshOutputPinyin();
+            showStatus("Dịch hoàn tất.");
+        } else {
+            let msg = error.message;
+            if (error.name === "AbortError") msg = "Hết thời gian chờ. Vui lòng thử lại.";
+            else if (error instanceof TypeError) msg = "Không kết nối được máy chủ.";
+
+            setOutput("⚠️ " + msg, "error");
+            refreshOutputPinyin();
+            showStatus("Có lỗi xảy ra khi dịch.");
+        }
+
+    } finally {
+
+        clearTimeout(timer);
+        if (translateController === controller) translateController = null;
+        button.disabled = false;
+
+    }
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+let statusTimer = null;
+
+function showStatus(message) {
+    const status = document.getElementById("translateStatus");
+    status.innerText = message;
+
+    clearTimeout(statusTimer);
+
+    if (message) {
+        statusTimer = setTimeout(function () {
+            status.innerText = "";
+        }, 3000);
+    }
+}
+
+
+/* =========================================================
+   COOKIE
+========================================================= */
+
+function getCookie(name) {
+    let cookieValue = null;
+
+    if (document.cookie && document.cookie !== "") {
+        const cookies = document.cookie.split(";");
+
+        for (let cookie of cookies) {
+            cookie = cookie.trim();
+
+            if (cookie.startsWith(name + "=")) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+
+    return cookieValue;
+}
+
+
+/* =========================================================
+   KHỞI TẠO
+========================================================= */
+
+document.addEventListener("DOMContentLoaded", function () {
+    setOutput(PLACEHOLDER, "empty");
+    updateCharacterCount();
+    updateSourceButtons();
+    updateTargetButtons();
+});
+
+</script>
+
+{% endblock %}

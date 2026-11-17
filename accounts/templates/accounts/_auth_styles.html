@@ -1,0 +1,112 @@
+<style>
+.auth-page {
+    min-height:70vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:40px 20px;
+    background:#f8fafc;
+}
+.auth-box {
+    width:100%;
+    max-width:420px;
+    padding:35px;
+    background:white;
+    border:1px solid #e5e8ef;
+    border-radius:22px;
+    box-shadow:0 15px 40px rgba(48,69,117,.08);
+}
+.auth-logo {
+    width:60px;
+    height:60px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin:0 auto 18px;
+    border-radius:18px;
+    background:#eef3fb;
+    color:#304575;
+    font-size:24px;
+    font-weight:800;
+}
+.auth-box h2 {
+    margin:0 0 8px;
+    text-align:center;
+    color:#25385f;
+    font-size:28px;
+    font-weight:800;
+}
+.auth-subtitle {
+    margin-bottom:25px;
+    text-align:center;
+    color:#7b8494;
+    font-size:14px;
+}
+.auth-message {
+    padding:12px 15px;
+    margin-bottom:18px;
+    border-radius:12px;
+    background:#fff4f4;
+    border:1px solid #f3cccc;
+    color:#984848;
+    font-size:14px;
+}
+.auth-message.success {
+    background:#effaf3;
+    border-color:#c6e8d1;
+    color:#1f7a4a;
+}
+.auth-box label {
+    display:block;
+    margin-bottom:7px;
+    color:#3d4658;
+    font-size:14px;
+    font-weight:600;
+}
+.auth-box input {
+    width:100%;
+    padding:14px 15px;
+    margin-bottom:18px;
+    border-radius:12px;
+    border:1px solid #dfe4ed;
+    outline:none;
+    font-size:14px;
+    transition:.2s;
+}
+.auth-box input:focus {
+    border-color:#526ba0;
+    box-shadow:0 0 0 4px rgba(82,107,160,.12);
+}
+.auth-box button {
+    width:100%;
+    margin-top:5px;
+    padding:14px;
+    border:none;
+    border-radius:13px;
+    background:linear-gradient(135deg, #304575, #526ba0);
+    color:white;
+    font-size:15px;
+    font-weight:700;
+    cursor:pointer;
+    transition:.25s;
+}
+.auth-box button:hover {
+    transform:translateY(-2px);
+    box-shadow:0 8px 20px rgba(48,69,117,.25);
+}
+.auth-back {
+    margin-top:20px;
+    text-align:center;
+    font-size:14px;
+}
+.auth-back a {
+    color:#526ba0;
+    text-decoration:none;
+}
+.auth-back a:hover {
+    text-decoration:underline;
+}
+@media(max-width:500px){
+    .auth-box{ padding:25px 20px; }
+}
+</style>

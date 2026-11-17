@@ -1,0 +1,57 @@
+{% extends "admin_panel/admin_base.html" %}
+
+{% block title %}Câu hỏi{% endblock %}
+
+{% block content %}
+
+<div style="color:#777;font-size:14px;margin-bottom:6px;">
+    <a href="{{ back_url }}" style="color:#354a7d;text-decoration:none;">← Danh sách {{ label }}</a>
+</div>
+
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+    <h1 style="font-size:26px;margin:0;">Câu hỏi: {{ parent.title }}</h1>
+    <a href="{% url 'admin_question_create' kind parent.id %}" class="adm-btn">+ Thêm câu hỏi</a>
+</div>
+
+<div class="adm-card">
+    <div style="color:#777;font-size:14px;margin-bottom:10px;">{{ questions|length }} câu hỏi</div>
+
+    <div class="adm-table-wrap">
+        <table class="adm-table">
+            <thead>
+                <tr>
+                    <th>Thứ tự</th>
+                    <th>Câu hỏi</th>
+                    <th>Loại</th>
+                    <th>Đáp án đúng</th>
+                    {% if show_score %}<th>Điểm</th>{% endif %}
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for q in questions %}
+                <tr>
+                    <td>{{ q.question_order }}</td>
+                    <td style="white-space:normal;min-width:260px;">{{ q.question|truncatechars:110 }}</td>
+                    <td>{{ q.question_type }}</td>
+                    <td><span class="adm-badge premium">{{ q.correct_answer }}</span></td>
+                    {% if show_score %}<td>{{ q.score|default:"-" }}</td>{% endif %}
+                    <td style="text-align:right;">
+                        <a href="{% url 'admin_question_edit' kind q.id %}" class="adm-btn light">Sửa</a>
+
+                        <form method="post" action="{% url 'admin_question_delete' kind q.id %}" style="display:inline;"
+                              onsubmit="return confirm('Xóa câu hỏi này? Không thể hoàn tác.');">
+                            {% csrf_token %}
+                            <button type="submit" class="adm-btn danger">Xóa</button>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="6" style="text-align:center;color:#777;padding:30px;">Chưa có câu hỏi nào.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

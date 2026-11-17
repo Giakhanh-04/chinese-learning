@@ -1,0 +1,50 @@
+{% extends "admin_panel/admin_base.html" %}
+
+{% block title %}Sửa người dùng{% endblock %}
+
+{% block content %}
+
+<h1 style="font-size:26px;margin:0 0 20px;">Sửa người dùng: {{ target.username }}</h1>
+
+<form method="post" class="adm-card" style="max-width:640px;">
+    {% csrf_token %}
+
+    <label class="adm-label" style="margin-top:0;">Tên đăng nhập</label>
+    <input type="text" class="adm-input" value="{{ target.username }}" disabled>
+
+    <label class="adm-label">Họ tên</label>
+    <input type="text" name="full_name" class="adm-input" value="{{ target.full_name }}">
+
+    <label class="adm-label">Email</label>
+    <input type="email" name="email" class="adm-input" value="{{ target.email }}">
+
+    <label class="adm-label">Số điện thoại</label>
+    <input type="text" name="phone" class="adm-input" value="{{ target.phone|default:'' }}">
+
+    <label class="adm-label">Trình độ HSK</label>
+    <select name="hsk_level" class="adm-input">
+        {% for l in levels %}
+            <option value="{{ l }}" {% if l == target.hsk_level %}selected{% endif %}>HSK {{ l }}</option>
+        {% endfor %}
+    </select>
+
+    <label class="adm-label">Role</label>
+    <select name="role" class="adm-input">
+        {% for r in roles %}
+            <option value="{{ r }}" {% if r == target.role %}selected{% endif %}>{{ r }}</option>
+        {% endfor %}
+    </select>
+    {% if is_me %}
+        <div style="color:#9a6700;font-size:13px;margin-top:6px;">Đây là tài khoản của bạn, không thể tự hạ quyền.</div>
+    {% endif %}
+
+    <label class="adm-label">Mục tiêu học</label>
+    <textarea name="learning_goal" class="adm-input" rows="3">{{ target.learning_goal|default:'' }}</textarea>
+
+    <div style="display:flex;gap:10px;margin-top:20px;">
+        <button type="submit" class="adm-btn">Lưu</button>
+        <a href="{% url 'admin_users' %}" class="adm-btn light">Hủy</a>
+    </div>
+</form>
+
+{% endblock %}

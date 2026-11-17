@@ -1,0 +1,52 @@
+{% extends "admin_panel/admin_base.html" %}
+
+{% block title %}{% if exercise %}Sửa bài tập{% else %}Thêm bài tập{% endif %}{% endblock %}
+
+{% block content %}
+
+<h1 style="font-size:26px;margin:0 0 20px;">
+    {% if exercise %}Sửa bài tập: {{ exercise.title }}{% else %}Thêm bài tập{% endif %}
+</h1>
+
+<form method="post" class="adm-card" style="max-width:720px;">
+    {% csrf_token %}
+
+    <label class="adm-label" style="margin-top:0;">Bài học *</label>
+    <select name="lesson" class="adm-input">
+        <option value="">-- Chọn bài học --</option>
+        {% for l in lessons %}
+            <option value="{{ l.id }}" {% if l.id|stringformat:"s" == values.lesson|stringformat:"s" %}selected{% endif %}>{{ l.label }}</option>
+        {% endfor %}
+    </select>
+
+    <label class="adm-label">Tiêu đề *</label>
+    <input type="text" name="title" class="adm-input" value="{{ values.title }}" required>
+
+    <label class="adm-label">Mô tả</label>
+    <textarea name="description" class="adm-input" rows="3">{{ values.description }}</textarea>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div>
+            <label class="adm-label">Loại bài tập *</label>
+            <input type="text" name="exercise_type" class="adm-input" list="type-list" value="{{ values.exercise_type }}">
+            <datalist id="type-list">
+                {% for t in types %}<option value="{{ t }}">{% endfor %}
+            </datalist>
+        </div>
+        <div>
+            <label class="adm-label">Độ khó</label>
+            <input type="text" name="difficulty" class="adm-input" list="diff-list" value="{{ values.difficulty }}">
+            <datalist id="diff-list">
+                {% for d in difficulties %}<option value="{{ d }}">{% endfor %}
+            </datalist>
+        </div>
+    </div>
+    <div style="color:#777;font-size:13px;margin-top:6px;">Bấm vào ô Loại hoặc Độ khó để chọn giá trị đã dùng trước đó, hoặc gõ giá trị mới.</div>
+
+    <div style="display:flex;gap:10px;margin-top:20px;">
+        <button type="submit" class="adm-btn">Lưu</button>
+        <a href="{% url 'admin_exercises' %}" class="adm-btn light">Hủy</a>
+    </div>
+</form>
+
+{% endblock %}

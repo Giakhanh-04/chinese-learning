@@ -1,0 +1,524 @@
+{% extends "core/base.html" %}
+
+{% block title %}Luyện tập - Hanzii{% endblock %}
+
+{% block content %}
+
+<style>
+.exercise-page {
+    --navy: #304575;
+    --navy-dark: #25385f;
+    --navy-light: #e9eef8;
+    --text: #252a34;
+    --muted: #7b8494;
+    --border: #e5e8ef;
+
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 10px 0 40px;
+    color: var(--text);
+}
+
+.exercise-page * {
+    box-sizing: border-box;
+}
+
+.exercise-page .page-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 27px;
+}
+
+.exercise-page .eyebrow {
+    display: inline-block;
+    padding: 7px 12px;
+    margin-bottom: 12px;
+    border-radius: 30px;
+    background: var(--navy-light);
+    color: var(--navy);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.exercise-page .page-heading h1 {
+    margin: 0 0 9px;
+    font-size: clamp(26px, 3vw, 32px);
+    font-weight: 800;
+    letter-spacing: -.6px;
+}
+
+.exercise-page .page-heading p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.8;
+}
+
+.exercise-page .heading-icon {
+    width: 76px;
+    height: 76px;
+    border-radius: 22px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+    color: var(--navy);
+    background: linear-gradient(145deg, #e9eef8, #f7f9fd);
+    font-size: 34px;
+}
+
+.exercise-page .intro-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 26px 29px;
+    margin-bottom: 30px;
+    border-radius: 20px;
+    color: #fff;
+    background: linear-gradient(120deg, #304575, #526ba6);
+    box-shadow: 0 10px 25px rgba(48, 69, 117, .12);
+}
+
+.exercise-page .intro-banner h2 {
+    margin: 0 0 8px;
+    font-size: 21px;
+    font-weight: 800;
+}
+
+.exercise-page .intro-banner p {
+    margin: 0;
+    color: #e2e8f5;
+    font-size: 13px;
+    line-height: 1.8;
+}
+
+.exercise-page .banner-symbol {
+    width: 58px;
+    height: 58px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 18px;
+    background: rgba(255,255,255,.14);
+    font-size: 28px;
+}
+
+.exercise-page .section-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 17px;
+}
+
+.exercise-page .section-heading h2 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 800;
+}
+
+.exercise-page .count-label {
+    padding: 6px 10px;
+    border-radius: 20px;
+    background: #f0f2f7;
+    color: #657086;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.exercise-page .exercise-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.exercise-page .exercise-card {
+    min-width: 0;
+    padding: 23px;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    background: #fff;
+    transition: transform .2s ease, box-shadow .2s ease,
+                border-color .2s ease;
+}
+
+.exercise-page .exercise-card:hover {
+    transform: translateY(-3px);
+    border-color: #ccd6e8;
+    box-shadow: 0 12px 28px rgba(35, 52, 85, .07);
+}
+
+.exercise-page .card-top {
+    display: flex;
+    align-items: flex-start;
+    gap: 13px;
+    margin-bottom: 17px;
+}
+
+.exercise-page .card-icon {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 15px;
+    color: var(--navy);
+    background: var(--navy-light);
+    font-size: 23px;
+}
+
+.exercise-page .card-title {
+    flex: 1;
+    min-width: 0;
+}
+
+.exercise-page .card-title h3 {
+    margin: 2px 0 7px;
+    font-size: 17px;
+    line-height: 1.5;
+    font-weight: 800;
+    overflow-wrap: anywhere;
+}
+
+.exercise-page .card-label {
+    display: inline-block;
+    padding: 4px 9px;
+    border-radius: 20px;
+    color: var(--navy);
+    background: #f0f3fa;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.exercise-page .card-description {
+    min-height: 48px;
+    margin: 0 0 19px;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.8;
+    overflow-wrap: anywhere;
+}
+
+.exercise-page .card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+    margin-bottom: 20px;
+}
+
+.exercise-page .meta-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 10px;
+    border: 1px solid #edf0f5;
+    border-radius: 9px;
+    color: #657086;
+    background: #fafbfc;
+    font-size: 12px;
+}
+
+.exercise-page .meta-item strong {
+    color: var(--text);
+    font-weight: 700;
+}
+
+.exercise-page .start-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 11px;
+    background: var(--navy);
+    color: #fff;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 700;
+    transition: background .2s ease;
+}
+
+.exercise-page .start-link:hover {
+    background: var(--navy-dark);
+    color: #fff;
+}
+
+.exercise-page .start-link span {
+    transition: transform .2s ease;
+}
+
+.exercise-page .start-link:hover span {
+    transform: translateX(4px);
+}
+
+.exercise-page .empty-state {
+    padding: 45px 22px;
+    text-align: center;
+    border: 1px dashed #d5ddeb;
+    border-radius: 20px;
+    background: #fff;
+}
+
+.exercise-page .empty-icon {
+    width: 70px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 17px;
+    border-radius: 22px;
+    background: var(--navy-light);
+    font-size: 32px;
+}
+
+.exercise-page .empty-state h3 {
+    margin: 0 0 9px;
+    font-size: 19px;
+    font-weight: 800;
+}
+
+.exercise-page .empty-state p {
+    max-width: 420px;
+    margin: 0 auto;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.8;
+}
+
+@media (max-width: 760px) {
+    .exercise-page .exercise-list {
+        grid-template-columns: 1fr;
+    }
+
+    .exercise-page .intro-banner {
+        padding: 22px;
+    }
+
+    .exercise-page .heading-icon {
+        width: 58px;
+        height: 58px;
+        border-radius: 17px;
+        font-size: 27px;
+    }
+
+    .exercise-page .exercise-card {
+        padding: 20px;
+    }
+}
+
+@media (max-width: 420px) {
+    .exercise-page .heading-icon {
+        display: none;
+    }
+
+    .exercise-page .intro-banner {
+        gap: 12px;
+    }
+
+    .exercise-page .intro-banner h2 {
+        font-size: 18px;
+    }
+
+    .exercise-page .banner-symbol {
+        width: 46px;
+        height: 46px;
+        font-size: 23px;
+    }
+}
+</style>
+
+<div class="exercise-page">
+
+    <div class="page-heading">
+        <div>
+            <div class="eyebrow">LEARNING · PRACTICE</div>
+            <h1>
+    <svg viewBox="0 0 24 24" fill="none"
+         stroke="currentColor" stroke-width="1.8"
+         stroke-linecap="round" stroke-linejoin="round"
+         width="30" height="30"
+         style="vertical-align: -6px; margin-right: 8px;"
+         aria-hidden="true">
+        <path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z"/>
+        <path d="M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/>
+        <circle cx="12" cy="12" r="1"/>
+        <path d="m16.5 7.5 4-4M17 3.5h3.5V7"/>
+    </svg>
+    Luyện tập
+</h1>
+            <p>
+                Ôn tập từ vựng, ngữ pháp và củng cố kiến thức tiếng Trung
+                sau mỗi bài học.
+            </p>
+        </div>
+
+        <div class="heading-icon">
+    <svg viewBox="0 0 24 24" fill="none"
+         stroke="currentColor" stroke-width="1.7"
+         stroke-linecap="round" stroke-linejoin="round"
+         width="34" height="34" aria-hidden="true">
+        <path d="M12 20h9"/>
+        <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L8 18l-4 1 1-4Z"/>
+        <path d="m15 5 4 4"/>
+    </svg>
+</div>
+    </div>
+
+    <div class="intro-banner">
+        <div>
+            <h2>Học chắc kiến thức, tiến bộ mỗi ngày!</h2>
+            <p>
+                Hoàn thành các bài luyện tập để kiểm tra mức độ ghi nhớ
+                và tìm ra những kiến thức cần ôn lại.
+            </p>
+        </div>
+
+        <div class="banner-symbol">
+    <svg viewBox="0 0 24 24" fill="none"
+         stroke="currentColor" stroke-width="1.7"
+         stroke-linecap="round" stroke-linejoin="round"
+         width="30" height="30" aria-hidden="true">
+        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/>
+        <path d="M8 7h8M8 11h6"/>
+    </svg>
+</div>
+    </div>
+
+    <div class="section-heading">
+        <h2>Danh sách bài luyện tập</h2>
+
+        {% if exercises %}
+            <span class="count-label">
+                {{ exercises|length }} bài tập
+            </span>
+        {% endif %}
+    </div>
+
+    {% if exercises %}
+
+        <div class="exercise-list">
+
+            {% for exercise in exercises %}
+
+                <div class="exercise-card">
+
+                    <div class="card-top">
+
+                        <div class="card-icon">
+    <svg viewBox="0 0 24 24" fill="none"
+         stroke="currentColor" stroke-width="1.7"
+         stroke-linecap="round" stroke-linejoin="round"
+         width="25" height="25" aria-hidden="true">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/>
+        <path d="M14 2v6h6"/>
+        <path d="M8 13h8M8 17h6"/>
+    </svg>
+</div>
+
+                        <div class="card-title">
+                            <h3>{{ exercise.title }}</h3>
+                            <span class="card-label">Bài luyện tập</span>
+                        </div>
+
+                    </div>
+
+                    <p class="card-description">
+                        {% if exercise.description %}
+                            {{ exercise.description }}
+                        {% else %}
+                            Ôn tập và củng cố kiến thức đã học qua bài tập này.
+                        {% endif %}
+                    </p>
+
+                    <div class="card-meta">
+
+                        <div class="meta-item">
+                           <span aria-hidden="true">
+    <svg viewBox="0 0 24 24" fill="none"
+         stroke="currentColor" stroke-width="1.8"
+         stroke-linecap="round" stroke-linejoin="round"
+         width="15" height="15" aria-hidden="true">
+        <circle cx="12" cy="12" r="9"/>
+        <path d="M12 8v4l2.5 2.5"/>
+    </svg>
+</span>
+<span>Loại:</span>
+                            <strong>
+                                {% if exercise.exercise_type == "vocabulary" %}
+                                    Từ vựng
+                                {% elif exercise.exercise_type == "grammar" %}
+                                    Ngữ pháp
+                                {% elif exercise.exercise_type == "translation" %}
+                                    Dịch
+                                {% elif exercise.exercise_type == "listening" %}
+                                    Nghe
+                                {% elif exercise.exercise_type == "mixed" %}
+                                    Tổng hợp
+                                {% else %}
+                                    {{ exercise.exercise_type }}
+                                {% endif %}
+                            </strong>
+                        </div>
+
+                        <div class="meta-item">
+                            <span aria-hidden="true">
+    <svg viewBox="0 0 24 24" fill="none"
+         stroke="currentColor" stroke-width="1.8"
+         stroke-linecap="round" stroke-linejoin="round"
+         width="15" height="15" aria-hidden="true">
+        <path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9Z"/>
+    </svg>
+</span>
+<span>Độ khó:</span>
+<strong>{{ exercise.difficulty }}</strong>
+                        </div>
+
+                    </div>
+
+                    <a
+                        href="{% url 'exercise_detail' exercise.id %}"
+                        class="start-link"
+                    >
+                        Bắt đầu luyện tập
+                        <span>→</span>
+                    </a>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <div class="empty-state">
+            <div class="empty-icon">
+    <svg viewBox="0 0 24 24" fill="none"
+         stroke="currentColor" stroke-width="1.7"
+         stroke-linecap="round" stroke-linejoin="round"
+         width="34" height="34" aria-hidden="true">
+        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/>
+        <path d="M8 7h8M8 11h6"/>
+    </svg>
+</div>
+            <h3>Chưa có bài luyện tập</h3>
+            <p>
+                Hiện tại chưa có bài luyện tập nào được đăng tải.
+                Hãy quay lại sau để tiếp tục hành trình học tiếng Trung nhé!
+            </p>
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}
+```

@@ -1,0 +1,452 @@
+
+{% extends "core/base.html" %}
+
+{% block title %}Thanh toán Premium - Học tiếng Trung{% endblock %}
+
+{% block content %}
+
+<style>
+.payment-page {
+    max-width: 850px;
+    margin: 0 auto;
+    padding: 30px 0 55px;
+    color: #252a34;
+}
+
+.payment-hero {
+    padding: 30px;
+    margin-bottom: 24px;
+    border: 1px solid #e1e7f2;
+    border-radius: 22px;
+    background: linear-gradient(135deg, #ffffff 0%, #edf2fb 100%);
+}
+
+.payment-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 13px;
+    color: #5369a4;
+    font-size: 12px;
+    font-weight: 750;
+    letter-spacing: .8px;
+}
+
+.payment-hero h1 {
+    margin: 0 0 10px;
+    color: #304575;
+    font-size: clamp(26px, 4vw, 34px);
+    font-weight: 800;
+}
+
+.payment-hero p {
+    margin: 0;
+    color: #687386;
+    font-size: 14px;
+    line-height: 1.8;
+}
+
+.payment-card {
+    padding: 27px;
+    margin-bottom: 22px;
+    border: 1px solid #e5e8ef;
+    border-radius: 20px;
+    background: #fff;
+    box-shadow: 0 7px 24px rgba(35, 53, 90, .045);
+}
+
+.payment-section-title {
+    margin: 0 0 20px;
+    color: #304575;
+    font-size: 19px;
+    font-weight: 750;
+}
+
+.payment-package-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.payment-package h2 {
+    margin: 0 0 9px;
+    color: #304575;
+    font-size: 23px;
+    font-weight: 800;
+}
+
+.payment-package-description {
+    margin: 0 0 22px;
+    color: #758096;
+    font-size: 14px;
+    line-height: 1.75;
+}
+
+.payment-package-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 50px;
+    height: 50px;
+    border-radius: 15px;
+    background: #e9eef8;
+    color: #304575;
+}
+
+.payment-price-box {
+    padding: 19px 21px;
+    border: 1px solid #e1e7f2;
+    border-radius: 15px;
+    background: #f8faff;
+}
+
+.payment-price-label {
+    margin-bottom: 6px;
+    color: #758096;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.payment-price {
+    color: #304575;
+    font-size: clamp(28px, 5vw, 35px);
+    font-weight: 800;
+    overflow-wrap: anywhere;
+}
+
+.payment-duration {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-top: 16px;
+    color: #53617a;
+    font-size: 14px;
+}
+
+.payment-duration svg {
+    color: #5369a4;
+    flex-shrink: 0;
+}
+
+.payment-error {
+    padding: 13px 15px;
+    margin-bottom: 18px;
+    border: 1px solid #f0d0d0;
+    border-radius: 12px;
+    background: #fff7f7;
+    color: #a23b3b;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.payment-method-option {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 19px;
+    border: 1.5px solid #5369a4;
+    border-radius: 16px;
+    background: #f8faff;
+    cursor: pointer;
+    transition: background .2s, box-shadow .2s;
+}
+
+.payment-method-option:hover {
+    background: #edf2fb;
+    box-shadow: 0 5px 17px rgba(48, 69, 117, .07);
+}
+
+.payment-method-radio {
+    width: 19px;
+    height: 19px;
+    margin: 0;
+    accent-color: #304575;
+    flex-shrink: 0;
+    cursor: pointer;
+}
+
+.payment-method-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 49px;
+    height: 49px;
+    border: 1px solid #e1e7f2;
+    border-radius: 13px;
+    background: #fff;
+    color: #304575;
+    flex-shrink: 0;
+}
+
+.payment-method-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.payment-method-name {
+    display: block;
+    margin-bottom: 4px;
+    color: #304575;
+    font-size: 15px;
+    font-weight: 750;
+}
+
+.payment-method-description {
+    display: block;
+    color: #758096;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.payment-method-badge {
+    padding: 6px 9px;
+    border-radius: 8px;
+    background: #e9eef8;
+    color: #304575;
+    font-size: 11px;
+    font-weight: 750;
+    white-space: nowrap;
+}
+
+.payment-security-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 14px 15px;
+    margin-top: 18px;
+    border: 1px solid #e5e8ef;
+    border-radius: 13px;
+    background: #fafbfe;
+}
+
+.payment-security-note svg {
+    flex-shrink: 0;
+    margin-top: 2px;
+    color: #5369a4;
+}
+
+.payment-security-note p {
+    margin: 0;
+    color: #758096;
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+.payment-submit {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 23px;
+}
+
+.payment-submit-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    min-height: 51px;
+    padding: 13px 20px;
+    border: none;
+    border-radius: 13px;
+    background: #304575;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 750;
+    cursor: pointer;
+    transition: background .2s, transform .2s;
+}
+
+.payment-submit-button:hover {
+    background: #25385f;
+    transform: translateY(-1px);
+}
+
+.payment-back-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 42px;
+    color: #5369a4;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 650;
+}
+
+.payment-back-link:hover {
+    color: #304575;
+}
+
+@media (max-width: 600px) {
+    .payment-page {
+        padding-top: 14px;
+    }
+
+    .payment-hero {
+        padding: 24px 20px;
+    }
+
+    .payment-card {
+        padding: 21px 17px;
+    }
+
+    .payment-method-option {
+        flex-wrap: wrap;
+        gap: 11px;
+        padding: 15px;
+    }
+
+    .payment-method-info {
+        flex-basis: calc(100% - 100px);
+    }
+
+    .payment-method-badge {
+        margin-left: 34px;
+    }
+}
+</style>
+
+<div class="payment-page">
+
+    <section class="payment-hero">
+        <div class="payment-eyebrow">
+            <svg viewBox="0 0 24 24" width="17" height="17"
+                 fill="none" stroke="currentColor" stroke-width="1.8"
+                 stroke-linecap="round" stroke-linejoin="round"
+                 aria-hidden="true">
+                <rect x="4" y="11" width="16" height="10" rx="2"/>
+                <path d="M8 11V7a4 4 0 0 1 8 0v4"/>
+            </svg>
+            THANH TOÁN AN TOÀN
+        </div>
+
+        <h1>Thanh toán Premium</h1>
+        <p>
+            Kiểm tra thông tin gói thành viên và chọn phương thức
+            VNPay để tiếp tục thanh toán.
+        </p>
+    </section>
+
+    <section class="payment-card payment-package">
+        <div class="payment-package-top">
+            <div>
+                <h2>{{ package.name }}</h2>
+
+                <p class="payment-package-description">
+                    {% if package.description %}
+                        {{ package.description }}
+                    {% else %}
+                        Mở khóa các tính năng Premium của website học tiếng Trung.
+                    {% endif %}
+                </p>
+            </div>
+
+            <div class="payment-package-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="27" height="27"
+                     fill="none" stroke="currentColor" stroke-width="1.8"
+                     stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9Z"/>
+                </svg>
+            </div>
+        </div>
+
+        <div class="payment-price-box">
+            <div class="payment-price-label">Tổng giá gói</div>
+            <div class="payment-price">
+                {{ package.price|floatformat:0 }} VNĐ
+            </div>
+        </div>
+
+        <div class="payment-duration">
+            <svg viewBox="0 0 24 24" width="19" height="19"
+                 fill="none" stroke="currentColor" stroke-width="1.8"
+                 stroke-linecap="round" stroke-linejoin="round"
+                 aria-hidden="true">
+                <circle cx="12" cy="12" r="9"/>
+                <path d="M12 7v5l3 2"/>
+            </svg>
+            <span>Thời hạn sử dụng: <strong>{{ package.duration_days }} ngày</strong></span>
+        </div>
+    </section>
+
+    <section class="payment-card">
+        <h2 class="payment-section-title">Phương thức thanh toán</h2>
+
+        {% if error %}
+        <div class="payment-error" role="alert">
+            <strong>Lưu ý:</strong> {{ error }}
+        </div>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+
+            <label class="payment-method-option">
+                <input
+                    class="payment-method-radio"
+                    type="radio"
+                    name="payment_method"
+                    value="vnpay"
+                    checked
+                    required
+                >
+
+                <span class="payment-method-logo" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="25" height="25"
+                         fill="none" stroke="currentColor" stroke-width="1.8"
+                         stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="5" width="18" height="14" rx="2"/>
+                        <path d="M3 10h18M7 15h3"/>
+                    </svg>
+                </span>
+
+                <span class="payment-method-info">
+                    <span class="payment-method-name">VNPay</span>
+                    <span class="payment-method-description">
+                        Thanh toán trực tuyến qua cổng VNPay.
+                    </span>
+                </span>
+
+                <span class="payment-method-badge">Được chọn</span>
+            </label>
+
+            <div class="payment-security-note">
+                <svg viewBox="0 0 24 24" width="18" height="18"
+                     fill="none" stroke="currentColor" stroke-width="1.8"
+                     stroke-linecap="round" stroke-linejoin="round"
+                     aria-hidden="true">
+                    <path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11Z"/>
+                    <path d="m9 12 2 2 4-4"/>
+                </svg>
+                <p>
+                    Khi tiếp tục, bạn sẽ chuyển sang bước xử lý thanh toán.
+                    Chỉ thực hiện giao dịch khi thông tin đơn hàng chính xác.
+                </p>
+            </div>
+
+            <div class="payment-submit">
+                <button type="submit" class="payment-submit-button">
+                    <svg viewBox="0 0 24 24" width="19" height="19"
+                         fill="none" stroke="currentColor" stroke-width="2"
+                         stroke-linecap="round" stroke-linejoin="round"
+                         aria-hidden="true">
+                        <rect x="3" y="5" width="18" height="14" rx="2"/>
+                        <path d="M3 10h18"/>
+                    </svg>
+                    Tiếp tục với VNPay
+                </button>
+
+                <a href="{% url 'premium_list' %}" class="payment-back-link">
+                    Quay lại danh sách Premium
+                </a>
+            </div>
+        </form>
+    </section>
+
+</div>
+
+{% endblock %}
+```

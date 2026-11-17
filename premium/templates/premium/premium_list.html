@@ -1,0 +1,444 @@
+{% extends "core/base.html" %}
+{% load humanize %}
+
+{% block title %}Nâng cấp Premium - Học tiếng Trung{% endblock %}
+
+{% block content %}
+
+<style>
+.premium-page {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 30px 0 56px;
+    color: #252a34;
+}
+
+.premium-hero {
+    position: relative;
+    overflow: hidden;
+    padding: 42px 35px;
+    margin-bottom: 30px;
+    border: 1px solid #e1e7f2;
+    border-radius: 24px;
+    background: linear-gradient(135deg, #ffffff 0%, #edf2fb 100%);
+}
+
+.premium-hero-content {
+    position: relative;
+    z-index: 1;
+    max-width: 650px;
+}
+
+.premium-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    margin-bottom: 18px;
+    border: 1px solid #dce5f5;
+    border-radius: 999px;
+    background: #fff;
+    color: #5369a4;
+    font-size: 12px;
+    font-weight: 750;
+    letter-spacing: .7px;
+}
+
+.premium-hero h1 {
+    margin: 0 0 14px;
+    color: #304575;
+    font-size: clamp(28px, 4vw, 38px);
+    font-weight: 800;
+    line-height: 1.3;
+}
+
+.premium-hero p {
+    margin: 0;
+    color: #687386;
+    font-size: 16px;
+    line-height: 1.8;
+}
+
+.premium-hero-decoration {
+    position: absolute;
+    top: 25px;
+    right: 35px;
+    color: #d8e2f4;
+    opacity: .8;
+    pointer-events: none;
+}
+
+.premium-section-heading {
+    margin: 0 0 8px;
+    color: #304575;
+    font-size: 22px;
+    font-weight: 750;
+}
+
+.premium-section-description {
+    margin: 0 0 24px;
+    color: #758096;
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+.premium-list {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);   /* mọi gói nằm trên 1 hàng, chia đều */
+    gap: 18px;
+    align-items: stretch;
+}
+
+/* Màn hình vừa và nhỏ: vuốt ngang */
+@media (max-width: 1000px) {
+    .premium-list {
+        grid-auto-columns: minmax(260px, 78%);
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        padding: 6px 4px 18px;
+        -webkit-overflow-scrolling: touch;
+    }
+    .premium-card { scroll-snap-align: start; }
+}
+
+.premium-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 22px;
+    border: 1px solid #e1e7f2;
+    border-radius: 22px;
+    background: #fff;
+    box-shadow: 0 8px 26px rgba(35, 53, 90, .045);
+    transition: transform .2s ease, box-shadow .2s ease,
+                border-color .2s ease;
+}
+
+.premium-card:hover {
+    transform: translateY(-4px);
+    border-color: #c5d2ec;
+    box-shadow: 0 14px 32px rgba(35, 53, 90, .09);
+}
+
+.premium-card-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 54px;
+    height: 54px;
+    margin-bottom: 20px;
+    border-radius: 17px;
+    background: #e9eef8;
+    color: #304575;
+}
+
+.premium-card h2 {
+    margin: 0 0 10px;
+    color: #304575;
+    font-size: 21px;
+    font-weight: 750;
+    line-height: 1.4;
+}
+
+.premium-description {
+    min-height: 48px;
+    margin: 0 0 22px;
+    color: #758096;
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+.premium-price-label {
+    margin-bottom: 5px;
+    color: #758096;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.premium-price {
+    margin-bottom: 22px;
+    color: #304575;
+    font-size: clamp(24px, 2.4vw, 30px);
+    font-weight: 800;
+    letter-spacing: -.7px;
+    overflow-wrap: anywhere;
+}
+
+.premium-price small {
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0;
+}
+
+.premium-divider {
+    height: 1px;
+    margin-bottom: 20px;
+    background: #edf0f6;
+}
+
+.premium-benefit {
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+    margin-bottom: 15px;
+    color: #53617a;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.premium-check {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 21px;
+    height: 21px;
+    border-radius: 50%;
+    background: #e9eef8;
+    color: #304575;
+}
+
+.premium-card-footer {
+    margin-top: auto;
+    padding-top: 18px;
+}
+
+.premium-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    width: 100%;
+    min-height: 49px;
+    padding: 12px 18px;
+    border: 0;
+    border-radius: 13px;
+    background: #304575;
+    color: #fff !important;
+    text-align: center;
+    text-decoration: none !important;
+    font-size: 14px;
+    font-weight: 750;
+    transition: background .2s ease, transform .2s ease;
+    box-sizing: border-box;
+}
+
+.premium-button:hover {
+    background: #25385f;
+    transform: translateY(-1px);
+}
+
+.premium-button.is-owned {
+    background: #e9eef8;
+    color: #304575 !important;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.premium-button.is-owned:hover {
+    transform: none;
+    background: #e9eef8;
+}
+
+.premium-footnote {
+    margin: 13px 0 0;
+    color: #929bad;
+    font-size: 12px;
+    line-height: 1.6;
+    text-align: center;
+}
+
+.premium-alert {
+    margin: 0 0 20px;
+    padding: 14px 18px;
+    border-radius: 14px;
+    background: #fff4f4;
+    border: 1px solid #f3cccc;
+    color: #984848;
+    font-size: 14px;
+}
+
+.premium-empty {
+    padding: 45px 20px;
+    border: 1px dashed #d5dceb;
+    border-radius: 20px;
+    background: #fff;
+    text-align: center;
+}
+
+.premium-empty h2 {
+    margin: 0 0 8px;
+    color: #304575;
+    font-size: 20px;
+}
+
+.premium-empty p {
+    margin: 0;
+    color: #758096;
+    font-size: 14px;
+}
+
+@media (max-width: 600px) {
+    .premium-page {
+        padding-top: 14px;
+    }
+
+    .premium-hero {
+        padding: 28px 21px;
+        border-radius: 19px;
+    }
+
+    .premium-hero-decoration {
+        top: 12px;
+        right: 12px;
+        opacity: .35;
+    }
+
+    .premium-card {
+        padding: 23px;
+    }
+
+    .premium-description {
+        min-height: 0;
+    }
+}
+</style>
+
+<div class="premium-page">
+
+    {% if messages %}
+        {% for m in messages %}
+            <div class="premium-alert">{{ m }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <section class="premium-hero">
+        <div class="premium-hero-decoration" aria-hidden="true">
+            <svg viewBox="0 0 100 100" width="112" height="112"
+                 fill="none" stroke="currentColor" stroke-width="3"
+                 stroke-linecap="round" stroke-linejoin="round">
+                <path d="M50 8 62 34 90 38 70 58 75 86 50 73 25 86 30 58 10 38 38 34Z"/>
+                <path d="m50 25 7 15 16 2-12 11 3 16-14-8-14 8 3-16-12-11 16-2Z"/>
+            </svg>
+        </div>
+
+        <div class="premium-hero-content">
+            <div class="premium-eyebrow">
+                <svg viewBox="0 0 24 24" width="16" height="16"
+                     fill="none" stroke="currentColor" stroke-width="1.8"
+                     stroke-linecap="round" stroke-linejoin="round"
+                     aria-hidden="true">
+                    <path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9Z"/>
+                </svg>
+                TRẢI NGHIỆM CAO CẤP
+            </div>
+
+            <h1>Nâng cấp Premium</h1>
+
+            <p>
+                Mở rộng trải nghiệm học tiếng Trung với các tính năng nâng cao.
+                Chọn gói phù hợp và tiếp tục hành trình chinh phục tiếng Trung
+                của bạn.
+            </p>
+        </div>
+    </section>
+
+    <h2 class="premium-section-heading">Chọn gói thành viên</h2>
+    <p class="premium-section-description">
+        Thông tin giá và thời hạn được hiển thị theo từng gói Premium.
+    </p>
+
+    {% if packages %}
+    <div class="premium-list">
+
+        {% for package in packages %}
+        <article class="premium-card">
+
+            <div class="premium-card-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="28" height="28"
+                     fill="none" stroke="currentColor" stroke-width="1.8"
+                     stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9Z"/>
+                </svg>
+            </div>
+
+            <h2>{{ package.name }}</h2>
+
+            <p class="premium-description">
+                {% if package.description %}
+                    {{ package.description }}
+                {% else %}
+                    Mở khóa các tính năng Premium của website học tiếng Trung.
+                {% endif %}
+            </p>
+
+            <div class="premium-price-label">Giá gói thành viên</div>
+
+            <div class="premium-price">
+                {{ package.price|floatformat:0|intcomma }} <small>VNĐ</small>
+            </div>
+
+            <div class="premium-divider"></div>
+
+            <div class="premium-benefit">
+                <span class="premium-check" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="13" height="13"
+                         fill="none" stroke="currentColor" stroke-width="2.5"
+                         stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m5 12 4 4L19 6"/>
+                    </svg>
+                </span>
+                <span>Thời hạn sử dụng: <strong>{{ package.duration_days }} ngày</strong></span>
+            </div>
+
+            <div class="premium-benefit">
+                <span class="premium-check" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="13" height="13"
+                         fill="none" stroke="currentColor" stroke-width="2.5"
+                         stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m5 12 4 4L19 6"/>
+                    </svg>
+                </span>
+                <span>Trải nghiệm các tính năng Premium theo gói đã chọn</span>
+            </div>
+
+            <div class="premium-card-footer">
+                {% if package.owned_until %}
+                    <button type="button" class="premium-button is-owned" disabled>
+                        ✓ Đang sử dụng
+                    </button>
+                    <p class="premium-footnote">
+                        Hết hạn: {{ package.owned_until|date:"d/m/Y" }}. Bạn có thể mua gói khác.
+                    </p>
+
+                {% elif user_id %}
+                    <a href="{% url 'payment_create' package.id %}" class="premium-button">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"
+                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h3"/>
+                        </svg>
+                        Mua Premium
+                    </a>
+                    <p class="premium-footnote">Vui lòng kiểm tra thông tin gói trước khi thanh toán.</p>
+
+                {% else %}
+                    <a href="{% url 'login' %}" class="premium-button">Đăng nhập để mua</a>
+                    <p class="premium-footnote">Vui lòng kiểm tra thông tin gói trước khi thanh toán.</p>
+                {% endif %}
+            </div>
+
+        </article>
+        {% endfor %}
+
+    </div>
+    {% else %}
+    <div class="premium-empty">
+        <h2>Hiện chưa có gói Premium</h2>
+        <p>Các gói thành viên sẽ được cập nhật trong thời gian tới.</p>
+    </div>
+    {% endif %}
+
+</div>
+
+{% endblock %}

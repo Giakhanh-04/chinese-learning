@@ -1,0 +1,103 @@
+{% extends "admin_panel/admin_base.html" %}
+
+{% block title %}Người dùng Premium{% endblock %}
+
+{% block content %}
+
+<h1 style="font-size:26px;margin:0 0 20px;">Người dùng Premium</h1>
+
+<form method="post" action="{% url 'admin_premium_grant' %}" class="adm-card"
+      style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px;">
+    {% csrf_token %}
+    <strong style="margin-right:6px;">Tặng gói:</strong>
+
+    <select name="user_id" class="adm-input" style="width:auto;min-width:200px;" required>
+        <option value="">-- Chọn người dùng --</option>
+        {% for u in all_users %}
+            <option value="{{ u.id }}">{{ u.username }} ({{ u.full_name }})</option>
+        {% endfor %}
+    </select>
+
+    <select name="package_id" class="adm-input" style="width:auto;min-width:200px;" required>
+        <option value="">-- Chọn gói --</option>
+        {% for p in all_packages %}
+            <option value="{{ p.id }}">{{ p.name }} ({{ p.duration_days }} ngày)</option>
+        {% endfor %}
+    </select>
+
+    <button type="submit" class="adm-btn">Tặng</button>
+</form>
+
+<form method="get" class="adm-card" style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;">
+    <select name="status" class="adm-input" style="width:auto;">
+        <option value="">Tất cả trạng thái</option>
+        {% for s in statuses %}
+            <option value="{{ s }}" {% if s == status %}selected{% endif %}>{{ s }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit" class="adm-btn">Lọc</button>
+    <a href="{% url 'admin_premium_users' %}" class="adm-btn light">Xóa lọc</a>
+</form>
+
+<div class="adm-card">
+    <div style="color:#777;font-size:14px;margin-bottom:10px;">{{ total }} bản ghi</div>
+
+    <div class="adm-table-wrap">
+        <table class="adm-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Người dùng</th>
+                    <th>Gói</th>
+                    <th>Bắt đầu</th>
+                    <th>Hết hạn</th>
+                    <th>Trạng thái</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in rows %}
+                <tr>
+                    <td>{{ r.id }}</td>
+                    <td>{{ r.user_obj.username|default:"(đã xóa)" }}</td>
+                    <td>{{ r.package_obj.name|default:"(đã xóa)" }}</td>
+                    <td>{{ r.start_date|date:"d/m/Y" }}</td>
+                    <td>{{ r.end_date|date:"d/m/Y" }}</td>
+                    <td>
+                        {% if r.status == "active" %}
+                            <span class="adm-badge premium">{{ r.status }}</span>
+                        {% else %}
+                            <span class="adm-badge" style="background:#eceef2;color:#666;">{{ r.status }}</span>
+                        {% endif %}
+                    </td>
+                    <td style="text-align:right;">
+                        {% if r.status == "active" %}
+                        <form method="post" action="{% url 'admin_premium_end' r.id %}" style="display:inline;"
+                              onsubmit="return confirm('Kết thúc gói Premium của người dùng này?');">
+                            {% csrf_token %}
+                            <button type="submit" class="adm-btn danger">Kết thúc</button>
+                        </form>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="7" style="text-align:center;color:#777;padding:30px;">Chưa có bản ghi nào.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% if page_obj.paginator.num_pages > 1 %}
+    <div style="display:flex;gap:10px;align-items:center;justify-content:center;margin-top:16px;">
+        {% if page_obj.has_previous %}
+            <a class="adm-btn light" href="?page={{ page_obj.previous_page_number }}&status={{ status|urlencode }}">← Trước</a>
+        {% endif %}
+        <span style="color:#777;">Trang {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+        {% if page_obj.has_next %}
+            <a class="adm-btn light" href="?page={{ page_obj.next_page_number }}&status={{ status|urlencode }}">Sau →</a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}

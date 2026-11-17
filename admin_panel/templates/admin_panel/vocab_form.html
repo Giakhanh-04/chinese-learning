@@ -1,0 +1,85 @@
+{% extends "admin_panel/admin_base.html" %}
+
+{% block title %}{% if vocab %}Sửa từ vựng{% else %}Thêm từ vựng{% endif %}{% endblock %}
+
+{% block content %}
+
+<h1 style="font-size:26px;margin:0 0 20px;">
+    {% if vocab %}Sửa từ: {{ vocab.word }}{% else %}Thêm từ vựng{% endif %}
+</h1>
+
+<form method="post" class="adm-card" style="max-width:720px;">
+    {% csrf_token %}
+
+    <label class="adm-label" style="margin-top:0;">Chữ Hán *</label>
+    <input type="text" id="f_word" name="word" class="adm-input" value="{{ values.word }}" required>
+
+    <label class="adm-label">Pinyin</label>
+    <div style="display:flex;gap:8px;">
+        <input type="text" id="f_pinyin" name="pinyin" class="adm-input" value="{{ values.pinyin }}">
+        <button type="button" class="adm-btn light" style="white-space:nowrap;"
+                onclick="fillPinyin('f_word','f_pinyin')">Tự điền pinyin</button>
+    </div>
+
+    <label class="adm-label">Nghĩa *</label>
+    <input type="text" name="meaning" class="adm-input" value="{{ values.meaning }}" required>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div>
+            <label class="adm-label">Trình độ HSK *</label>
+            <select name="hsk_level" class="adm-input">
+                {% for l in levels %}
+                    <option value="{{ l }}" {% if l|stringformat:"s" == values.hsk_level|stringformat:"s" %}selected{% endif %}>HSK {{ l }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label class="adm-label">Danh mục{% if category_required %} *{% endif %}</label>
+            <select name="category" class="adm-input">
+                {% if not category_required %}<option value="">-- Không có --</option>{% endif %}
+                {% if category_required %}<option value="">-- Chọn danh mục --</option>{% endif %}
+                {% for c in categories %}
+                    <option value="{{ c.id }}" {% if c.id|stringformat:"s" == values.category|stringformat:"s" %}selected{% endif %}>{{ c.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+
+    <label class="adm-label">Câu ví dụ</label>
+    <input type="text" id="f_ex" name="example_sentence" class="adm-input" value="{{ values.example_sentence }}">
+
+    <label class="adm-label">Pinyin câu ví dụ</label>
+    <div style="display:flex;gap:8px;">
+        <input type="text" id="f_ex_pinyin" name="example_pinyin" class="adm-input" value="{{ values.example_pinyin }}">
+        <button type="button" class="adm-btn light" style="white-space:nowrap;"
+                onclick="fillPinyin('f_ex','f_ex_pinyin')">Tự điền pinyin</button>
+    </div>
+
+    <label class="adm-label">Nghĩa câu ví dụ</label>
+    <input type="text" name="example_meaning" class="adm-input" value="{{ values.example_meaning }}">
+
+    <label class="adm-label">Âm thanh (đường dẫn hoặc URL file audio)</label>
+    <input type="text" name="audio" class="adm-input" value="{{ values.audio }}">
+
+    <div style="display:flex;gap:10px;margin-top:20px;">
+        <button type="submit" class="adm-btn">Lưu</button>
+        <a href="{% url 'admin_vocab' %}" class="adm-btn light">Hủy</a>
+    </div>
+</form>
+
+<script src="https://cdn.jsdelivr.net/npm/pinyin-pro@3.19.6/dist/index.js"></script>
+<script>
+    function fillPinyin(srcId, dstId) {
+        const src = document.getElementById(srcId).value.trim();
+        if (!src) return;
+
+        if (!window.pinyinPro) {
+            alert("Chưa tải được thư viện pinyin. Hãy kiểm tra mạng rồi thử lại.");
+            return;
+        }
+
+        document.getElementById(dstId).value = pinyinPro.pinyin(src);
+    }
+</script>
+
+{% endblock %}

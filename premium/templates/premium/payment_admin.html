@@ -1,0 +1,617 @@
+{% extends "core/base.html" %}
+
+{% block title %}Quản lý thanh toán - Hanzii{% endblock %}
+
+{% block content %}
+
+<style>
+
+.payment-admin-page {
+
+    --navy:#304575;
+    --navy-dark:#25385f;
+    --soft:#e9eef8;
+    --text:#293347;
+    --muted:#77808f;
+    --border:#e5e8ef;
+
+    max-width:1100px;
+    margin:auto;
+    padding:35px 22px 60px;
+
+    color:var(--text);
+
+}
+
+
+
+.payment-header {
+
+    margin-bottom:28px;
+
+}
+
+
+
+.payment-label {
+
+    display:flex;
+    align-items:center;
+    gap:8px;
+
+    color:var(--navy);
+
+    font-size:12px;
+    font-weight:700;
+
+    letter-spacing:1px;
+
+    margin-bottom:12px;
+
+}
+
+
+
+.payment-label span {
+
+    width:7px;
+    height:7px;
+
+    background:#6b85bb;
+
+    border-radius:50%;
+
+}
+
+
+
+.payment-header h1 {
+
+    margin:0 0 10px;
+
+    color:var(--navy-dark);
+
+    font-size:30px;
+
+    font-weight:800;
+
+}
+
+
+
+.payment-header p {
+
+    margin:0;
+
+    color:var(--muted);
+
+    font-size:14px;
+
+    line-height:1.7;
+
+}
+
+
+
+
+
+
+.payment-card {
+
+    background:white;
+
+    border:1px solid var(--border);
+
+    border-radius:20px;
+
+    overflow:hidden;
+
+    box-shadow:0 10px 30px rgba(48,69,117,.06);
+
+}
+
+
+
+
+
+
+
+.table-wrapper {
+
+    overflow-x:auto;
+
+}
+
+
+
+
+
+.payment-table {
+
+
+    width:100%;
+
+    border-collapse:collapse;
+
+    min-width:850px;
+
+}
+
+
+
+
+.payment-table th {
+
+
+    text-align:left;
+
+    padding:16px 18px;
+
+
+    background:#f7f9fd;
+
+
+    color:#5b6578;
+
+
+    font-size:13px;
+
+    font-weight:700;
+
+
+    border-bottom:1px solid var(--border);
+
+}
+
+
+
+
+.payment-table td {
+
+
+    padding:16px 18px;
+
+
+    border-bottom:1px solid #eef1f6;
+
+
+    font-size:14px;
+
+
+    color:#3d4657;
+
+
+}
+
+
+
+
+.payment-table tr:last-child td {
+
+    border-bottom:none;
+
+}
+
+
+
+.payment-table tbody tr {
+
+
+    transition:.2s;
+
+}
+
+
+
+.payment-table tbody tr:hover {
+
+
+    background:#f8faff;
+
+}
+
+
+
+
+
+.payment-id {
+
+
+    color:var(--navy);
+
+    font-weight:700;
+
+}
+
+
+
+
+
+.amount {
+
+
+    color:#304575;
+
+    font-weight:800;
+
+}
+
+
+
+
+
+.vnpay-badge {
+
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:7px;
+
+
+    padding:7px 12px;
+
+
+    border-radius:20px;
+
+
+    background:#eaf0ff;
+
+
+    color:#304575;
+
+
+    font-size:12px;
+
+
+    font-weight:700;
+
+
+}
+
+
+
+
+
+
+.status {
+
+
+    display:inline-flex;
+
+    align-items:center;
+
+
+    padding:7px 12px;
+
+
+    border-radius:20px;
+
+
+    font-size:12px;
+
+    font-weight:700;
+
+}
+
+
+
+
+.status-success {
+
+
+    color:#25704e;
+
+    background:#eaf7ef;
+
+}
+
+
+
+
+.status-pending {
+
+
+    color:#86621c;
+
+    background:#fff7e5;
+
+}
+
+
+
+
+
+.status-failed {
+
+
+    color:#984848;
+
+    background:#fff0f0;
+
+}
+
+
+
+
+
+.status-cancelled {
+
+
+    color:#6c7280;
+
+    background:#f0f1f4;
+
+}
+
+
+
+
+
+
+.empty-payment {
+
+
+    padding:40px;
+
+    text-align:center;
+
+    color:var(--muted);
+
+}
+
+
+
+
+</style>
+
+
+
+
+
+
+<div class="payment-admin-page">
+
+
+
+
+
+    <div class="payment-header">
+
+
+        <div class="payment-label">
+
+            <span></span>
+
+            ADMIN PAYMENT
+
+        </div>
+
+
+
+        <h1>
+            Quản lý thanh toán
+        </h1>
+
+
+
+        <p>
+            Theo dõi các giao dịch Premium được thanh toán qua VNPay.
+        </p>
+
+
+    </div>
+
+
+
+
+
+
+
+    <div class="payment-card">
+
+
+
+    {% if payments %}
+
+
+
+        <div class="table-wrapper">
+
+
+        <table class="payment-table">
+
+
+            <thead>
+
+
+                <tr>
+
+                    <th>ID</th>
+
+                    <th>User ID</th>
+
+                    <th>Gói Premium</th>
+
+                    <th>Số tiền</th>
+
+                    <th>Phương thức</th>
+
+                    <th>Trạng thái</th>
+
+                    <th>Thời gian</th>
+
+
+                </tr>
+
+
+            </thead>
+
+
+
+
+            <tbody>
+
+
+            {% for payment in payments %}
+
+
+
+                <tr>
+
+
+                    <td class="payment-id">
+                        #{{ payment.id }}
+                    </td>
+
+
+
+                    <td>
+                        {{ payment.user_id }}
+                    </td>
+
+
+
+                    <td>
+                        {{ payment.package_id }}
+                    </td>
+
+
+
+                    <td class="amount">
+
+                        {{ payment.amount|floatformat:0 }} VNĐ
+
+                    </td>
+
+
+
+
+                    <td>
+
+
+                        <span class="vnpay-badge">
+
+                            VNPay
+
+                        </span>
+
+
+                    </td>
+
+
+
+
+
+                    <td>
+
+
+                        {% if payment.status == "success" %}
+
+
+                            <span class="status status-success">
+
+                                Thành công
+
+                            </span>
+
+
+                        {% elif payment.status == "pending" %}
+
+
+                            <span class="status status-pending">
+
+                                Đang chờ
+
+                            </span>
+
+
+
+                        {% elif payment.status == "failed" %}
+
+
+                            <span class="status status-failed">
+
+                                Thất bại
+
+                            </span>
+
+
+
+                        {% elif payment.status == "cancelled" %}
+
+
+                            <span class="status status-cancelled">
+
+                                Đã hủy
+
+                            </span>
+
+
+
+                        {% endif %}
+
+
+
+                    </td>
+
+
+
+
+
+                    <td>
+
+                        {{ payment.created_at|date:"d/m/Y H:i" }}
+
+                    </td>
+
+
+
+                </tr>
+
+
+
+            {% endfor %}
+
+
+
+            </tbody>
+
+
+        </table>
+
+
+        </div>
+
+
+
+
+
+    {% else %}
+
+
+
+        <div class="empty-payment">
+
+            Chưa có giao dịch VNPay nào.
+
+        </div>
+
+
+
+    {% endif %}
+
+
+
+    </div>
+
+
+
+
+
+</div>
+
+
+
+{% endblock %}

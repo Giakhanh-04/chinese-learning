@@ -1,0 +1,37 @@
+<article class="cm-post">
+  <header class="cm-post-head">
+    <div class="cm-avatar">{{ p.author.full_name|default:p.author.username|slice:":1"|upper }}</div>
+
+    <div class="cm-post-meta">
+      <strong>{{ p.author.full_name|default:p.author.username }}
+        {% if p.author.role == "admin" %}<span class="cm-badge">Admin</span>{% endif %}
+      </strong>
+      <small>{{ p.category.name|default:"Khác" }} · {{ p.created_at|timesince }} trước</small>
+    </div>
+
+    {% if p.is_pinned %}<span class="cm-pin">📌 Bài ghim</span>{% endif %}
+    {% if p.is_featured %}<span class="cm-pin cm-featured">⭐ BTV chọn</span>{% endif %}
+  </header>
+
+  <a href="{% url 'community_post' p.id %}" class="cm-post-title">{{ p.title }}</a>
+  <p class="cm-post-body">{{ p.content|truncatechars:280 }}</p>
+
+  {% if p.content|length > 280 %}
+    <a href="{% url 'community_post' p.id %}" class="cm-more">Xem thêm</a>
+  {% endif %}
+
+  <footer class="cm-post-foot">
+    <button type="button" class="cm-like {% if p.id in liked_ids %}is-on{% endif %}"
+            data-url="{% url 'community_like' p.id %}">
+      <span class="cm-heart">{% if p.id in liked_ids %}♥{% else %}♡{% endif %}</span>
+      <span class="cm-like-count">{{ p.like_count }}</span>
+    </button>
+
+   <a href="{% url 'community_post' p.id %}" class="cm-stat cm-open-modal"
+   data-modal-url="{% url 'community_modal' p.id %}"
+   data-comment-url="{% url 'community_comment_add' p.id %}">
+  💬 <span class="cm-comment-count">{{ p.comment_count }}</span>
+</a>
+    <span class="cm-stat">👁 {{ p.views }}</span>
+  </footer>
+</article>

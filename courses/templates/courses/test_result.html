@@ -1,0 +1,771 @@
+{% extends "core/base.html" %}
+
+{% block title %}Kết quả bài kiểm tra - Hanzii{% endblock %}
+
+{% block content %}
+
+
+<style>
+
+.test-result-page {
+
+    --navy:#304575;
+    --navy-dark:#25385f;
+    --soft:#e9eef8;
+    --text:#293347;
+    --muted:#77808f;
+    --border:#e5e8ef;
+
+
+    max-width:850px;
+    margin:auto;
+    padding:35px 22px 60px;
+    color:var(--text);
+
+}
+
+
+
+.result-header {
+
+    margin-bottom:25px;
+
+}
+
+
+
+.result-label {
+
+    display:flex;
+    align-items:center;
+    gap:8px;
+
+    color:var(--navy);
+
+    font-size:12px;
+    font-weight:700;
+
+    letter-spacing:1px;
+
+    margin-bottom:12px;
+
+}
+
+
+
+.result-label span {
+
+    width:7px;
+    height:7px;
+
+    background:#6b85bb;
+
+    border-radius:50%;
+
+}
+
+
+
+.result-header h1 {
+
+    margin:0 0 8px;
+
+    font-size:30px;
+
+    color:var(--navy-dark);
+
+    font-weight:800;
+
+}
+
+
+
+.result-header p {
+
+    margin:0;
+
+    color:var(--muted);
+
+    font-size:14px;
+
+}
+
+
+
+
+
+.result-card {
+
+
+    background:white;
+
+    border:1px solid var(--border);
+
+    border-radius:22px;
+
+    overflow:hidden;
+
+    box-shadow:0 10px 30px rgba(48,69,117,.07);
+
+}
+
+
+
+
+
+.result-banner {
+
+
+    padding:35px 25px;
+
+    text-align:center;
+
+    color:white;
+
+
+    background:
+    linear-gradient(
+        135deg,
+        #25385f,
+        #304575,
+        #536ba0
+    );
+
+
+}
+
+
+
+.result-icon {
+
+
+    width:75px;
+    height:75px;
+
+
+    margin:0 auto 15px;
+
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+
+    border-radius:22px;
+
+
+    background:rgba(255,255,255,.15);
+
+
+    font-size:32px;
+
+
+}
+
+
+
+.result-banner h2 {
+
+
+    margin:0 0 8px;
+
+
+    font-size:24px;
+
+    font-weight:800;
+
+
+}
+
+
+
+.result-banner p {
+
+
+    margin:0;
+
+    color:#e2e8f5;
+
+    font-size:14px;
+
+
+}
+
+
+
+
+
+
+
+.result-content {
+
+
+    padding:30px;
+
+
+}
+
+
+
+
+
+
+.score-grid {
+
+
+    display:grid;
+
+    grid-template-columns:repeat(2,1fr);
+
+    gap:16px;
+
+    margin-bottom:25px;
+
+
+}
+
+
+
+
+.score-box {
+
+
+    padding:22px;
+
+
+    text-align:center;
+
+
+    background:#f8faff;
+
+
+    border:1px solid var(--border);
+
+
+    border-radius:16px;
+
+
+}
+
+
+
+
+
+.score-title {
+
+
+    color:var(--muted);
+
+    font-size:13px;
+
+    margin-bottom:10px;
+
+
+}
+
+
+
+
+
+.score-number {
+
+
+    color:var(--navy);
+
+
+    font-size:34px;
+
+    font-weight:800;
+
+
+}
+
+
+
+
+
+.score-number small {
+
+
+    color:#8892a5;
+
+    font-size:16px;
+
+}
+
+
+
+
+
+
+
+
+.status-box {
+
+
+    padding:20px;
+
+    border-radius:15px;
+
+    margin-bottom:25px;
+
+}
+
+
+
+
+.status-box h3 {
+
+
+    margin:0 0 8px;
+
+    font-size:17px;
+
+
+}
+
+
+
+
+.status-box p {
+
+
+    margin:5px 0;
+
+    font-size:14px;
+
+    line-height:1.7;
+
+
+}
+
+
+
+
+
+.pass {
+
+
+    background:#edf8f1;
+
+    border:1px solid #d3ecd9;
+
+    color:#26724f;
+
+}
+
+
+
+
+
+.fail {
+
+
+    background:#fff2f2;
+
+    border:1px solid #f1d7d7;
+
+    color:#984848;
+
+}
+
+
+
+
+
+
+
+.result-actions {
+
+
+    display:flex;
+
+    gap:12px;
+
+    flex-wrap:wrap;
+
+
+}
+
+
+
+
+.result-btn {
+
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+
+    padding:12px 20px;
+
+
+    border-radius:11px;
+
+
+    background:var(--navy);
+
+
+    color:white;
+
+
+    text-decoration:none;
+
+
+    font-size:14px;
+
+    font-weight:700;
+
+
+    transition:.2s;
+
+
+}
+
+
+
+
+.result-btn:hover {
+
+
+    background:var(--navy-dark);
+
+    transform:translateY(-2px);
+
+
+}
+
+
+
+
+.result-btn.secondary {
+
+
+    background:white;
+
+    color:var(--navy);
+
+    border:1px solid #d8dfed;
+
+
+}
+
+
+
+
+.result-btn.secondary:hover {
+
+
+    background:var(--soft);
+
+
+}
+
+
+
+
+
+@media(max-width:600px){
+
+
+    .score-grid{
+
+        grid-template-columns:1fr;
+
+    }
+
+
+    .result-content{
+
+        padding:20px 15px;
+
+    }
+
+
+    .result-actions{
+
+        flex-direction:column;
+
+    }
+
+
+    .result-btn{
+
+        width:100%;
+
+    }
+
+
+}
+
+
+
+</style>
+
+
+
+
+
+<div class="test-result-page">
+
+
+
+    <div class="result-header">
+
+
+        <div class="result-label">
+
+            <span></span>
+
+            HANZII TEST RESULT
+
+        </div>
+
+
+
+        <h1>
+            Kết quả bài kiểm tra
+        </h1>
+
+
+
+        <p>
+            Xem lại kết quả và tiếp tục cải thiện khả năng tiếng Trung của bạn.
+        </p>
+
+
+    </div>
+
+
+
+
+
+
+    <div class="result-card">
+
+
+
+        <div class="result-banner">
+
+
+            <div class="result-icon">
+
+
+                {% if score >= test.passing_score %}
+
+                    ✓
+
+                {% else %}
+
+                    !
+
+                {% endif %}
+
+
+            </div>
+
+
+
+            <h2>
+
+                {{ test.title }}
+
+            </h2>
+
+
+
+            <p>
+
+                Hoàn thành bài kiểm tra đánh giá kiến thức
+
+            </p>
+
+
+
+        </div>
+
+
+
+
+
+
+
+        <div class="result-content">
+
+
+
+            <div class="score-grid">
+
+
+
+                <div class="score-box">
+
+
+                    <div class="score-title">
+                        Số câu đúng
+                    </div>
+
+
+                    <div class="score-number">
+
+                        {{ correct }}
+
+                        <small>
+                            / {{ total }}
+                        </small>
+
+                    </div>
+
+
+                </div>
+
+
+
+
+
+                <div class="score-box">
+
+
+                    <div class="score-title">
+                        Điểm của bạn
+                    </div>
+
+
+                    <div class="score-number">
+
+                        {{ score|floatformat:2 }}
+
+                        <small>
+                            điểm
+                        </small>
+
+                    </div>
+
+
+                </div>
+
+
+
+
+            </div>
+
+
+
+
+
+
+
+
+            {% if score >= test.passing_score %}
+
+
+
+            <div class="status-box pass">
+
+
+                <h3>
+                    Đạt yêu cầu
+                </h3>
+
+
+                <p>
+                    Bạn đã hoàn thành bài kiểm tra tốt.
+                </p>
+
+
+                <p>
+                    Điểm đạt: {{ test.passing_score }}
+                </p>
+
+
+            </div>
+
+
+
+
+            {% else %}
+
+
+
+
+            <div class="status-box fail">
+
+
+                <h3>
+                    Chưa đạt
+                </h3>
+
+
+                <p>
+                    Bạn cần ôn tập thêm để củng cố kiến thức.
+                </p>
+
+
+                <p>
+                    Điểm đạt: {{ test.passing_score }}
+                </p>
+
+
+            </div>
+
+
+
+            {% endif %}
+
+
+
+
+
+
+
+            <div class="result-actions">
+
+
+                {% if test.lesson_id %}
+
+<a 
+href="{% url 'lesson_detail' test.lesson_id %}"
+class="result-btn secondary">
+
+    Quay lại bài học
+
+</a>
+
+{% endif %}
+
+
+
+
+                <a 
+                href="{% url 'progress' %}"
+                class="result-btn">
+
+                    Xem tiến độ học tập
+
+                </a>
+
+
+
+            </div>
+
+
+
+
+        </div>
+
+
+
+    </div>
+
+
+
+</div>
+
+
+
+{% endblock %}

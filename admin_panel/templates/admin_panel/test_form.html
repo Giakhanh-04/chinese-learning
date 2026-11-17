@@ -1,0 +1,81 @@
+{% extends "admin_panel/admin_base.html" %}
+
+{% block title %}{% if test %}Sửa bài kiểm tra{% else %}Thêm bài kiểm tra{% endif %}{% endblock %}
+
+{% block content %}
+
+<h1 style="font-size:26px;margin:0 0 20px;">
+    {% if test %}Sửa bài kiểm tra: {{ test.title }}{% else %}Thêm bài kiểm tra{% endif %}
+</h1>
+
+<form method="post" class="adm-card" style="max-width:720px;">
+    {% csrf_token %}
+
+    <label class="adm-label" style="margin-top:0;">Tiêu đề *</label>
+    <input type="text" name="title" class="adm-input" value="{{ values.title }}" required>
+
+    <label class="adm-label">Mô tả</label>
+    <textarea name="description" class="adm-input" rows="3">{{ values.description }}</textarea>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div>
+            <label class="adm-label">Khóa học{% if course_required %} *{% endif %}</label>
+            <select name="course" class="adm-input">
+                <option value="">-- Không chọn --</option>
+                {% for c in courses %}
+                    <option value="{{ c.id }}" {% if c.id|stringformat:"s" == values.course|stringformat:"s" %}selected{% endif %}>{{ c.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label class="adm-label">Bài học{% if lesson_required %} *{% endif %}</label>
+            <select name="lesson" class="adm-input">
+                <option value="">-- Không chọn --</option>
+                {% for l in lessons %}
+                    <option value="{{ l.id }}" {% if l.id|stringformat:"s" == values.lesson|stringformat:"s" %}selected{% endif %}>{{ l.label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    <div style="color:#777;font-size:13px;margin-top:6px;">Chọn bài học mà bỏ trống khóa học thì hệ thống tự lấy khóa của bài đó.</div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div>
+            <label class="adm-label">Thời gian làm bài (phút) *</label>
+            <input type="text" inputmode="numeric" name="duration" class="adm-input" value="{{ values.duration }}">
+        </div>
+        <div>
+            <label class="adm-label">Điểm đạt *</label>
+            <input type="text" inputmode="numeric" name="passing_score" class="adm-input" value="{{ values.passing_score }}">
+        </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div>
+            <label class="adm-label">Trạng thái *</label>
+            <select name="status" class="adm-input">
+                {% for s in statuses %}
+                    <option value="{{ s }}" {% if s == values.status %}selected{% endif %}>{{ s }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        {% if has_hsk %}
+        <div>
+            <label class="adm-label">Trình độ HSK</label>
+            <select name="hsk_level" class="adm-input">
+                <option value="">-- Không chọn --</option>
+                {% for l in levels %}
+                    <option value="{{ l }}" {% if l|stringformat:"s" == values.hsk_level|stringformat:"s" %}selected{% endif %}>HSK {{ l }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        {% endif %}
+    </div>
+
+    <div style="display:flex;gap:10px;margin-top:20px;">
+        <button type="submit" class="adm-btn">Lưu</button>
+        <a href="{% url 'admin_tests' %}" class="adm-btn light">Hủy</a>
+    </div>
+</form>
+
+{% endblock %}

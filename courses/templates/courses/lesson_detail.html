@@ -1,0 +1,733 @@
+{% extends "core/base.html" %}
+
+{% block title %}{{ lesson.title }} - Hanzii{% endblock %}
+
+
+{% block content %}
+
+<style>
+
+.lesson-page {
+
+    --navy:#304575;
+    --navy-dark:#25385f;
+    --soft:#e9eef8;
+    --text:#293347;
+    --muted:#77808f;
+    --border:#e5e8ef;
+
+    max-width:1100px;
+    margin:auto;
+    padding:35px 22px 60px;
+    color:var(--text);
+}
+
+
+.lesson-page *{
+    box-sizing:border-box;
+}
+
+
+/* HEADER */
+
+.lesson-header{
+
+    background:
+    linear-gradient(135deg,#304575,#526ba0);
+
+    color:white;
+
+    padding:35px;
+
+    border-radius:22px;
+
+    margin-bottom:30px;
+
+}
+
+
+.lesson-header h1{
+
+    margin:0 0 12px;
+
+    font-size:30px;
+
+}
+
+
+.lesson-header p{
+
+    margin:0;
+
+    color:#e5ebf8;
+
+    line-height:1.8;
+
+}
+
+
+
+/* CARD */
+
+.lesson-card{
+
+    background:white;
+
+    border:1px solid var(--border);
+
+    border-radius:18px;
+
+    padding:25px;
+
+    margin-bottom:25px;
+
+    box-shadow:0 8px 25px rgba(48,69,117,.05);
+
+}
+
+
+.lesson-card-title{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    margin-bottom:20px;
+
+}
+
+
+.lesson-card-title span{
+
+    width:38px;
+
+    height:38px;
+
+    display:grid;
+
+    place-items:center;
+
+    border-radius:12px;
+
+    background:var(--soft);
+
+    color:var(--navy);
+
+    font-weight:700;
+
+}
+
+
+.lesson-card-title h2{
+
+    margin:0;
+
+    font-size:20px;
+
+}
+
+
+
+/* VOCAB TABLE */
+
+
+.vocab-table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+}
+
+
+.vocab-table th{
+
+    background:#f5f7fc;
+
+    color:#53617a;
+
+    font-size:13px;
+
+    padding:14px;
+
+    text-align:left;
+
+}
+
+
+.vocab-table td{
+
+    padding:14px;
+
+    border-bottom:1px solid #eef0f5;
+
+    font-size:14px;
+
+}
+
+
+.vocab-table tr:hover{
+
+    background:#fafbff;
+
+}
+
+
+
+/* GRAMMAR */
+
+
+.grammar-box{
+
+    padding:18px;
+
+    border-radius:14px;
+
+    background:#f8faff;
+
+    border:1px solid #e3e8f5;
+
+    margin-bottom:15px;
+
+}
+
+
+.grammar-box h3{
+
+    margin:0 0 12px;
+
+    color:var(--navy);
+
+}
+
+
+.grammar-box p{
+
+    line-height:1.8;
+
+    margin:8px 0;
+
+}
+
+
+
+/* TRANSLATION */
+
+
+.translation-box{
+
+    border-left:4px solid var(--navy);
+
+    padding:15px 18px;
+
+    background:#f8faff;
+
+    margin-bottom:15px;
+
+    border-radius:10px;
+
+}
+
+
+
+.translation-box p{
+
+    margin:8px 0;
+
+}
+
+
+
+/* EXERCISE TEST */
+
+
+.action-box{
+
+    border:1px solid var(--border);
+
+    border-radius:14px;
+
+    padding:18px;
+
+    margin-bottom:15px;
+
+}
+
+
+.action-box h3{
+
+    margin-top:0;
+
+}
+
+
+.hanzii-btn{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    padding:11px 18px;
+
+    border-radius:10px;
+
+    background:var(--navy);
+
+    color:white;
+
+    text-decoration:none;
+
+    font-size:14px;
+
+    font-weight:600;
+
+}
+
+
+.hanzii-btn:hover{
+
+    background:var(--navy-dark);
+
+}
+
+
+
+.empty{
+
+    color:var(--muted);
+
+    padding:15px;
+
+    background:#f8f9fc;
+
+    border-radius:10px;
+
+}
+
+
+
+@media(max-width:700px){
+
+    .lesson-header{
+
+        padding:25px;
+
+    }
+
+
+    .vocab-table{
+
+        font-size:12px;
+
+    }
+
+}
+
+</style>
+
+
+
+<div class="lesson-page">
+
+
+
+<!-- HEADER -->
+
+<div class="lesson-header">
+
+    <h1>{{ lesson.title }}</h1>
+
+    <p>
+        {{ lesson.description }}
+    </p>
+
+</div>
+
+
+
+<!-- VOCAB -->
+
+<div class="lesson-card">
+
+
+<div class="lesson-card-title">
+
+<span>文</span>
+
+<h2>Từ vựng</h2>
+
+</div>
+
+
+
+{% if lesson_vocabularies %}
+
+
+<table class="vocab-table">
+
+<thead>
+
+<tr>
+
+<th>STT</th>
+
+<th>Từ</th>
+
+<th>Pinyin</th>
+
+<th>Nghĩa</th>
+
+<th>HSK</th>
+
+</tr>
+
+</thead>
+
+
+<tbody>
+
+
+{% for item in lesson_vocabularies %}
+
+<tr>
+
+<td>{{ item.word_order }}</td>
+
+<td><b>{{ item.vocabulary.word }}</b></td>
+
+<td>{{ item.vocabulary.pinyin }}</td>
+
+<td>{{ item.vocabulary.meaning }}</td>
+
+<td>HSK {{ item.vocabulary.hsk_level }}</td>
+
+
+</tr>
+
+
+{% endfor %}
+
+
+</tbody>
+
+</table>
+
+
+
+{% else %}
+
+<div class="empty">
+Bài học chưa có từ vựng.
+</div>
+
+{% endif %}
+
+
+</div>
+
+
+
+
+
+<!-- GRAMMAR -->
+
+
+<div class="lesson-card">
+
+
+<div class="lesson-card-title">
+
+<span>语</span>
+
+<h2>Ngữ pháp</h2>
+
+</div>
+
+
+
+{% for grammar in grammars %}
+
+
+<div class="grammar-box">
+
+
+<h3>{{ grammar.title }}</h3>
+
+
+<p>
+<b>Giải thích:</b><br>
+{{ grammar.explanation }}
+</p>
+
+
+
+{% if grammar.examples %}
+
+<p>
+
+<b>Ví dụ:</b><br>
+
+{{ grammar.examples|linebreaks }}
+
+</p>
+
+{% endif %}
+
+
+
+{% if grammar.notes %}
+
+<p>
+
+<b>Ghi chú:</b><br>
+
+{{ grammar.notes }}
+
+</p>
+
+{% endif %}
+
+
+
+</div>
+
+
+{% empty %}
+
+
+<div class="empty">
+Bài học chưa có nội dung ngữ pháp.
+</div>
+
+
+{% endfor %}
+
+
+
+</div>
+
+
+
+
+
+
+<!-- TRANSLATION -->
+
+
+<div class="lesson-card">
+
+
+<div class="lesson-card-title">
+
+<span>译</span>
+
+<h2>Dịch</h2>
+
+</div>
+
+
+
+{% for translation in translations %}
+
+
+
+<div class="translation-box">
+
+
+<p>
+
+<b>Tiếng Trung:</b>
+
+{{ translation.source_text }}
+
+</p>
+
+
+
+<p>
+
+<b>Tiếng Việt:</b>
+
+{{ translation.target_text }}
+
+</p>
+
+
+
+{% if translation.explanation %}
+
+<p>
+
+<b>Giải thích:</b>
+
+{{ translation.explanation }}
+
+</p>
+
+{% endif %}
+
+
+
+</div>
+
+
+{% empty %}
+
+
+<div class="empty">
+Bài học chưa có nội dung dịch.
+</div>
+
+
+{% endfor %}
+
+
+
+</div>
+
+
+
+
+
+
+
+<!-- EXERCISE -->
+
+
+<div class="lesson-card">
+
+
+<div class="lesson-card-title">
+
+<span>练</span>
+
+<h2>Luyện tập</h2>
+
+</div>
+
+
+
+{% for exercise in exercises %}
+
+
+<div class="action-box">
+
+
+<h3>
+{{ exercise.title }}
+</h3>
+
+
+<p>
+{{ exercise.description }}
+</p>
+
+
+
+<a href="{% url 'exercise_detail' exercise.id %}"
+class="hanzii-btn">
+
+Làm bài luyện tập →
+
+</a>
+
+
+
+</div>
+
+
+{% empty %}
+
+
+<div class="empty">
+Bài học chưa có bài luyện tập.
+</div>
+
+
+{% endfor %}
+
+
+</div>
+
+
+
+
+
+
+
+<!-- TEST -->
+
+
+<div class="lesson-card">
+
+
+<div class="lesson-card-title">
+
+<span>考</span>
+
+<h2>Kiểm tra</h2>
+
+</div>
+
+
+
+{% for test in tests %}
+
+
+
+<div class="action-box">
+
+
+<h3>
+{{ test.title }}
+</h3>
+
+
+<p>
+Thời gian: {{ test.duration }} phút
+</p>
+
+
+<p>
+Điểm đạt: {{ test.passing_score }}
+</p>
+
+
+
+<a href="{% url 'test_detail' test.id %}"
+class="hanzii-btn">
+
+Bắt đầu kiểm tra →
+
+</a>
+
+
+
+</div>
+
+
+{% empty %}
+
+
+<div class="empty">
+Bài học chưa có bài kiểm tra.
+</div>
+
+
+{% endfor %}
+
+
+
+</div>
+
+
+
+
+</div>
+
+
+{% endblock %}

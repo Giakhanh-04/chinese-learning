@@ -1,0 +1,33 @@
+{% extends "admin_panel/admin_base.html" %}
+
+{% block title %}Tổng quan{% endblock %}
+
+{% block content %}
+
+<h1 style="font-size:26px;margin:0 0 20px;">Trang quản trị</h1>
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:28px;">
+    <div style="background:#fff;border-radius:18px;padding:20px;border:1px solid #f0f1f4;">
+        <div style="color:#777;font-size:14px;">Tổng người dùng</div>
+        <div style="font-size:32px;font-weight:700;color:#354a7d;">{{ total_users }}</div>
+    </div>
+    <div style="background:#fff;border-radius:18px;padding:20px;border:1px solid #f0f1f4;">
+        <div style="color:#777;font-size:14px;">Học viên</div>
+        <div style="font-size:32px;font-weight:700;color:#354a7d;">{{ total_students }}</div>
+    </div>
+    <div style="background:#fff;border-radius:18px;padding:20px;border:1px solid #f0f1f4;">
+        <div style="color:#777;font-size:14px;">Premium đang hoạt động</div>
+        <div style="font-size:32px;font-weight:700;color:#354a7d;">{{ active_premium }}</div>
+    </div>
+</div>
+
+<div style="background:#fff;border-radius:18px;padding:20px;border:1px solid #f0f1f4;">
+    <h2 style="font-size:18px;margin:0 0 12px;">Người dùng mới nhất</h2>
+    {% for u in latest_users %}
+        <div style="padding:8px 0;border-bottom:1px solid #eceef2;">
+            {{ u.username }} - {{ u.full_name }} ({{ u.role }})
+        </div>
+    {% endfor %}
+</div>
+
+{% endblock %}

@@ -1,0 +1,104 @@
+{% extends "core/base.html" %}
+
+{% block title %}AI Tạo lộ trình học{% endblock %}
+
+{% block content %}
+
+<div class="ai-chat-page">
+
+    <div class="ai-header">
+        <div class="ai-icon">🗺️</div>
+
+        <div>
+            <h2>AI Tạo lộ trình học</h2>
+            <p>
+                Nhập thông tin học tập để AI xây dựng lộ trình
+                tiếng Trung phù hợp với bạn.
+            </p>
+        </div>
+    </div>
+
+    <div class="ai-question-box">
+
+        <form method="post">
+            {% csrf_token %}
+
+            <label for="current_hsk">HSK hiện tại</label>
+
+            <select id="current_hsk" name="current_hsk">
+                <option value="1">HSK 1</option>
+                <option value="2">HSK 2</option>
+                <option value="3">HSK 3</option>
+                <option value="4">HSK 4</option>
+                <option value="5">HSK 5</option>
+                <option value="6">HSK 6</option>
+            </select>
+
+            <label for="target_hsk">HSK mục tiêu</label>
+
+            <select id="target_hsk" name="target_hsk">
+                <option value="2">HSK 2</option>
+                <option value="3" selected>HSK 3</option>
+                <option value="4">HSK 4</option>
+                <option value="5">HSK 5</option>
+                <option value="6">HSK 6</option>
+            </select>
+
+            <label for="learning_goal">Mục tiêu học tập</label>
+
+            <textarea
+                id="learning_goal"
+                name="learning_goal"
+                rows="4"
+                placeholder="Ví dụ: Học tiếng Trung để giao tiếp và thi HSK 3"
+                required
+            ></textarea>
+
+            <label for="daily_minutes">Thời gian học mỗi ngày</label>
+
+            <select id="daily_minutes" name="daily_minutes">
+                <option value="15">15 phút</option>
+                <option value="30" selected>30 phút</option>
+                <option value="45">45 phút</option>
+                <option value="60">60 phút</option>
+                <option value="90">90 phút</option>
+            </select>
+
+            <button type="submit" class="ai-submit-btn">
+                🗺️ Tạo lộ trình
+            </button>
+
+        </form>
+
+    </div>
+
+    {% if error %}
+
+    <div class="ai-answer-box">
+        <div class="ai-answer">
+            ⚠️ {{ error }}
+        </div>
+    </div>
+
+    {% endif %}
+
+    {% if plan %}
+
+    <div class="ai-answer-box">
+
+        <div class="ai-answer-header">
+            <span>🗺️</span>
+            <h3>Lộ trình học của bạn</h3>
+        </div>
+
+        <div class="ai-answer">
+            {{ plan.plan_content|linebreaks }}
+        </div>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,94 @@
+{% extends "admin_panel/admin_base.html" %}
+
+{% block title %}{% if grammar %}Sửa ngữ pháp{% else %}Thêm ngữ pháp{% endif %}{% endblock %}
+
+{% block content %}
+
+<h1 style="font-size:26px;margin:0 0 20px;">
+    {% if grammar %}Sửa ngữ pháp: {{ grammar.title }}{% else %}Thêm ngữ pháp{% endif %}
+</h1>
+
+<form method="post" class="adm-card" style="max-width:760px;">
+    {% csrf_token %}
+
+    <div style="display:grid;grid-template-columns:1fr 160px;gap:12px;">
+        <div>
+            <label class="adm-label" style="margin-top:0;">Tiêu đề *</label>
+            <input type="text" name="title" class="adm-input" value="{{ values.title }}"
+                   placeholder="Ví dụ: Câu chữ 把 (bǎ)" required>
+        </div>
+        <div>
+            <label class="adm-label" style="margin-top:0;">Trình độ HSK *</label>
+            <select name="hsk_level" class="adm-input">
+                {% for l in levels %}
+                    <option value="{{ l }}" {% if l|stringformat:"s" == values.hsk_level|stringformat:"s" %}selected{% endif %}>HSK {{ l }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+
+    <label class="adm-label">Giải thích *</label>
+    <textarea name="explanation" class="adm-input" rows="6"
+              style="resize:vertical;line-height:1.6;"
+              placeholder="Cấu trúc, cách dùng, khi nào dùng..." required>{{ values.explanation }}</textarea>
+
+    <label class="adm-label">Ví dụ</label>
+    <textarea id="f_examples" name="examples" class="adm-input" rows="6"
+              style="resize:vertical;line-height:1.6;"
+              placeholder="Mỗi ví dụ một dòng. Ví dụ: 我把书放在桌子上。(Wǒ bǎ shū fàng zài zhuōzi shàng.) - Tôi để quyển sách lên bàn.">{{ values.examples }}</textarea>
+
+    <div style="display:flex;align-items:center;gap:10px;margin-top:8px;">
+        <button type="button" class="adm-btn light" onclick="addPinyinToExamples()">
+            Tự thêm pinyin cho các dòng tiếng Trung
+        </button>
+        <span style="color:#777;font-size:13px;">
+            Dòng nào đã có sẵn dấu ngoặc ( ) thì được giữ nguyên.
+        </span>
+    </div>
+
+    <label class="adm-label">Ghi chú</label>
+    <textarea name="notes" class="adm-input" rows="3"
+              style="resize:vertical;line-height:1.6;"
+              placeholder="Lưu ý, lỗi thường gặp...">{{ values.notes }}</textarea>
+
+    <div style="display:flex;gap:10px;margin-top:20px;">
+        <button type="submit" class="adm-btn">Lưu</button>
+        <a href="{% url 'admin_grammar' %}" class="adm-btn light">Hủy</a>
+    </div>
+</form>
+
+<script src="https://cdn.jsdelivr.net/npm/pinyin-pro@3.19.6/dist/index.js"></script>
+<script>
+    // Thêm pinyin vào cuối mỗi dòng có chữ Hán, chưa có pinyin trong ngoặc
+    function addPinyinToExamples() {
+
+        if (!window.pinyinPro) {
+            alert("Chưa tải được thư viện pinyin. Hãy kiểm tra mạng rồi thử lại.");
+            return;
+        }
+
+        const box = document.getElementById("f_examples");
+        const HAN = /[\u3400-\u9fff]/;
+
+        const lines = box.value.split("\n").map(function (line) {
+
+            const trimmed = line.trim();
+
+            if (!trimmed || !HAN.test(trimmed)) return line;
+            if (/[(（]/.test(trimmed)) return line;       // đã có pinyin hoặc ghi chú
+
+            // chỉ lấy phần chữ Hán và dấu câu ở đầu dòng, bỏ phần dịch sau dấu " - "
+            const parts = trimmed.split(/\s+-\s+/);
+            const chinese = parts[0];
+            const rest = parts.slice(1).join(" - ");
+
+            const py = pinyinPro.pinyin(chinese);
+
+            return chinese + " (" + py + ")" + (rest ? " - " + rest : "");
+        });
+
+        box.value = lines.join("\n");
+    }
+</script>
+
+{% endblock %}

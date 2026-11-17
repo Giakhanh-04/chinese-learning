@@ -1,0 +1,26 @@
+<article class="cm-modal-post">
+  <header class="cm-post-head">
+    <div class="cm-avatar">{{ post.author.full_name|default:post.author.username|slice:":1"|upper }}</div>
+    <div class="cm-post-meta">
+      <strong>{{ post.author.full_name|default:post.author.username }}
+        {% if post.author.role == "admin" %}<span class="cm-badge">Admin</span>{% endif %}
+      </strong>
+      <small>{{ post.category.name|default:"Khác" }} · {{ post.created_at|timesince }} trước</small>
+    </div>
+    {% if post.is_pinned %}<span class="cm-pin">📌 Bài ghim</span>{% endif %}
+  </header>
+
+  <h2 class="cm-detail-title">{{ post.title }}</h2>
+  <div class="cm-detail-body">{{ post.content|linebreaks }}</div>
+  <div class="cm-modal-stats">👁 {{ post.views }} lượt xem</div>
+</article>
+
+<h4 class="cm-modal-sub">Bình luận (<span id="cmModalCount">{{ comments|length }}</span>)</h4>
+
+<div id="cmCommentList">
+  {% for c in comments %}
+    {% include "community/_comment.html" %}
+  {% empty %}
+    <p class="cm-muted" id="cmNoComment">Chưa có bình luận nào. Hãy là người đầu tiên!</p>
+  {% endfor %}
+</div>

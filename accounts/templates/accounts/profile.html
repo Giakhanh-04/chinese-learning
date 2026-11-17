@@ -1,0 +1,639 @@
+
+{% extends "core/base.html" %}
+
+{% block title %}Hồ sơ cá nhân - Học tiếng Trung{% endblock %}
+
+{% block content %}
+<style>
+.profile-page {
+    --primary: #3155c6;
+    --primary-dark: #203e9d;
+    --text: #172554;
+    --muted: #64748b;
+    --border: #e2e8f0;
+    max-width: 1050px;
+    margin: 32px auto 60px;
+    padding: 0 20px;
+    color: var(--text);
+}
+
+.profile-page * {
+    box-sizing: border-box;
+}
+
+.profile-heading {
+    margin-bottom: 24px;
+}
+
+.profile-heading h1 {
+    margin: 0 0 8px;
+    font-size: clamp(25px, 4vw, 32px);
+    font-weight: 750;
+    letter-spacing: -0.7px;
+}
+
+.profile-heading p {
+    color: var(--muted);
+    margin: 0;
+    line-height: 1.6;
+}
+
+.profile-layout {
+    display: grid;
+    grid-template-columns: 300px minmax(0, 1fr);
+    gap: 24px;
+    align-items: start;
+}
+
+.profile-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 26px;
+    box-shadow: 0 8px 28px rgba(15, 23, 42, .045);
+    min-width: 0;
+}
+
+.profile-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.profile-user {
+    text-align: center;
+    padding: 8px 0 20px;
+    border-bottom: 1px solid var(--border);
+}
+
+.profile-avatar {
+    width: 82px;
+    height: 82px;
+    display: grid;
+    place-items: center;
+    margin: 0 auto 16px;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #e0eaff, #c7d7ff);
+    color: var(--primary);
+    font-size: 36px;
+    box-shadow: 0 0 0 6px #f3f6ff;
+}
+
+.profile-user h2 {
+    font-size: 20px;
+    margin: 0 0 6px;
+    overflow-wrap: anywhere;
+}
+
+.profile-user p {
+    margin: 0;
+    font-size: 14px;
+    color: var(--muted);
+    overflow-wrap: anywhere;
+}
+
+.profile-role {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 14px;
+    padding: 6px 12px;
+    border-radius: 30px;
+    color: #3155c6;
+    background: #edf2ff;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.premium-profile {
+    position: relative;
+    overflow: hidden;
+    padding: 24px;
+    border-radius: 18px;
+    color: #fff;
+    background: linear-gradient(145deg, #19377f, #3155c6 75%, #536fe0);
+}
+
+.premium-profile::after {
+    content: "";
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 50%;
+    right: -65px;
+    top: -60px;
+    box-shadow: 0 0 0 22px rgba(255,255,255,.035),
+                0 0 0 44px rgba(255,255,255,.025);
+    pointer-events: none;
+}
+
+.premium-top,
+.premium-profile h3,
+.premium-profile p,
+.premium-details,
+.premium-status,
+.premium-upgrade {
+    position: relative;
+    z-index: 1;
+}
+
+.premium-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.premium-label {
+    color: #ffe7a3;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+}
+
+.premium-crown {
+    font-size: 27px;
+}
+
+.premium-profile h3 {
+    margin: 0 0 12px;
+    font-size: 21px;
+    line-height: 1.4;
+}
+
+.premium-status {
+    display: inline-block;
+    padding: 6px 10px;
+    border-radius: 30px;
+    font-size: 12px;
+    font-weight: 700;
+    background: rgba(255,255,255,.14);
+    color: #fff;
+}
+
+.premium-profile p {
+    font-size: 13px;
+    line-height: 1.65;
+    color: #e0e9ff;
+    margin: 10px 0 0;
+    overflow-wrap: anywhere;
+}
+
+.premium-profile p strong {
+    color: #fff;
+}
+
+.premium-details {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-top: 20px;
+    padding-top: 18px;
+    border-top: 1px solid rgba(255,255,255,.2);
+}
+
+.premium-detail-label {
+    display: block;
+    color: #d5e1ff;
+    font-size: 12px;
+    margin-bottom: 5px;
+}
+
+.premium-detail-value {
+    font-size: 14px;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.premium-upgrade {
+    display: inline-flex;
+    justify-content: center;
+    width: 100%;
+    margin-top: 18px;
+    padding: 12px 15px;
+    border-radius: 10px;
+    background: #fff;
+    color: var(--primary-dark);
+    font-weight: 700;
+    text-decoration: none;
+    transition: .2s ease;
+}
+
+.premium-upgrade:hover {
+    background: #eaf0ff;
+    transform: translateY(-1px);
+}
+
+.profile-form-card {
+    padding: 30px;
+}
+
+.profile-section-heading {
+    margin: 0 0 6px;
+    font-size: 19px;
+    font-weight: 750;
+}
+
+.profile-section-description {
+    margin: 0 0 24px;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.profile-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 26px 0;
+}
+
+.profile-info {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 21px 18px;
+}
+
+.profile-row {
+    min-width: 0;
+}
+
+.profile-row.full-width {
+    grid-column: 1 / -1;
+}
+
+.profile-row label {
+    display: block;
+    margin-bottom: 9px;
+    color: #334155;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.profile-row input,
+.profile-row select,
+.profile-row textarea {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    padding: 12px 13px;
+    border: 1px solid #dbe3ef;
+    border-radius: 10px;
+    outline: none;
+    background: #fff;
+    color: #172554;
+    font: inherit;
+    font-size: 14px;
+    transition: border-color .2s, box-shadow .2s;
+}
+
+.profile-row input,
+.profile-row select {
+    min-height: 46px;
+}
+
+.profile-row textarea {
+    min-height: 112px;
+    resize: vertical;
+    line-height: 1.65;
+}
+
+.profile-row input:focus,
+.profile-row select:focus,
+.profile-row textarea:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(49,85,198,.12);
+}
+
+.profile-row input:disabled {
+    background: #f8fafc;
+    color: #64748b;
+    cursor: not-allowed;
+}
+
+.profile-row .field-hint {
+    display: block;
+    margin-top: 7px;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.profile-levels {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.profile-level-option {
+    position: relative;
+    cursor: pointer;
+}
+
+.profile-level-option input {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+}
+
+.profile-level-option span {
+    display: grid;
+    place-items: center;
+    min-height: 42px;
+    padding: 8px 4px;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    background: #f8fafc;
+    color: #475569;
+    font-size: 13px;
+    font-weight: 700;
+    transition: .2s ease;
+}
+
+.profile-level-option input:checked + span {
+    color: #fff;
+    background: var(--primary);
+    border-color: var(--primary);
+    box-shadow: 0 3px 10px rgba(49,85,198,.2);
+}
+
+.profile-level-option input:focus-visible + span {
+    outline: 3px solid #a5b4fc;
+    outline-offset: 2px;
+}
+
+.profile-level-option:hover span {
+    border-color: var(--primary);
+}
+
+.profile-message {
+    margin-bottom: 20px;
+    padding: 13px 16px;
+    border: 1px solid #bbf7d0;
+    border-radius: 10px;
+    background: #f0fdf4;
+    color: #166534;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.profile-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 26px;
+}
+
+.profile-save-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    min-height: 46px;
+    padding: 12px 23px;
+    border: 0;
+    border-radius: 10px;
+    background: var(--primary);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 750;
+    cursor: pointer;
+    box-shadow: 0 5px 12px rgba(49,85,198,.2);
+    transition: background .2s, transform .2s;
+}
+
+.profile-save-button:hover {
+    background: var(--primary-dark);
+    transform: translateY(-1px);
+}
+
+@media (max-width: 800px) {
+    .profile-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-sidebar {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        align-items: stretch;
+    }
+
+    .profile-card {
+        padding: 22px;
+    }
+
+    .premium-profile {
+        padding: 22px;
+    }
+}
+
+@media (max-width: 540px) {
+    .profile-page {
+        margin-top: 20px;
+        padding: 0 12px;
+    }
+
+    .profile-sidebar {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-user {
+        padding: 4px 0 18px;
+    }
+
+    .profile-form-card {
+        padding: 20px 16px;
+    }
+
+    .profile-info {
+        grid-template-columns: 1fr;
+        gap: 18px;
+    }
+
+    .profile-row.full-width {
+        grid-column: auto;
+    }
+
+    .profile-levels {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .profile-actions {
+        justify-content: stretch;
+    }
+
+    .profile-save-button {
+        width: 100%;
+    }
+}
+</style>
+
+<div class="profile-page">
+    <div class="profile-heading">
+        <h1>Hồ sơ cá nhân</h1>
+        <p>Quản lý tài khoản và theo dõi hành trình học tiếng Trung của bạn.</p>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="profile-message">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="profile-layout">
+        <aside class="profile-sidebar">
+            <section class="profile-card">
+                <div class="profile-user">
+                    <div class="profile-avatar" aria-hidden="true">👤</div>
+                    <h2>{{ user.full_name|default:user.username }}</h2>
+                    <p>{{ user.email }}</p>
+                    <span class="profile-role">✦ {{ user.get_role_display }}</span>
+                </div>
+            </section>
+
+            <section class="premium-profile">
+                <div class="premium-top">
+                    <span class="premium-label">MEMBERSHIP</span>
+                    <span class="premium-crown" aria-hidden="true">👑</span>
+                </div>
+
+                <h3>Trạng thái Premium</h3>
+
+                {% if premium_active and premium %}
+                    <span class="premium-status">✓ Đang hoạt động</span>
+                    <p><strong>Gói:</strong> Premium 30 ngày</p>
+
+                    <div class="premium-details">
+                        <div>
+                            <span class="premium-detail-label">Ngày bắt đầu</span>
+                            <div class="premium-detail-value">
+                                {{ premium.start_date|date:"d/m/Y H:i" }}
+                            </div>
+                        </div>
+                        <div>
+                            <span class="premium-detail-label">Ngày hết hạn</span>
+                            <div class="premium-detail-value">
+                                {{ premium.end_date|date:"d/m/Y H:i" }}
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <span class="premium-status">Chưa kích hoạt</span>
+                    <p>Khám phá các tính năng học tập nâng cao cùng Premium.</p>
+                    <a href="{% url 'premium_list' %}" class="premium-upgrade">
+                        ✦ Nâng cấp Premium
+                    </a>
+                {% endif %}
+            </section>
+        </aside>
+
+        <section class="profile-card profile-form-card">
+            <h2 class="profile-section-heading">Thông tin tài khoản</h2>
+            <p class="profile-section-description">
+                Cập nhật thông tin cá nhân để có trải nghiệm học tập phù hợp hơn.
+            </p>
+
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="profile-info">
+                    <div class="profile-row">
+                        <label for="username">Tên đăng nhập</label>
+                        <input
+                            type="text"
+                            id="username"
+                            value="{{ user.username }}"
+                            disabled
+                        >
+                        <span class="field-hint">Tên đăng nhập không thể thay đổi.</span>
+                    </div>
+
+                    <div class="profile-row">
+                        <label for="full_name">Họ và tên</label>
+                        <input
+                            type="text"
+                            id="full_name"
+                            name="full_name"
+                            value="{{ user.full_name|default:'' }}"
+                            placeholder="Nhập họ và tên"
+                        >
+                    </div>
+
+                    <div class="profile-row">
+                        <label for="email">Email</label>
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            value="{{ user.email }}"
+                            placeholder="example@email.com"
+                            required
+                        >
+                    </div>
+
+                    <div class="profile-row">
+                        <label for="phone">Số điện thoại</label>
+                        <input
+                            type="text"
+                            id="phone"
+                            name="phone"
+                            value="{{ user.phone|default:'' }}"
+                            placeholder="Nhập số điện thoại"
+                        >
+                    </div>
+
+                    <div class="profile-row full-width">
+                        <label for="hsk_level">Trình độ tiếng Trung hiện tại</label>
+                        <div class="profile-levels">
+                            {% for level in "123456" %}
+                                <label class="profile-level-option">
+                                    <input
+                                        type="radio"
+                                        name="hsk_level"
+                                        value="{{ level }}"
+                                        {% if user.hsk_level|stringformat:"s" == level %}checked{% endif %}
+                                    >
+                                    <span>HSK {{ level }}</span>
+                                </label>
+                            {% endfor %}
+                        </div>
+                        <span class="field-hint">
+                            Chọn trình độ phù hợp với khả năng hiện tại của bạn.
+                        </span>
+                    </div>
+
+                    <div class="profile-row full-width">
+                        <label for="learning_goal">Mục tiêu học tập</label>
+                        <textarea
+                            id="learning_goal"
+                            name="learning_goal"
+                            rows="4"
+                            placeholder="Ví dụ: Đạt HSK 4 để phục vụ công việc..."
+                        >{{ user.learning_goal|default:'' }}</textarea>
+                    </div>
+
+                    <div class="profile-row full-width">
+                        <label for="role">Vai trò tài khoản</label>
+                        <input
+                            type="text"
+                            id="role"
+                            value="{{ user.get_role_display }}"
+                            disabled
+                        >
+                    </div>
+                </div>
+
+                <div class="profile-divider"></div>
+
+                <div class="profile-actions">
+                    <button type="submit" class="profile-save-button">
+                        <span aria-hidden="true"></span>
+                        Lưu thay đổi
+                    </button>
+                </div>
+            </form>
+        </section>
+    </div>
+</div>
+{% endblock %}

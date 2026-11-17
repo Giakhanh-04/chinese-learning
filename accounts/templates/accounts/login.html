@@ -1,0 +1,312 @@
+{% extends "core/base.html" %}
+
+{% block title %}Đăng nhập - Học tiếng Trung{% endblock %}
+
+
+{% block content %}
+
+
+<style>
+
+.auth-page {
+    min-height:70vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:40px 20px;
+    background:#f8fafc;
+}
+
+.auth-box {
+    width:100%;
+    max-width:420px;
+    padding:35px;
+    background:white;
+    border:1px solid #e5e8ef;
+    border-radius:22px;
+    box-shadow:0 15px 40px rgba(48,69,117,.08);
+}
+
+.auth-logo {
+    width:60px;
+    height:60px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin:0 auto 18px;
+    border-radius:18px;
+    background:#eef3fb;
+    color:#304575;
+    font-size:24px;
+    font-weight:800;
+}
+
+.auth-box h2 {
+    margin:0 0 8px;
+    text-align:center;
+    color:#25385f;
+    font-size:28px;
+    font-weight:800;
+}
+
+.auth-subtitle {
+    margin-bottom:25px;
+    text-align:center;
+    color:#7b8494;
+    font-size:14px;
+}
+
+.auth-message {
+    padding:12px 15px;
+    margin-bottom:18px;
+    border-radius:12px;
+    background:#fff4f4;
+    border:1px solid #f3cccc;
+    color:#984848;
+    font-size:14px;
+}
+
+.auth-box label {
+    display:block;
+    margin-bottom:7px;
+    color:#3d4658;
+    font-size:14px;
+    font-weight:600;
+}
+
+.auth-box input {
+    width:100%;
+    padding:14px 15px;
+    margin-bottom:18px;
+    border-radius:12px;
+    border:1px solid #dfe4ed;
+    outline:none;
+    font-size:14px;
+    transition:.2s;
+}
+
+.auth-box input:focus {
+    border-color:#526ba0;
+    box-shadow:0 0 0 4px rgba(82,107,160,.12);
+}
+
+.auth-box button {
+    width:100%;
+    margin-top:5px;
+    padding:14px;
+    border:none;
+    border-radius:13px;
+    background:linear-gradient(135deg, #304575, #526ba0);
+    color:white;
+    font-size:15px;
+    font-weight:700;
+    cursor:pointer;
+    transition:.25s;
+}
+
+.auth-box button:hover {
+    transform:translateY(-2px);
+    box-shadow:0 8px 20px rgba(48,69,117,.25);
+}
+
+
+/* ---------- ĐĂNG NHẬP BẰNG GOOGLE ---------- */
+
+.auth-divider {
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin:24px 0 18px;
+    color:#9aa2b1;
+    font-size:13px;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+    content:"";
+    flex:1;
+    height:1px;
+    background:#e5e8ef;
+}
+
+.google-signin-wrap {
+    display:flex;
+    justify-content:center;
+    min-height:44px;
+}
+
+.google-error {
+    min-height:20px;
+    margin:10px 0 0;
+    text-align:center;
+    color:#984848;
+    font-size:14px;
+}
+
+
+@media(max-width:500px){
+
+    .auth-box{
+        padding:25px 20px;
+    }
+
+}
+
+</style>
+
+
+<div class="auth-page">
+
+<div class="auth-box">
+
+
+<div class="auth-logo">
+H
+</div>
+
+
+<h2>
+Đăng nhập
+</h2>
+
+
+<div class="auth-subtitle">
+Tiếp tục hành trình học tiếng Trung của bạn
+</div>
+
+
+{% if messages %}
+
+{% for message in messages %}
+
+<div class="auth-message">
+{{ message }}
+</div>
+
+{% endfor %}
+
+{% endif %}
+
+
+<form method="post">
+
+{% csrf_token %}
+
+
+<label for="username">
+Tên đăng nhập
+</label>
+
+<input
+type="text"
+id="username"
+name="username"
+placeholder="Nhập tên đăng nhập"
+required
+>
+
+
+<label for="password">
+Mật khẩu
+</label>
+
+<input
+type="password"
+id="password"
+name="password"
+placeholder="Nhập mật khẩu"
+required
+>
+
+
+<div style="text-align:right;margin:-8px 0 16px;font-size:13px;">
+    <a href="{% url 'forgot_password' %}" style="color:#526ba0;text-decoration:none;">Quên mật khẩu?</a>
+</div>
+
+
+<button type="submit">
+Đăng nhập
+</button>
+
+</form>
+
+
+{% if google_client_id %}
+
+<div class="auth-divider">
+hoặc
+</div>
+
+<div class="google-signin-wrap">
+
+    <div id="g_id_onload"
+         data-client_id="{{ google_client_id }}"
+         data-callback="onGoogleSignIn"
+         data-auto_prompt="false">
+    </div>
+
+    <div class="g_id_signin"
+         data-type="standard"
+         data-theme="outline"
+         data-size="large"
+         data-text="signin_with"
+         data-shape="pill"
+         data-width="350"
+         data-locale="vi">
+    </div>
+
+</div>
+
+<p id="googleError" class="google-error"></p>
+
+{% else %}
+
+<!-- Chưa có GOOGLE_CLIENT_ID: kiểm tra .env, settings.py và login_view -->
+
+{% endif %}
+
+
+</div>
+
+</div>
+
+
+{% if google_client_id %}
+
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+
+<script>
+function onGoogleSignIn(response) {
+
+    const csrfInput = document.querySelector("[name=csrfmiddlewaretoken]");
+    const errorBox = document.getElementById("googleError");
+
+    errorBox.textContent = "";
+
+    fetch("{% url 'google_login' %}", {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrfInput ? csrfInput.value : ""
+        },
+        body: JSON.stringify({ credential: response.credential })
+    })
+    .then(function (res) { return res.json(); })
+    .then(function (data) {
+        if (data.success) {
+            window.location.href = data.redirect;
+        } else {
+            errorBox.textContent = data.error || "Đăng nhập Google thất bại.";
+        }
+    })
+    .catch(function () {
+        errorBox.textContent = "Không thể kết nối máy chủ. Vui lòng thử lại.";
+    });
+}
+</script>
+
+{% endif %}
+
+
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends "admin_panel/admin_base.html" %}
+{% load l10n %}
+
+{% block title %}{% if package %}Sửa gói{% else %}Thêm gói{% endif %}{% endblock %}
+
+{% block content %}
+
+<h1 style="font-size:26px;margin:0 0 20px;">
+    {% if package %}Sửa gói: {{ package.name }}{% else %}Thêm gói Premium{% endif %}
+</h1>
+
+<form method="post" class="adm-card" style="max-width:640px;">
+    {% csrf_token %}
+
+    <label class="adm-label" style="margin-top:0;">Tên gói</label>
+    <input type="text" name="name" class="adm-input" value="{{ values.name }}" required>
+
+    <label class="adm-label">Mô tả</label>
+    <textarea name="description" class="adm-input" rows="3">{{ values.description }}</textarea>
+
+    <label class="adm-label">Giá (đồng)</label>
+    <input type="text" inputmode="decimal" name="price" class="adm-input"
+           value="{{ values.price|unlocalize }}" required>
+
+    <label class="adm-label">Thời hạn (số ngày)</label>
+    <input type="text" inputmode="numeric" name="duration_days" class="adm-input"
+           value="{{ values.duration_days|unlocalize }}" required>
+
+    <label class="adm-label">Trạng thái</label>
+    <select name="status" class="adm-input">
+        {% for s in statuses %}
+            <option value="{{ s }}" {% if s == current_status %}selected{% endif %}>{{ s }}</option>
+        {% endfor %}
+    </select>
+
+    <div style="display:flex;gap:10px;margin-top:20px;">
+        <button type="submit" class="adm-btn">Lưu</button>
+        <a href="{% url 'admin_packages' %}" class="adm-btn light">Hủy</a>
+    </div>
+</form>
+
+{% endblock %}

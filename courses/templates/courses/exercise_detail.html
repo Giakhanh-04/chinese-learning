@@ -1,0 +1,623 @@
+<escape>{% extends "core/base.html" %}
+
+{% block title %}{{ exercise.title }} - Học tiếng Trung{% endblock %}
+
+{% block content %}
+
+<style>
+.exercise-detail-page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 24px 0 48px;
+    color: #252a34;
+}
+
+.exercise-topbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.exercise-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: #304575;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.exercise-back:hover {
+    color: #5369a4;
+}
+
+.exercise-hero {
+    position: relative;
+    overflow: hidden;
+    padding: 30px;
+    margin-bottom: 24px;
+    border: 1px solid #e5e8ef;
+    border-radius: 22px;
+    background: linear-gradient(135deg, #ffffff 0%, #edf2fb 100%);
+}
+
+.exercise-hero-content {
+    position: relative;
+    z-index: 1;
+}
+
+.exercise-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-bottom: 12px;
+    color: #5369a4;
+    font-size: 12px;
+    font-weight: 750;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.exercise-hero h1 {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0 0 10px;
+    color: #304575;
+    font-size: clamp(25px, 4vw, 32px);
+    font-weight: 750;
+    line-height: 1.35;
+}
+
+.exercise-hero h1 svg {
+    flex-shrink: 0;
+}
+
+.exercise-hero p {
+    margin: 0;
+    color: #687386;
+    font-size: 15px;
+    line-height: 1.7;
+}
+
+.exercise-hero-decoration {
+    position: absolute;
+    right: 28px;
+    top: 24px;
+    color: #d7e0f2;
+    opacity: .8;
+    pointer-events: none;
+}
+
+.exercise-info-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 22px;
+}
+
+.exercise-info-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 12px;
+    border: 1px solid #e1e7f2;
+    border-radius: 12px;
+    background: rgba(255,255,255,.8);
+    color: #53617a;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.exercise-progress-card {
+    padding: 18px 22px;
+    margin-bottom: 20px;
+    border: 1px solid #e5e8ef;
+    border-radius: 17px;
+    background: #fff;
+}
+
+.exercise-progress-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 11px;
+    color: #53617a;
+    font-size: 13px;
+    font-weight: 650;
+}
+
+.exercise-progress-track {
+    width: 100%;
+    height: 7px;
+    overflow: hidden;
+    border-radius: 99px;
+    background: #edf0f6;
+}
+
+.exercise-progress-fill {
+    width: 0;
+    height: 100%;
+    border-radius: 99px;
+    background: linear-gradient(90deg, #5369a4, #304575);
+    transition: width .25s ease;
+}
+
+.exercise-question {
+    padding: 24px;
+    margin-bottom: 18px;
+    border: 1px solid #e5e8ef;
+    border-radius: 20px;
+    background: #fff;
+    box-shadow: 0 4px 16px rgba(35, 53, 90, .035);
+    transition: border-color .2s, box-shadow .2s;
+}
+
+.exercise-question:focus-within {
+    border-color: #c5d2ec;
+    box-shadow: 0 8px 24px rgba(48, 69, 117, .07);
+}
+
+.exercise-question-heading {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 17px;
+}
+
+.exercise-question-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 42px;
+    height: 42px;
+    border-radius: 13px;
+    background: #e9eef8;
+    color: #304575;
+    font-size: 15px;
+    font-weight: 800;
+}
+
+.exercise-question-label {
+    color: #304575;
+    font-size: 16px;
+    font-weight: 750;
+}
+
+.exercise-question-status {
+    margin-left: auto;
+    color: #929bad;
+    font-size: 12px;
+    font-weight: 550;
+}
+
+.exercise-question .question-text {
+    margin: 0 0 20px;
+    color: #252a34;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.8;
+    overflow-wrap: anywhere;
+}
+
+.exercise-options {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.exercise-option {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    min-width: 0;
+    padding: 15px;
+    border: 1px solid #e5e8ef;
+    border-radius: 14px;
+    background: #fff;
+    cursor: pointer;
+    transition: border-color .18s, background .18s, box-shadow .18s;
+}
+
+.exercise-option:hover {
+    border-color: #aab9da;
+    background: #f8faff;
+}
+
+.exercise-option:has(input:checked) {
+    border-color: #5369a4;
+    background: #edf2fb;
+    box-shadow: 0 0 0 2px rgba(83, 105, 164, .09);
+}
+
+.exercise-option input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.exercise-option-letter {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 30px;
+    height: 30px;
+    border: 1px solid #e1e6ef;
+    border-radius: 9px;
+    background: #f5f7fb;
+    color: #53617a;
+    font-size: 13px;
+    font-weight: 800;
+    transition: background .18s, color .18s, border-color .18s;
+}
+
+.exercise-option:has(input:checked) .exercise-option-letter {
+    border-color: #304575;
+    background: #304575;
+    color: #fff;
+}
+
+.exercise-option-text {
+    padding-top: 4px;
+    color: #424b5b;
+    font-size: 14px;
+    line-height: 1.65;
+    overflow-wrap: anywhere;
+}
+
+.exercise-option:has(input:checked) .exercise-option-text {
+    color: #304575;
+    font-weight: 650;
+}
+
+.exercise-option input:focus-visible + .exercise-option-letter {
+    outline: 3px solid #aab9da;
+    outline-offset: 3px;
+}
+
+.exercise-submit {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 22px;
+    margin-top: 24px;
+    border: 1px solid #e5e8ef;
+    border-radius: 18px;
+    background: #fff;
+}
+
+.exercise-submit-note {
+    color: #758096;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.exercise-submit button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    min-height: 48px;
+    padding: 0 23px;
+    border: 0;
+    border-radius: 13px;
+    background: #304575;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 5px 12px rgba(48, 69, 117, .17);
+    transition: background .2s, transform .2s, box-shadow .2s;
+}
+
+.exercise-submit button:hover {
+    background: #25385f;
+    box-shadow: 0 8px 18px rgba(48, 69, 117, .22);
+    transform: translateY(-1px);
+}
+
+.exercise-empty {
+    padding: 44px 20px;
+    border: 1px dashed #d5dceb;
+    border-radius: 18px;
+    background: #fff;
+    color: #758096;
+    text-align: center;
+}
+
+.exercise-empty svg {
+    margin-bottom: 12px;
+    color: #5369a4;
+}
+
+.exercise-empty h3 {
+    margin: 0 0 8px;
+    color: #304575;
+    font-size: 18px;
+}
+
+.exercise-empty p {
+    margin: 0;
+    font-size: 14px;
+}
+
+@media (max-width: 640px) {
+    .exercise-detail-page {
+        padding-top: 12px;
+    }
+
+    .exercise-hero {
+        padding: 23px 19px;
+        border-radius: 18px;
+    }
+
+    .exercise-hero-decoration {
+        right: 12px;
+        top: 14px;
+        opacity: .35;
+    }
+
+    .exercise-hero h1 {
+        font-size: 24px;
+    }
+
+    .exercise-question {
+        padding: 18px 15px;
+        border-radius: 17px;
+    }
+
+    .exercise-options {
+        grid-template-columns: 1fr;
+        gap: 9px;
+    }
+
+    .exercise-option {
+        padding: 13px;
+    }
+
+    .exercise-submit {
+        align-items: stretch;
+        flex-direction: column;
+        padding: 17px;
+    }
+
+    .exercise-submit button {
+        width: 100%;
+    }
+}
+</style>
+
+<div class="exercise-detail-page">
+
+    <div class="exercise-topbar">
+        <a href="{% url 'exercise_list' %}" class="exercise-back">
+            <svg viewBox="0 0 24 24" width="18" height="18"
+                 fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round"
+                 aria-hidden="true">
+                <path d="m15 18-6-6 6-6"/>
+                <path d="M9 12h12"/>
+            </svg>
+            Quay lại danh sách
+        </a>
+    </div>
+
+    <section class="exercise-hero">
+        <div class="exercise-hero-decoration" aria-hidden="true">
+            <svg viewBox="0 0 100 100" width="100" height="100"
+                 fill="none" stroke="currentColor" stroke-width="3"
+                 stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 18h42l18 18v46H20z"/>
+                <path d="M62 18v18h18M32 50h36M32 62h28M32 74h20"/>
+            </svg>
+        </div>
+
+        <div class="exercise-hero-content">
+            <div class="exercise-eyebrow">
+                <svg viewBox="0 0 24 24" width="16" height="16"
+                     fill="none" stroke="currentColor" stroke-width="1.8"
+                     stroke-linecap="round" stroke-linejoin="round"
+                     aria-hidden="true">
+                    <path d="M8 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-3"/>
+                    <path d="m16 3 5 5L11 18l-4 1 1-4Z"/>
+                </svg>
+                LUYỆN TẬP TIẾNG TRUNG
+            </div>
+
+            <h1>
+                <svg viewBox="0 0 24 24" width="31" height="31"
+                     fill="none" stroke="currentColor" stroke-width="1.8"
+                     stroke-linecap="round" stroke-linejoin="round"
+                     aria-hidden="true">
+                    <path d="M8 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9Z"/>
+                    <path d="M8 3v6h6"/>
+                    <path d="M8 14h8M8 17h6"/>
+                </svg>
+                {{ exercise.title }}
+            </h1>
+
+            <p>Hãy chọn đáp án đúng cho từng câu hỏi. Cố gắng hoàn thành tất cả câu hỏi để kiểm tra kiến thức của bạn.</p>
+
+            <div class="exercise-info-row">
+                <div class="exercise-info-chip">
+                    <svg viewBox="0 0 24 24" width="16" height="16"
+                         fill="none" stroke="currentColor" stroke-width="1.8"
+                         stroke-linecap="round" stroke-linejoin="round"
+                         aria-hidden="true">
+                        <circle cx="12" cy="12" r="9"/>
+                        <path d="M12 7v5l3 2"/>
+                    </svg>
+                    <span>{{ questions|length }} câu hỏi</span>
+                </div>
+
+                <div class="exercise-info-chip">
+                    <svg viewBox="0 0 24 24" width="16" height="16"
+                         fill="none" stroke="currentColor" stroke-width="1.8"
+                         stroke-linecap="round" stroke-linejoin="round"
+                         aria-hidden="true">
+                        <path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9Z"/>
+                    </svg>
+                    <span>Chọn một đáp án cho mỗi câu</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {% if questions %}
+    <div class="exercise-progress-card">
+        <div class="exercise-progress-top">
+            <span>Tiến độ làm bài</span>
+            <span id="exercise-progress-text">0/{{ questions|length }} câu đã chọn</span>
+        </div>
+        <div class="exercise-progress-track">
+            <div class="exercise-progress-fill" id="exercise-progress-fill"></div>
+        </div>
+    </div>
+    {% endif %}
+
+    <form method="post" id="exercise-form">
+        {% csrf_token %}
+
+        {% for question in questions %}
+        <section class="exercise-question">
+            <div class="exercise-question-heading">
+                <div class="exercise-question-number">
+                    {{ forloop.counter|stringformat:"02d" }}
+                </div>
+                <div class="exercise-question-label">
+                    Câu {{ forloop.counter }}
+                </div>
+                <div class="exercise-question-status"
+                     id="question-status-{{ question.id }}">
+                    Chưa chọn
+                </div>
+            </div>
+
+            <p class="question-text">{{ question.question }}</p>
+
+            <div class="exercise-options">
+                <label class="exercise-option">
+                    <input type="radio"
+                           name="question_{{ question.id }}"
+                           value="A"
+                           required>
+                    <span class="exercise-option-letter">A</span>
+                    <span class="exercise-option-text">{{ question.option_a }}</span>
+                </label>
+
+                <label class="exercise-option">
+                    <input type="radio"
+                           name="question_{{ question.id }}"
+                           value="B">
+                    <span class="exercise-option-letter">B</span>
+                    <span class="exercise-option-text">{{ question.option_b }}</span>
+                </label>
+
+                <label class="exercise-option">
+                    <input type="radio"
+                           name="question_{{ question.id }}"
+                           value="C">
+                    <span class="exercise-option-letter">C</span>
+                    <span class="exercise-option-text">{{ question.option_c }}</span>
+                </label>
+
+                <label class="exercise-option">
+                    <input type="radio"
+                           name="question_{{ question.id }}"
+                           value="D">
+                    <span class="exercise-option-letter">D</span>
+                    <span class="exercise-option-text">{{ question.option_d }}</span>
+                </label>
+            </div>
+        </section>
+        {% empty %}
+        <div class="exercise-empty">
+            <svg viewBox="0 0 24 24" width="38" height="38"
+                 fill="none" stroke="currentColor" stroke-width="1.6"
+                 stroke-linecap="round" stroke-linejoin="round"
+                 aria-hidden="true">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/>
+                <path d="M8 7h8M8 11h6"/>
+            </svg>
+            <h3>Chưa có câu hỏi luyện tập</h3>
+            <p>Bài luyện tập này hiện chưa có câu hỏi. Hãy quay lại sau nhé.</p>
+        </div>
+        {% endfor %}
+
+        {% if questions %}
+        <div class="exercise-submit">
+            <div class="exercise-submit-note">
+                <strong style="display:block;color:#304575;margin-bottom:4px;">
+                    Bạn đã sẵn sàng?
+                </strong>
+                Kiểm tra lại các lựa chọn trước khi nộp bài.
+            </div>
+
+            <button type="submit">
+                <svg viewBox="0 0 24 24" width="18" height="18"
+                     fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round"
+                     aria-hidden="true">
+                    <path d="m5 12 4 4L19 6"/>
+                </svg>
+                Nộp bài
+            </button>
+        </div>
+        {% endif %}
+    </form>
+</div>
+
+<script>
+(function () {
+    const form = document.getElementById("exercise-form");
+    const progressText = document.getElementById("exercise-progress-text");
+    const progressFill = document.getElementById("exercise-progress-fill");
+
+    if (!form || !progressText || !progressFill) return;
+
+    const questions = Array.from(
+        form.querySelectorAll(".exercise-question")
+    );
+
+    function updateProgress() {
+        let answered = 0;
+
+        questions.forEach(function (question) {
+            const selected = question.querySelector(
+                'input[type="radio"]:checked'
+            );
+            const status = question.querySelector(
+                '[id^="question-status-"]'
+            );
+
+            if (selected) {
+                answered++;
+                if (status) status.textContent = "Đã chọn";
+            } else {
+                if (status) status.textContent = "Chưa chọn";
+            }
+        });
+
+        progressText.textContent =
+            answered + "/" + questions.length + " câu đã chọn";
+
+        progressFill.style.width =
+            (questions.length ? answered / questions.length * 100 : 0) + "%";
+    }
+
+    form.addEventListener("change", updateProgress);
+    updateProgress();
+})();
+</script>
+
+{% endblock %}</escape>

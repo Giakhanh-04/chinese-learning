@@ -1,0 +1,14 @@
+<div class="cm-comment" data-comment-id="{{ c.id }}">
+  <div class="cm-avatar sm">{{ c.author.full_name|default:c.author.username|slice:":1"|upper }}</div>
+  <div class="cm-comment-main">
+    <strong>{{ c.author.full_name|default:c.author.username }}</strong>
+    <small>{{ c.created_at|timesince }} trước</small>
+    <p>{{ c.content|linebreaksbr }}</p>
+  </div>
+
+  {% if me and me.id == c.author_id or me and me.role == "admin" %}
+    <button type="button" class="cm-x cm-del-comment"
+            data-url="{% url 'community_comment_delete_ajax' c.id %}"
+            title="Xóa bình luận">✕</button>
+  {% endif %}
+</div>

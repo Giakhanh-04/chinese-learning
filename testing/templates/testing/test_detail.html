@@ -1,0 +1,876 @@
+{% extends "core/base.html" %}
+
+{% block title %}{{ test.title }} - Học tiếng Trung{% endblock %}
+
+{% block content %}
+
+<style>
+
+.test-page {
+
+    --navy:#304575;
+    --navy-dark:#25385f;
+    --navy-soft:#eef3fb;
+
+    --text:#293347;
+    --muted:#7b8494;
+
+    --border:#e4e8f0;
+
+
+    max-width:920px;
+    margin:auto;
+    padding:35px 20px 60px;
+
+    color:var(--text);
+}
+
+
+/* HEADER */
+
+.test-header {
+
+    margin-bottom:25px;
+
+}
+
+
+.test-label {
+
+    display:inline-flex;
+
+    padding:7px 14px;
+
+    border-radius:20px;
+
+    background:var(--navy-soft);
+
+    color:var(--navy);
+
+    font-size:12px;
+
+    font-weight:700;
+
+    letter-spacing:1px;
+
+}
+
+
+.test-header h1 {
+
+    margin:14px 0 8px;
+
+    color:var(--navy-dark);
+
+    font-size:32px;
+
+    font-weight:800;
+
+}
+
+
+.test-header p {
+
+    color:var(--muted);
+
+    line-height:1.7;
+
+}
+
+
+
+/* INFO */
+
+.test-info {
+
+    display:flex;
+
+    gap:15px;
+
+    flex-wrap:wrap;
+
+    margin-bottom:25px;
+
+}
+
+
+.info-card {
+
+    flex:1;
+
+    min-width:200px;
+
+    padding:16px 20px;
+
+    border-radius:15px;
+
+    border:1px solid var(--border);
+
+    background:#fff;
+
+}
+
+
+.info-title {
+
+    color:var(--muted);
+
+    font-size:13px;
+
+}
+
+
+.info-value {
+
+    margin-top:5px;
+
+    color:var(--navy);
+
+    font-size:20px;
+
+    font-weight:800;
+
+}
+
+
+
+/* QUESTION */
+
+.question-card {
+
+
+    background:white;
+
+    border:1px solid var(--border);
+
+    border-radius:18px;
+
+    padding:25px;
+
+    margin-bottom:18px;
+
+
+    transition:.2s;
+
+
+}
+
+
+.question-card:hover {
+
+
+    transform:translateY(-2px);
+
+    box-shadow:0 8px 25px rgba(0,0,0,.06);
+
+
+}
+
+
+.question-number {
+
+
+    display:inline-flex;
+
+    padding:6px 12px;
+
+    border-radius:20px;
+
+    background:var(--navy-soft);
+
+    color:var(--navy);
+
+    font-size:13px;
+
+    font-weight:700;
+
+}
+
+
+.question-text {
+
+
+    margin:18px 0;
+
+    font-size:17px;
+
+    font-weight:600;
+
+}
+
+
+
+/* OPTION */
+
+
+.option {
+
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+
+    padding:13px 15px;
+
+    margin:10px 0;
+
+
+    border:1px solid #e3e7ef;
+
+    border-radius:12px;
+
+
+    cursor:pointer;
+
+    transition:.2s;
+
+}
+
+
+
+.option:hover {
+
+
+    background:#f5f8fd;
+
+    border-color:#9bb0d8;
+
+
+}
+
+
+
+.option input {
+
+
+    accent-color:var(--navy);
+
+}
+
+
+
+.option span {
+
+
+    font-size:14px;
+
+}
+
+
+
+
+/* BUTTON */
+
+
+.submit-btn {
+
+
+    width:100%;
+
+    margin-top:15px;
+
+    padding:15px;
+
+
+    border:none;
+
+    border-radius:14px;
+
+
+    background:var(--navy);
+
+    color:white;
+
+
+    font-size:15px;
+
+    font-weight:700;
+
+
+    cursor:pointer;
+
+    transition:.2s;
+
+
+}
+
+
+.submit-btn:hover {
+
+
+    background:var(--navy-dark);
+
+}
+
+
+
+/* RESULT */
+
+
+.result-box {
+
+
+    margin-top:30px;
+
+}
+
+
+
+.result-card {
+
+
+    padding:25px;
+
+    border-radius:18px;
+
+    margin-bottom:15px;
+
+    border:1px solid;
+
+}
+
+
+
+.result-success {
+
+    background:#effaf4;
+
+    border-color:#c9efd8;
+
+    color:#24734f;
+
+}
+
+
+
+.result-fail {
+
+
+    background:#fff4f4;
+
+    border-color:#f3cccc;
+
+    color:#984848;
+
+}
+
+
+
+.answer-result {
+
+
+    padding:15px;
+
+    border-radius:12px;
+
+    margin-top:12px;
+
+    border:1px solid;
+
+
+}
+
+
+.correct {
+
+
+    background:#effaf4;
+
+    border-color:#c9efd8;
+
+}
+
+
+
+.wrong {
+
+
+    background:#fff4f4;
+
+    border-color:#f3cccc;
+
+}
+
+
+
+.unanswered {
+
+
+    background:#fff9e8;
+
+    border-color:#f3dfa4;
+
+}
+
+/* KẾT QUẢ TRÊN TỪNG CÂU */
+
+.question-card.q-correct {
+    border-color:#7cd1a0;
+    background:#f4fbf7;
+}
+
+.question-card.q-wrong {
+    border-color:#e8a0a0;
+    background:#fff7f7;
+}
+
+.question-card.q-unanswered {
+    border-color:#ecd48a;
+    background:#fffcf0;
+}
+
+.option.opt-correct {
+    background:#e3f6ea;
+    border-color:#5bbf86;
+    color:#1f6b46;
+    font-weight:600;
+}
+
+.option.opt-wrong {
+    background:#fde8e8;
+    border-color:#e07a7a;
+    color:#9b3a3a;
+}
+
+.q-note {
+    margin-top:12px;
+    padding:10px 14px;
+    border-radius:10px;
+    font-size:14px;
+    font-weight:600;
+}
+
+.q-correct .q-note {
+    background:#e3f6ea;
+    color:#1f6b46;
+}
+
+.q-wrong .q-note {
+    background:#fde8e8;
+    color:#9b3a3a;
+}
+
+.q-unanswered .q-note {
+    background:#fff3cf;
+    color:#8a6a10;
+}
+
+@media(max-width:600px){
+
+
+.test-header h1{
+
+font-size:25px;
+
+}
+
+
+.question-card{
+
+padding:18px;
+
+}
+
+
+}
+
+.timer-bar {
+    position: sticky;
+    top: 10px;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: fit-content;
+    margin: 0 auto 20px;
+    padding: 10px 22px;
+    border-radius: 999px;
+    background: #fff;
+    border: 1px solid var(--border);
+    box-shadow: 0 6px 20px rgba(31, 41, 55, .10);
+    color: var(--navy);
+    font-weight: 700;
+}
+
+.timer-bar .timer-value {
+    min-width: 64px;
+    text-align: center;
+    font-size: 22px;
+    font-variant-numeric: tabular-nums;
+}
+
+.timer-bar.warn {
+    border-color: #e8a0a0;
+    background: #fff4f4;
+    color: #c0392b;
+    animation: timer-blink 1s infinite;
+}
+
+.timer-bar.done { display: none; }
+
+@keyframes timer-blink {
+    50% { opacity: .6; }
+}
+</style>
+
+
+
+<div class="test-page">
+
+
+<div class="test-header">
+
+    <span class="test-label">
+        TEST · LUYỆN TẬP
+    </span>
+
+
+    <h1>
+        {{ test.title }}
+    </h1>
+
+
+    {% if test.description %}
+
+    <p>
+        {{ test.description }}
+    </p>
+
+    {% endif %}
+
+
+</div>
+
+
+
+<div class="test-info">
+
+
+<div class="info-card">
+
+<div class="info-title">
+Thời gian
+</div>
+
+<div class="info-value">
+{{ test.duration }} phút
+</div>
+
+</div>
+
+
+
+<div class="info-card">
+
+<div class="info-title">
+Điểm đạt
+</div>
+
+
+<div class="info-value">
+
+{{ test.passing_score }}/100
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+
+
+<div id="resultBox" class="result-box"></div>
+
+{% if questions and test.duration %}
+<div class="timer-bar" id="timerBar">
+    <span>⏱ Còn lại</span>
+    <span class="timer-value" id="timerValue">--:--</span>
+</div>
+{% endif %}
+
+<form id="testForm">
+
+{% csrf_token %}
+
+{% for question in questions %}
+
+<div class="question-card">
+
+
+<div class="question-number">
+
+Câu {{ question.question_order }}
+
+</div>
+
+
+
+<div class="question-text">
+
+{{ question.question }}
+
+</div>
+
+
+
+{% if question.option_a %}
+
+<label class="option">
+
+<input 
+type="radio"
+name="question_{{ question.id }}"
+value="A">
+
+<span>
+A. {{ question.option_a }}
+</span>
+
+</label>
+
+{% endif %}
+
+
+
+{% if question.option_b %}
+
+<label class="option">
+
+<input 
+type="radio"
+name="question_{{ question.id }}"
+value="B">
+
+<span>
+B. {{ question.option_b }}
+</span>
+
+</label>
+
+{% endif %}
+
+
+
+{% if question.option_c %}
+
+<label class="option">
+
+<input 
+type="radio"
+name="question_{{ question.id }}"
+value="C">
+
+<span>
+C. {{ question.option_c }}
+</span>
+
+</label>
+
+{% endif %}
+
+
+
+{% if question.option_d %}
+
+<label class="option">
+
+<input 
+type="radio"
+name="question_{{ question.id }}"
+value="D">
+
+<span>
+D. {{ question.option_d }}
+</span>
+
+</label>
+
+{% endif %}
+
+
+
+</div>
+
+
+
+{% empty %}
+
+<p>
+Chưa có câu hỏi.
+</p>
+
+
+{% endfor %}
+
+
+
+{% if questions %}
+
+<button
+type="button"
+onclick="submitTest()"
+class="submit-btn">
+
+
+Nộp bài kiểm tra
+
+
+</button>
+
+
+{% endif %}
+
+
+
+</form>
+
+
+
+</div>
+
+
+<script>
+    /* ---------- ĐỒNG HỒ ĐẾM NGƯỢC ---------- */
+var DURATION_MIN = parseInt("{{ test.duration|default:0 }}", 10) || 0;
+var TIMER_KEY = "hanzii_test_end_" + window.location.pathname;
+var timerId = null;
+
+function stopTimer() {
+    if (timerId) clearInterval(timerId);
+    timerId = null;
+    try { sessionStorage.removeItem(TIMER_KEY); } catch (e) {}
+    var bar = document.getElementById("timerBar");
+    if (bar) bar.classList.add("done");
+}
+
+function startTimer() {
+    var bar = document.getElementById("timerBar");
+    var label = document.getElementById("timerValue");
+    if (!bar || !label || DURATION_MIN <= 0) return;
+
+    // giữ mốc kết thúc để tải lại trang không bị reset giờ
+    var end = 0;
+    try { end = parseInt(sessionStorage.getItem(TIMER_KEY), 10) || 0; } catch (e) {}
+    if (!end || end < Date.now() - 1000) {
+        end = Date.now() + DURATION_MIN * 60 * 1000;
+        try { sessionStorage.setItem(TIMER_KEY, String(end)); } catch (e) {}
+    }
+
+    function tick() {
+        var left = Math.max(0, Math.round((end - Date.now()) / 1000));
+        var m = String(Math.floor(left / 60)).padStart(2, "0");
+        var s = String(left % 60).padStart(2, "0");
+        label.textContent = m + ":" + s;
+        bar.classList.toggle("warn", left <= 60);
+
+        if (left <= 0) {
+            clearInterval(timerId);
+            timerId = null;
+            alert("Đã hết giờ! Bài làm sẽ được nộp tự động.");
+            submitTest();
+        }
+    }
+
+    tick();
+    timerId = setInterval(tick, 1000);
+}
+
+document.addEventListener("DOMContentLoaded", startTimer);
+function submitTest() {
+    const form = document.getElementById("testForm");
+    const btn = form.querySelector(".submit-btn");
+    const box = document.getElementById("resultBox");
+    const csrfInput = form.querySelector("[name=csrfmiddlewaretoken]");
+
+    btn.disabled = true;
+    btn.textContent = "Đang nộp bài...";
+
+    fetch(window.location.href, {
+        method: "POST",
+        body: new FormData(form),
+        credentials: "same-origin",
+        headers: {
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRFToken": csrfInput.value
+        }
+    })
+    .then(function (res) {
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        return res.json();
+    })
+    .then(function (data) {
+        // Tổng điểm ở đầu trang
+        const cls = data.passed ? "result-success" : "result-fail";
+        const status = data.passed ? "Đạt yêu cầu" : "Chưa đạt";
+
+        box.innerHTML = '<div class="result-card ' + cls + '">'
+            + '<h2 style="margin:0 0 8px">' + status + '</h2>'
+            + '<p style="margin:4px 0">Số câu đúng: <b>' + data.score + ' / ' + data.total + '</b></p>'
+            + '<p style="margin:4px 0">Điểm của bạn: <b>' + data.percent + ' / 100</b> (điểm đạt: ' + data.passing_score + ')</p>'
+            + '</div>';
+
+        // Tô màu từng câu
+        data.results.forEach(function (r) {
+            const input = form.querySelector('input[name="question_' + r.question_id + '"]');
+            if (!input) return;
+
+            const card = input.closest(".question-card");
+            let state, text;
+
+            if (r.unanswered) {
+                state = "q-unanswered";
+                text = "Chưa trả lời. Đáp án đúng: " + r.correct_answer;
+            } else if (r.is_correct) {
+                state = "q-correct";
+                text = "Chính xác!";
+            } else {
+                state = "q-wrong";
+                text = "Bạn chọn " + r.user_answer + ". Đáp án đúng: " + r.correct_answer;
+            }
+
+            card.classList.add(state);
+
+            card.querySelectorAll(".option").forEach(function (label) {
+                const v = label.querySelector("input").value;
+                if (v === r.correct_answer) {
+                    label.classList.add("opt-correct");
+                } else if (v === r.user_answer) {
+                    label.classList.add("opt-wrong");
+                }
+            });
+
+            const note = document.createElement("div");
+            note.className = "q-note";
+            note.textContent = text;
+            card.appendChild(note);
+        });
+        stopTimer();
+        // Khóa đáp án, đổi nút thành "Làm lại"
+        form.querySelectorAll("input[type=radio]").forEach(function (i) {
+            i.disabled = true;
+        });
+
+        btn.disabled = false;
+        btn.textContent = "Làm lại bài kiểm tra";
+        btn.onclick = function () {
+            window.location.reload();
+        };
+
+        box.scrollIntoView({ behavior: "smooth", block: "start" });
+    })
+    .catch(function (err) {
+        alert("Nộp bài thất bại: " + err.message);
+        btn.disabled = false;
+        btn.textContent = "Nộp bài kiểm tra";
+    });
+}
+</script>
+
+{% endblock %}

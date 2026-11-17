@@ -1,0 +1,17 @@
+# Bảo mật (bắt buộc)
+.env
+
+# Python
+__pycache__/
+*.pyc
+venv/
+.venv/
+
+# Django
+staticfiles/
+db.sqlite3
+*.log
+
+# Hệ thống / editor
+.DS_Store
+.vscode/

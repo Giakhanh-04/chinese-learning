@@ -1,0 +1,90 @@
+{% extends "admin_panel/admin_base.html" %}
+{% load l10n %}
+
+{% block title %}{% if question %}Sửa câu hỏi{% else %}Thêm câu hỏi{% endif %}{% endblock %}
+
+{% block content %}
+
+<style>
+    .qgrid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .qgrid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+    @media (max-width: 600px) {
+        .qgrid-2, .qgrid-3 { grid-template-columns: 1fr; }
+    }
+</style>
+
+<div style="color:#777;font-size:14px;margin-bottom:6px;">
+    <a href="{{ back_url }}" style="color:#354a7d;text-decoration:none;">← {{ parent.title }}</a>
+</div>
+
+<h1 style="font-size:26px;margin:0 0 20px;">
+    {% if question %}Sửa câu hỏi{% else %}Thêm câu hỏi{% endif %} ({{ label }})
+</h1>
+
+<form method="post" class="adm-card" style="max-width:760px;">
+    {% csrf_token %}
+
+    <label class="adm-label" style="margin-top:0;">Nội dung câu hỏi *</label>
+    <textarea name="question" class="adm-input" rows="3" required>{{ values.question }}</textarea>
+
+    <label class="adm-label">Loại câu hỏi *</label>
+    <input type="text" name="question_type" class="adm-input" list="qtype-list" value="{{ values.question_type }}">
+    <datalist id="qtype-list">
+        {% for t in types %}<option value="{{ t }}">{% endfor %}
+    </datalist>
+
+    <div class="qgrid-2">
+        <div>
+            <label class="adm-label">Lựa chọn A</label>
+            <input type="text" name="option_a" class="adm-input" value="{{ values.option_a }}">
+        </div>
+        <div>
+            <label class="adm-label">Lựa chọn B</label>
+            <input type="text" name="option_b" class="adm-input" value="{{ values.option_b }}">
+        </div>
+        <div>
+            <label class="adm-label">Lựa chọn C</label>
+            <input type="text" name="option_c" class="adm-input" value="{{ values.option_c }}">
+        </div>
+        <div>
+            <label class="adm-label">Lựa chọn D</label>
+            <input type="text" name="option_d" class="adm-input" value="{{ values.option_d }}">
+        </div>
+    </div>
+
+    <div class="{% if has_score %}qgrid-3{% else %}qgrid-2{% endif %}">
+        <div>
+            <label class="adm-label">Đáp án đúng *</label>
+            <select name="correct_answer" class="adm-input">
+                <option value="">-- Chọn --</option>
+                {% for c in choices %}
+                    <option value="{{ c }}" {% if c == values.correct_answer %}selected{% endif %}>{{ c }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label class="adm-label">Thứ tự *</label>
+            <input type="text" inputmode="numeric" name="question_order" class="adm-input"
+                   value="{{ values.question_order|unlocalize }}">
+        </div>
+        {% if has_score %}
+        <div>
+            <label class="adm-label">Điểm *</label>
+            <input type="text" inputmode="decimal" name="score" class="adm-input"
+                   value="{{ values.score|unlocalize }}">
+        </div>
+        {% endif %}
+    </div>
+
+    {% if has_expl %}
+        <label class="adm-label">Giải thích đáp án</label>
+        <textarea name="explanation" class="adm-input" rows="3">{{ values.explanation }}</textarea>
+    {% endif %}
+
+    <div style="display:flex;gap:10px;margin-top:20px;">
+        <button type="submit" class="adm-btn">Lưu</button>
+        <a href="{{ back_url }}" class="adm-btn light">Hủy</a>
+    </div>
+</form>
+
+{% endblock %}

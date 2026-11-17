@@ -1,0 +1,83 @@
+{% extends "admin_panel/admin_base.html" %}
+
+{% block title %}Bài tập{% endblock %}
+
+{% block content %}
+
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+    <h1 style="font-size:26px;margin:0;">Quản lý bài tập</h1>
+    <a href="{% url 'admin_exercise_create' %}" class="adm-btn">+ Thêm bài tập</a>
+</div>
+
+<form method="get" class="adm-card" style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;">
+    <input type="text" name="q" value="{{ q }}" class="adm-input"
+           placeholder="Tìm theo tiêu đề hoặc mô tả..." style="flex:1;min-width:220px;">
+
+    <select name="lesson" class="adm-input" style="width:auto;max-width:320px;">
+        <option value="">Mọi bài học</option>
+        {% for l in lessons %}
+            <option value="{{ l.id }}" {% if l.id|stringformat:"s" == lesson %}selected{% endif %}>{{ l.label }}</option>
+        {% endfor %}
+    </select>
+
+    <button type="submit" class="adm-btn">Lọc</button>
+    <a href="{% url 'admin_exercises' %}" class="adm-btn light">Xóa lọc</a>
+</form>
+
+<div class="adm-card">
+    <div style="color:#777;font-size:14px;margin-bottom:10px;">{{ total }} bài tập</div>
+
+    <div class="adm-table-wrap">
+        <table class="adm-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Tiêu đề</th>
+                    <th>Bài học</th>
+                    <th>Loại</th>
+                    <th>Độ khó</th>
+                    <th>Số câu</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for e in rows %}
+                <tr>
+                    <td>{{ e.id }}</td>
+                    <td style="white-space:normal;min-width:200px;">{{ e.title }}</td>
+                    <td>{{ e.lesson_obj.title|default:"-" }}</td>
+                    <td>{{ e.exercise_type|default:"-" }}</td>
+                    <td>{{ e.difficulty|default:"-" }}</td>
+                    <td>{{ e.q_count }}</td>
+                    <td style="text-align:right;">
+                        <a href="{% url 'admin_questions' 'bai-tap' e.id %}" class="adm-btn">Câu hỏi</a>
+                        <a href="{% url 'admin_exercise_edit' e.id %}" class="adm-btn light">Sửa</a>
+
+                        <form method="post" action="{% url 'admin_exercise_delete' e.id %}" style="display:inline;"
+                              onsubmit="return confirm('Xóa bài tập {{ e.title|escapejs }}? Không thể hoàn tác.');">
+                            {% csrf_token %}
+                            <button type="submit" class="adm-btn danger">Xóa</button>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="7" style="text-align:center;color:#777;padding:30px;">Không có bài tập nào.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% if page_obj.paginator.num_pages > 1 %}
+    <div style="display:flex;gap:10px;align-items:center;justify-content:center;margin-top:16px;">
+        {% if page_obj.has_previous %}
+            <a class="adm-btn light" href="?page={{ page_obj.previous_page_number }}&q={{ q|urlencode }}&lesson={{ lesson }}">← Trước</a>
+        {% endif %}
+        <span style="color:#777;">Trang {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+        {% if page_obj.has_next %}
+            <a class="adm-btn light" href="?page={{ page_obj.next_page_number }}&q={{ q|urlencode }}&lesson={{ lesson }}">Sau →</a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}

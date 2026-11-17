@@ -1,0 +1,45 @@
+{% extends "admin_panel/admin_base.html" %}
+
+{% block title %}{% if lesson %}Sửa bài học{% else %}Thêm bài học{% endif %}{% endblock %}
+
+{% block content %}
+
+<div style="color:#777;font-size:14px;margin-bottom:6px;">
+    <a href="{% url 'admin_lessons' course.id %}" style="color:#354a7d;text-decoration:none;">← {{ course.name }}</a>
+</div>
+
+<h1 style="font-size:26px;margin:0 0 20px;">
+    {% if lesson %}Sửa bài học: {{ lesson.title }}{% else %}Thêm bài học{% endif %}
+</h1>
+
+<form method="post" class="adm-card" style="max-width:720px;">
+    {% csrf_token %}
+
+    <label class="adm-label" style="margin-top:0;">Tiêu đề *</label>
+    <input type="text" name="title" class="adm-input" value="{{ values.title }}" required>
+
+    <label class="adm-label">Mô tả</label>
+    <textarea name="description" class="adm-input" rows="4">{{ values.description }}</textarea>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div>
+            <label class="adm-label">Thứ tự trong khóa *</label>
+            <input type="text" inputmode="numeric" name="lesson_order" class="adm-input" value="{{ values.lesson_order }}">
+        </div>
+        <div>
+            <label class="adm-label">Trạng thái *</label>
+            <select name="status" class="adm-input">
+                {% for s in statuses %}
+                    <option value="{{ s }}" {% if s == values.status %}selected{% endif %}>{{ s }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+
+    <div style="display:flex;gap:10px;margin-top:20px;">
+        <button type="submit" class="adm-btn">Lưu</button>
+        <a href="{% url 'admin_lessons' course.id %}" class="adm-btn light">Hủy</a>
+    </div>
+</form>
+
+{% endblock %}

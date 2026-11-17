@@ -1,0 +1,772 @@
+
+{% extends "core/base.html" %}
+
+{% block title %}Học tập - Hanzii{% endblock %}
+
+{% block content %}
+
+<style>
+    .learning-page {
+        --brand: #d94343;
+        --brand-dark: #bd3333;
+        --brand-soft: #fff1f1;
+        --text: #293241;
+        --muted: #77808f;
+        --border: #e9e9ed;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 32px 22px 50px;
+        color: var(--text);
+    }
+
+    .learning-page * {
+        box-sizing: border-box;
+    }
+
+    .learning-heading {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .learning-heading h1 {
+        margin: 0 0 9px;
+        font-size: 29px;
+        font-weight: 700;
+        letter-spacing: -.5px;
+    }
+
+    .learning-heading p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.7;
+    }
+
+    .heading-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        margin-bottom: 12px;
+        color: var(--brand);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    .heading-label span {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--brand);
+    }
+
+    .learning-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 270px;
+        gap: 25px;
+        align-items: start;
+    }
+
+    .learning-section {
+        margin-bottom: 32px;
+    }
+
+    .section-heading {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 17px;
+    }
+
+    .section-heading h2 {
+        margin: 0;
+        font-size: 20px;
+        font-weight: 700;
+    }
+
+    .section-caption {
+        margin: -7px 0 18px;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.6;
+    }
+
+    .learning-tools {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 15px;
+    }
+
+    .learning-tool {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        min-width: 0;
+        min-height: 100px;
+        padding: 19px;
+        border: 1px solid var(--border);
+        border-radius: 13px;
+        background: #fff;
+        color: inherit;
+        text-decoration: none;
+        transition: border-color .2s, box-shadow .2s, transform .2s;
+    }
+
+    .learning-tool:hover {
+        border-color: #efb0b0;
+        box-shadow: 0 7px 22px rgba(35, 40, 50, .06);
+        transform: translateY(-2px);
+    }
+
+    .tool-icon {
+        display: grid;
+        place-items: center;
+        flex: 0 0 49px;
+        width: 49px;
+        height: 49px;
+        border-radius: 12px;
+        background: var(--brand-soft);
+        color: var(--brand);
+    }
+
+    .tool-icon svg {
+        display: block;
+        width: 24px;
+        height: 24px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .tool-copy {
+        min-width: 0;
+    }
+
+    .learning-tool h3 {
+        margin: 0 0 6px;
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    .learning-tool p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.65;
+    }
+
+    .level-tabs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 9px;
+        margin-bottom: 20px;
+    }
+
+    .level-tab {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 9px 15px;
+        border: 1px solid #e4e5e9;
+        border-radius: 8px;
+        background: #fff;
+        color: #555e6d;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+        transition: .2s;
+    }
+
+    .level-tab:hover {
+        border-color: #e5a2a2;
+        color: var(--brand);
+    }
+
+    .level-tab.active {
+        border-color: var(--brand);
+        background: var(--brand);
+        color: #fff;
+    }
+
+    .course-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 17px;
+    }
+
+    .course-card {
+        min-width: 0;
+        overflow: hidden;
+        border: 1px solid var(--border);
+        border-radius: 13px;
+        background: #fff;
+        transition: border-color .2s, box-shadow .2s, transform .2s;
+        scroll-margin-top: 100px;
+    }
+
+    .course-card:hover {
+        border-color: #efb0b0;
+        box-shadow: 0 8px 24px rgba(35, 40, 50, .06);
+        transform: translateY(-2px);
+    }
+
+    .course-image {
+        display: grid;
+        place-items: center;
+        height: 130px;
+        overflow: hidden;
+        background: linear-gradient(135deg, #fff7f7, #f9eeee);
+        color: var(--brand);
+    }
+
+    .course-image svg {
+        width: 45px;
+        height: 45px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.4;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .course-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .course-info {
+        padding: 18px;
+    }
+
+    .course-hsk {
+        display: inline-flex;
+        align-items: center;
+        padding: 5px 9px;
+        border-radius: 6px;
+        background: var(--brand-soft);
+        color: var(--brand);
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .course-info h3 {
+        margin: 12px 0 8px;
+        font-size: 16px;
+        line-height: 1.5;
+    }
+
+    .course-info p {
+        min-height: 45px;
+        margin: 0;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.7;
+        overflow-wrap: anywhere;
+    }
+
+    .course-info .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        margin-top: 17px;
+        padding: 10px 15px;
+        border: 1px solid var(--brand);
+        border-radius: 8px;
+        background: var(--brand);
+        color: #fff;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+        transition: background .2s, border-color .2s;
+    }
+
+    .course-info .btn:hover {
+        border-color: var(--brand-dark);
+        background: var(--brand-dark);
+    }
+
+    .learning-sidebar {
+        padding: 21px;
+        border: 1px solid var(--border);
+        border-radius: 13px;
+        background: #fff;
+    }
+
+    .sidebar-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 12px;
+    }
+
+    .sidebar-title-icon {
+        display: grid;
+        place-items: center;
+        width: 37px;
+        height: 37px;
+        border-radius: 10px;
+        background: var(--brand-soft);
+        color: var(--brand);
+    }
+
+    .sidebar-title-icon svg {
+        width: 20px;
+        height: 20px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .sidebar-title h3 {
+        margin: 0;
+        font-size: 15px;
+    }
+
+    .learning-sidebar > p {
+        margin: 0 0 19px;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.8;
+    }
+
+    .sidebar-link {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 10px;
+        padding: 12px;
+        border: 1px solid #ededf0;
+        border-radius: 9px;
+        color: #424b5a;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+        transition: .2s;
+    }
+
+    .sidebar-link:hover {
+        border-color: #efb0b0;
+        background: #fff8f8;
+        color: var(--brand);
+    }
+
+    .sidebar-link svg {
+        width: 19px;
+        height: 19px;
+        flex-shrink: 0;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .sidebar-divider {
+        height: 1px;
+        margin: 21px 0;
+        background: #ededf0;
+    }
+
+    .sidebar-note {
+        padding: 14px;
+        border-radius: 10px;
+        background: #fff6f6;
+    }
+
+    .sidebar-note strong {
+        display: block;
+        margin-bottom: 6px;
+        color: var(--brand-dark);
+        font-size: 13px;
+    }
+
+    .sidebar-note p {
+        margin: 0;
+        color: #76666a;
+        font-size: 12px;
+        line-height: 1.7;
+    }
+
+    .empty-courses {
+        grid-column: 1 / -1;
+        padding: 32px 20px;
+        border: 1px dashed #d8dbe1;
+        border-radius: 12px;
+        color: var(--muted);
+        text-align: center;
+    }
+
+    @media (max-width: 900px) {
+        .learning-layout {
+            grid-template-columns: minmax(0, 1fr);
+        }
+
+        .learning-sidebar {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .sidebar-title,
+        .learning-sidebar > p,
+        .sidebar-divider,
+        .sidebar-note {
+            grid-column: 1 / -1;
+        }
+
+        .sidebar-link {
+            margin-top: 0;
+        }
+    }
+
+    @media (max-width: 580px) {
+        .learning-page {
+            padding: 24px 15px 35px;
+        }
+
+        .learning-heading h1 {
+            font-size: 24px;
+        }
+
+        .learning-tools,
+        .course-grid {
+            grid-template-columns: minmax(0, 1fr);
+        }
+
+        .learning-tool {
+            min-height: 88px;
+            padding: 15px;
+        }
+
+        .course-image {
+            height: 145px;
+        }
+
+        .learning-sidebar {
+            display: block;
+        }
+
+        .learning-sidebar .sidebar-link {
+            margin-top: 10px;
+        }
+    }
+    
+/* Đồng bộ màu thương hiệu Hanzii */
+.learning-page {
+    --brand: #304575;
+    --brand-dark: #25385f;
+    --brand-soft: #e9eef8;
+    --text: #293347;
+    --muted: #777f8d;
+    --border: #e5e8ef;
+}
+
+.learning-page .heading-label,
+.learning-page .tool-icon {
+    color: #304575;
+}
+
+.learning-page .tool-icon,
+.learning-page .sidebar-title-icon {
+    background: #e9eef8;
+}
+
+.learning-page .level-tab.active {
+    background: #304575;
+    border-color: #304575;
+    color: #fff;
+}
+
+.learning-page .course-hsk {
+    background: #e9eef8;
+    color: #405682;
+}
+
+.learning-page .course-image {
+    background: linear-gradient(135deg, #edf2fb, #f8f9fc);
+    color: #536ba0;
+}
+
+.learning-page .course-info .btn {
+    background: #304575;
+    border-color: #304575;
+    color: #fff;
+}
+
+.learning-page .course-info .btn:hover {
+    background: #25385f;
+    border-color: #25385f;
+}
+
+.learning-page .learning-tool:hover,
+.learning-page .course-card:hover {
+    border-color: #d4dced;
+}
+
+.learning-page .sidebar-link {
+    color: #414752;
+}
+
+.learning-page .sidebar-link:hover {
+    color: #304575;
+    border-color: #cbd4e5;
+    background: #f4f6fb;
+}
+
+.learning-page .sidebar-note {
+    background: #f3f6fc;
+}
+
+.learning-page .sidebar-note strong {
+    color: #304575;
+}
+
+.learning-page .sidebar-note p {
+    color: #737b89;
+}
+
+</style>
+
+<div class="learning-page">
+
+    <div class="learning-heading">
+        <div>
+            <div class="heading-label"><span></span> HANZII LEARNING</div>
+            <h1>Học tập tiếng Trung</h1>
+            <p>Chọn khóa học phù hợp và xây dựng thói quen học tiếng Trung mỗi ngày.</p>
+        </div>
+    </div>
+
+    <div class="learning-layout">
+
+        <div class="learning-main">
+
+            <section class="learning-section">
+                <div class="section-heading">
+                    <h2>Học tập của tôi</h2>
+                </div>
+
+                <div class="learning-tools">
+
+                   
+                    <a href="{% url 'ai_chat' %}" class="learning-tool">
+                        <div class="tool-icon">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M12 3a7 7 0 0 0-7 7v3a3 3 0 0 0 3 3h1v-6H8a4 4 0 0 1 8 0h-1v6h1a3 3 0 0 0 3-3v-3a7 7 0 0 0-7-7z"/>
+                                <path d="M15 19c-1 .8-2 1-4 1"/>
+                                <path d="M10 20h2"/>
+                            </svg>
+                        </div>
+                        <div class="tool-copy">
+                            <h3>Học cùng AI</h3>
+                            <p>Hỏi đáp và nhận hỗ trợ học tiếng Trung bằng AI.</p>
+                        </div>
+                    </a>
+
+                    <a href="{% url 'progress' %}" class="learning-tool">
+                        <div class="tool-icon">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M3 3v18h18"/>
+                                <path d="m7 14 4-4 3 3 6-7"/>
+                                <path d="M15 6h5v5"/>
+                            </svg>
+                        </div>
+                        <div class="tool-copy">
+                            <h3>Tiến độ học tập</h3>
+                            <p>Theo dõi kết quả và quá trình học của bạn.</p>
+                        </div>
+                    </a>
+
+<a href="{% url 'ai_learning_plans' %}" class="learning-tool">
+    <div class="tool-icon">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 5h16v14H4z"/>
+            <path d="M8 9h8M8 12h5M8 15h7"/>
+            <path d="m16 3 2 2 3-3"/>
+        </svg>
+    </div>
+    <div class="tool-copy">
+        <h3>Lộ trình học AI</h3>
+        <p>Xem lộ trình cá nhân hóa do AI tạo và theo dõi mục tiêu học tập.</p>
+    </div>
+</a>
+
+<a href="{% url 'vocabulary_list' %}" class="learning-tool">
+    <div class="tool-icon">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21z"/>
+            <path d="M4 5.5v15.5"/>
+            <path d="M8 7h8M8 11h8M8 15h5"/>
+        </svg>
+    </div>
+    <div class="tool-copy">
+        <h3>Từ vựng HSK</h3>
+        <p>Tra cứu và ôn tập từ vựng tiếng Trung theo 6 cấp độ HSK.</p>
+    </div>
+</a>
+
+<a href="{% url 'grammar_list' %}" class="learning-tool">
+    <div class="tool-icon">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 4h16v16H4z"/>
+            <path d="M8 8h8M8 12h6M8 16h8"/>
+            <path d="M17 3v4"/>
+        </svg>
+    </div>
+    <div class="tool-copy">
+        <h3>Ngữ pháp HSK</h3>
+        <p>Học cấu trúc câu, cách dùng ngữ pháp và ví dụ tiếng Trung theo cấp độ.</p>
+    </div>
+</a>
+
+                    <a href="{% url 'exercise_list' %}" class="learning-tool">
+                        <div class="tool-icon">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="m14 4 6 6"/>
+                                <path d="m4 20 4.5-1 10.8-10.8a2.1 2.1 0 0 0-3-3L5.5 16z"/>
+                                <path d="M12 20h8"/>
+                            </svg>
+                        </div>
+                        <div class="tool-copy">
+                            <h3>Luyện tập</h3>
+                            <p>Ôn lại kiến thức qua các câu hỏi thực hành.</p>
+                        </div>
+                    </a>
+
+                </div>
+            </section>
+
+            <section class="learning-section">
+
+                <div class="section-heading">
+                    <h2>Khóa học tiếng Trung</h2>
+                </div>
+
+                <p class="section-caption">
+                    Chọn cấp độ HSK để bắt đầu hành trình học tập của bạn.
+                </p>
+
+                                <div class="level-tabs" id="level-tabs" style="scroll-margin-top:100px;">
+
+                    <a href="?#level-tabs" class="level-tab {% if not selected_hsk %}active{% endif %}">Tất cả</a>
+
+                    {% for l in levels %}
+                        <a href="?hsk={{ l }}#level-tabs" class="level-tab {% if selected_hsk == l %}active{% endif %}">HSK {{ l }}</a>
+                    {% endfor %}
+
+                </div>
+
+                <div class="course-grid" id="courses">
+
+                    {% for course in courses %}
+
+                    <div class="course-card" id="hsk-{{ course.hsk_level }}">
+
+                        <div class="course-image">
+                            {% if course.image %}
+                                <img src="{{ course.image }}" alt="{{ course.name }}">
+                            {% else %}
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21z"/>
+                                    <path d="M4 5.5v15.5"/>
+                                    <path d="M8 7h8M8 11h8"/>
+                                </svg>
+                            {% endif %}
+                        </div>
+
+                        <div class="course-info">
+                            <span class="course-hsk">HSK {{ course.hsk_level }}</span>
+
+                            <h3>{{ course.name }}</h3>
+
+                            <p>
+                                {{ course.description|default:"Khám phá từ vựng, ngữ pháp và kiến thức tiếng Trung theo cấp độ." }}
+                            </p>
+
+                            <a href="{% url 'course_detail' course.id %}" class="btn">
+                                Xem khóa học <span aria-hidden="true">→</span>
+                            </a>
+                        </div>
+
+                    </div>
+
+                    {% empty %}
+
+                    <div class="empty-courses">
+                        Hiện chưa có khóa học nào. Vui lòng quay lại sau.
+                    </div>
+
+                    {% endfor %}
+
+                </div>
+            </section>
+
+        </div>
+
+        <aside class="learning-sidebar">
+
+            <div class="sidebar-title">
+                <div class="sidebar-title-icon">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="m12 3 2.6 5.3 5.9.9-4.3 4.2 1 5.9-5.2-2.8-5.2 2.8 1-5.9-4.3-4.2 5.9-.9z"/>
+                    </svg>
+                </div>
+                <h3>Mục tiêu học tập</h3>
+            </div>
+
+            <p>
+                Dành thời gian mỗi ngày để học từ mới, ôn ngữ pháp
+                và củng cố kiến thức đã học.
+            </p>
+
+            <a href="{% url 'translation_page' %}" class="sidebar-link">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="m5 8 4 4-4 4"/>
+                    <path d="M11 16h5"/>
+                    <path d="M3 4h18v16H3z"/>
+                </svg>
+                Thực hành dịch
+            </a>
+
+            <a href="{% url 'test_list' %}" class="sidebar-link">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M8 4h11v17H5V4h3"/>
+                    <path d="M9 3h6v4H9z"/>
+                    <path d="m8 13 2 2 4-4"/>
+                    <path d="M8 18h7"/>
+                </svg>
+                Làm đề thi thử
+            </a>
+
+            <a href="{% url 'premium_list' %}" class="sidebar-link">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="m3 8 4 4 5-7 5 7 4-4-2 12H5z"/>
+                    <path d="M5 20h14"/>
+                </svg>
+                Khám phá Premium
+            </a>
+
+            <div class="sidebar-divider"></div>
+
+            <div class="sidebar-note">
+                <strong>Học một chút mỗi ngày</strong>
+                <p>Kiên trì ôn tập thường xuyên giúp bạn ghi nhớ từ vựng và sử dụng tiếng Trung tự tin hơn.</p>
+            </div>
+
+        </aside>
+
+    </div>
+</div>
+
+{% endblock %}

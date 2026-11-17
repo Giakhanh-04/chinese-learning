@@ -1,0 +1,499 @@
+{% extends "core/base.html" %}
+
+{% block title %}Đăng ký - Học tiếng Trung{% endblock %}
+
+
+{% block content %}
+
+
+<style>
+
+
+.auth-page {
+
+
+    min-height:70vh;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    padding:40px 20px;
+
+    background:#f8fafc;
+
+
+}
+
+
+
+.auth-box {
+
+
+    width:100%;
+
+    max-width:450px;
+
+
+    padding:35px;
+
+
+    background:white;
+
+
+    border:1px solid #e5e8ef;
+
+
+    border-radius:22px;
+
+
+    box-shadow:
+    0 15px 40px rgba(48,69,117,.08);
+
+
+}
+
+
+
+.auth-logo {
+
+
+    width:60px;
+
+    height:60px;
+
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+
+    margin:0 auto 18px;
+
+
+    border-radius:18px;
+
+
+    background:#eef3fb;
+
+
+    color:#304575;
+
+
+    font-size:24px;
+
+    font-weight:800;
+
+
+}
+
+
+
+.auth-box h2 {
+
+
+    margin:0 0 8px;
+
+
+    text-align:center;
+
+
+    color:#25385f;
+
+
+    font-size:27px;
+
+    font-weight:800;
+
+
+}
+
+
+
+.auth-subtitle {
+
+
+    text-align:center;
+
+
+    margin-bottom:25px;
+
+
+    color:#7b8494;
+
+
+    font-size:14px;
+
+
+}
+
+
+
+.auth-message {
+
+
+    padding:12px 15px;
+
+
+    margin-bottom:18px;
+
+
+    border-radius:12px;
+
+
+    background:#fff4f4;
+
+
+    border:1px solid #f3cccc;
+
+
+    color:#984848;
+
+
+    font-size:14px;
+
+
+}
+
+
+
+.auth-box label {
+
+
+    display:block;
+
+
+    margin-bottom:7px;
+
+
+    color:#3d4658;
+
+
+    font-size:14px;
+
+
+    font-weight:600;
+
+
+}
+
+
+
+.auth-box input {
+
+
+    width:100%;
+
+
+    padding:14px 15px;
+
+
+    margin-bottom:17px;
+
+
+    border-radius:12px;
+
+
+    border:1px solid #dfe4ed;
+
+
+    outline:none;
+
+
+    font-size:14px;
+
+
+    transition:.2s;
+
+
+}
+
+
+
+.auth-box input:focus {
+
+
+    border-color:#526ba0;
+
+
+    box-shadow:
+    0 0 0 4px rgba(82,107,160,.12);
+
+
+}
+
+
+
+.auth-box button {
+
+
+    width:100%;
+
+
+    padding:14px;
+
+
+    margin-top:5px;
+
+
+    border:none;
+
+
+    border-radius:13px;
+
+
+    background:
+
+    linear-gradient(
+        135deg,
+        #304575,
+        #526ba0
+    );
+
+
+    color:white;
+
+
+    font-size:15px;
+
+
+    font-weight:700;
+
+
+    cursor:pointer;
+
+
+    transition:.25s;
+
+
+}
+
+
+
+.auth-box button:hover {
+
+
+    transform:translateY(-2px);
+
+
+    box-shadow:
+    0 8px 20px rgba(48,69,117,.25);
+
+
+}
+
+
+
+.auth-footer {
+
+
+    margin-top:22px;
+
+
+    text-align:center;
+
+
+    color:#77808f;
+
+
+    font-size:14px;
+
+
+}
+
+
+
+.auth-footer a {
+
+
+    color:#304575;
+
+
+    font-weight:700;
+
+
+    text-decoration:none;
+
+
+}
+
+
+
+.auth-footer a:hover {
+
+
+    text-decoration:underline;
+
+
+}
+
+
+
+
+
+@media(max-width:500px){
+
+
+.auth-box{
+
+padding:25px 20px;
+
+}
+
+
+}
+
+.field-hint {
+    min-height: 18px;
+    margin: -8px 0 12px;
+    font-size: 13px;
+}
+
+.field-hint.bad { color: #984848; }
+.field-hint.ok  { color: #1f8a57; }
+
+</style>
+
+
+
+
+<div class="auth-page">
+
+
+<div class="auth-box">
+
+
+
+<div class="auth-logo">
+
+H
+
+</div>
+
+
+
+<h2>
+
+Tạo tài khoản
+
+</h2>
+
+
+<div class="auth-subtitle">
+
+Bắt đầu hành trình học tiếng Trung cùng Hanzii
+
+</div>
+
+
+
+
+{% if messages %}
+
+{% for message in messages %}
+
+
+<div class="auth-message">
+
+{{ message }}
+
+</div>
+
+
+{% endfor %}
+
+{% endif %}
+
+
+
+
+<form method="post" id="registerForm">
+
+{% csrf_token %}
+
+<label for="full_name">Họ và tên</label>
+<input type="text" id="full_name" name="full_name"
+       placeholder="Nhập họ và tên" value="{{ values.full_name }}" required>
+
+<label for="username">Tên đăng nhập</label>
+<input type="text" id="username" name="username"
+       placeholder="Nhập tên đăng nhập" value="{{ values.username }}" required>
+
+<label for="email">Email</label>
+<input type="email" id="email" name="email"
+       placeholder="Nhập email" value="{{ values.email }}" required>
+
+<label for="password">Mật khẩu</label>
+<input type="password" id="password" name="password"
+       placeholder="Ít nhất 6 ký tự" minlength="6" required>
+
+<label for="password2">Nhập lại mật khẩu</label>
+<input type="password" id="password2" name="password2"
+       placeholder="Nhập lại mật khẩu" minlength="6" required>
+
+<div id="passwordHint" class="field-hint"></div>
+
+<button type="submit">Đăng ký</button>
+
+</form>
+
+
+
+
+<div class="auth-footer">
+
+
+Đã có tài khoản?
+
+<a href="{% url 'login' %}">
+
+Đăng nhập
+
+</a>
+
+
+</div>
+
+
+
+
+</div>
+
+
+</div>
+
+<script>
+(function () {
+    var pass = document.getElementById("password");
+    var pass2 = document.getElementById("password2");
+    var hint = document.getElementById("passwordHint");
+
+    function check() {
+        if (!pass2.value) {
+            hint.textContent = "";
+            hint.className = "field-hint";
+            pass2.setCustomValidity("");
+            return;
+        }
+
+        if (pass.value === pass2.value) {
+            hint.textContent = "Mật khẩu khớp.";
+            hint.className = "field-hint ok";
+            pass2.setCustomValidity("");
+        } else {
+            hint.textContent = "Mật khẩu nhập lại chưa khớp.";
+            hint.className = "field-hint bad";
+            pass2.setCustomValidity("Mật khẩu nhập lại không khớp.");
+        }
+    }
+
+    pass.addEventListener("input", check);
+    pass2.addEventListener("input", check);
+})();
+</script>
+
+{% endblock %}

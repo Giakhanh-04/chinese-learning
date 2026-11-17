@@ -1,0 +1,310 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block title %}Cộng đồng - Hanzii{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/community.css' %}?v=1">
+{% endblock %}
+
+{% block content %}
+{% csrf_token %}
+
+<div class="cm-wrap">
+
+  <!-- ============ CỘT TRÁI ============ -->
+  <aside class="cm-left">
+
+    <section class="cm-box">
+      <h3>Câu hỏi được quan tâm</h3>
+      <ol class="cm-top-list">
+        {% for p in top_questions %}
+          <li><a href="{% url 'community_post' p.id %}">{{ p.title|truncatechars:34 }}</a></li>
+        {% empty %}
+          <li class="cm-muted">Chưa có bài viết.</li>
+        {% endfor %}
+      </ol>
+    </section>
+
+    <section class="cm-box">
+      <h3>Thể loại</h3>
+      <div class="cm-cats">
+        <a href="?tab={{ tab }}" class="cm-cat {% if not cat_slug %}active{% endif %}">Tất cả</a>
+        {% for c in categories %}
+          <a href="?tab={{ tab }}&cat={{ c.slug }}"
+             class="cm-cat {% if cat_slug == c.slug %}active{% endif %}">{{ c.name }}</a>
+        {% endfor %}
+      </div>
+    </section>
+
+  </aside>
+
+  <!-- ============ CỘT GIỮA ============ -->
+  <main class="cm-center">
+
+    {% if messages %}
+      {% for m in messages %}
+        <div class="cm-alert {{ m.tags }}">{{ m }}</div>
+      {% endfor %}
+    {% endif %}
+
+    <!-- Ô đăng bài -->
+    <div class="cm-composer">
+      <div class="cm-avatar">
+        {% if me %}{{ me.full_name|default:me.username|slice:":1"|upper }}{% else %}?{% endif %}
+      </div>
+
+      {% if me %}
+        <button type="button" class="cm-composer-btn" id="cmOpenForm">
+          {{ me.full_name|default:me.username }}, bạn đang thắc mắc điều gì?
+        </button>
+      {% else %}
+        <a href="{% url 'login' %}" class="cm-composer-btn">Đăng nhập để đặt câu hỏi hoặc chia sẻ</a>
+      {% endif %}
+    </div>
+
+    {% if me %}
+    <form method="post" action="{% url 'community_new' %}" class="cm-form" id="cmForm" hidden>
+      {% csrf_token %}
+      <input type="text" name="title" maxlength="200" placeholder="Tiêu đề" required>
+      <textarea name="content" rows="5" maxlength="3000" placeholder="Nội dung..." required></textarea>
+      <div class="cm-form-row">
+        <select name="category">
+          <option value="">Thể loại: Khác</option>
+          {% for c in categories %}<option value="{{ c.id }}">{{ c.name }}</option>{% endfor %}
+        </select>
+        <button type="button" class="cm-btn light" id="cmCloseForm">Hủy</button>
+        <button type="submit" class="cm-btn">Đăng bài</button>
+      </div>
+    </form>
+    {% endif %}
+
+    <!-- Tabs -->
+    <nav class="cm-tabs">
+      <a href="?tab=all{% if cat_slug %}&cat={{ cat_slug }}{% endif %}" class="{% if tab == 'all' %}active{% endif %}">Tất cả</a>
+      <a href="?tab=liked" class="{% if tab == 'liked' %}active{% endif %}">Yêu thích</a>
+      <a href="?tab=mine" class="{% if tab == 'mine' %}active{% endif %}">Của tôi</a>
+      <a href="?tab=featured" class="{% if tab == 'featured' %}active{% endif %}">BTV lựa chọn</a>
+    </nav>
+
+    <!-- Bài viết -->
+    {% for p in page_obj %}
+      {% include "community/_post_card.html" %}
+    {% empty %}
+      <div class="cm-empty">Chưa có bài viết nào ở mục này.</div>
+    {% endfor %}
+
+    {% if page_obj.paginator.num_pages > 1 %}
+    <div class="cm-pager">
+      {% if page_obj.has_previous %}
+        <a class="cm-btn light" href="?{{ qs }}&page={{ page_obj.previous_page_number }}">← Trước</a>
+      {% endif %}
+      <span>Trang {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+      {% if page_obj.has_next %}
+        <a class="cm-btn light" href="?{{ qs }}&page={{ page_obj.next_page_number }}">Sau →</a>
+      {% endif %}
+    </div>
+    {% endif %}
+
+  </main>
+
+  <!-- ============ CỘT PHẢI ============ -->
+  <aside class="cm-right">
+
+    <form method="get" class="cm-search">
+      <input type="text" name="q" value="{{ q }}" placeholder="Tìm bài viết...">
+    </form>
+
+    <section class="cm-box">
+      <h3>Vinh danh</h3>
+
+      <div class="cm-periods">
+        <a href="?period=week"  class="{% if period == 'week' %}active{% endif %}">Tuần</a>
+        <a href="?period=month" class="{% if period == 'month' %}active{% endif %}">Tháng</a>
+        <a href="?period=year"  class="{% if period == 'year' %}active{% endif %}">Năm</a>
+      </div>
+
+      {% if podium %}
+      <div class="cm-podium">
+        {% for r in podium %}
+          <div class="cm-pod cm-pod-{{ r.rank }}">
+            <div class="cm-pod-rank">{{ r.rank }}</div>
+            <div class="cm-avatar sm">{{ r.user.full_name|default:r.user.username|slice:":1"|upper }}</div>
+            <div class="cm-pod-name">{{ r.user.full_name|default:r.user.username|truncatechars:10 }}</div>
+            <div class="cm-pod-score">{{ r.score }}</div>
+          </div>
+        {% endfor %}
+      </div>
+      {% else %}
+        <p class="cm-muted">Chưa có hoạt động trong khoảng thời gian này.</p>
+      {% endif %}
+
+      <ul class="cm-rank-list">
+        {% for r in ranking_rest %}
+          <li>
+            <span class="cm-rank-no">{{ r.rank }}</span>
+            <span class="cm-rank-name">{{ r.user.full_name|default:r.user.username }}</span>
+            <b>{{ r.score }}</b>
+          </li>
+        {% endfor %}
+      </ul>
+
+      <p class="cm-muted small">Điểm: 10 / bài đăng, 2 / bình luận.</p>
+    </section>
+
+  </aside>
+</div>
+<div class="cm-modal" id="cmModal" hidden>
+  <div class="cm-modal-dialog" role="dialog" aria-modal="true" aria-label="Chi tiết bài viết">
+
+    <div class="cm-modal-head">
+      <h3>Chi tiết bài viết</h3>
+      <button type="button" class="cm-modal-close" id="cmModalClose" aria-label="Đóng">✕</button>
+    </div>
+
+    <div class="cm-modal-body" id="cmModalBody"></div>
+
+    {% if me %}
+    <form class="cm-modal-form" id="cmModalForm">
+      <input type="text" name="content" maxlength="1000" placeholder="Viết bình luận..."
+             autocomplete="off" required>
+      <button type="submit" aria-label="Gửi">➤</button>
+    </form>
+    {% else %}
+    <div class="cm-modal-form cm-modal-login">
+      <a href="{% url 'login' %}">Đăng nhập</a> để bình luận.
+    </div>
+    {% endif %}
+
+  </div>
+</div>
+<script>
+(function () {
+    var token = document.querySelector("[name=csrfmiddlewaretoken]").value;
+
+    var openBtn = document.getElementById("cmOpenForm");
+    var form = document.getElementById("cmForm");
+    if (openBtn && form) {
+        openBtn.addEventListener("click", function () {
+            form.hidden = false;
+            form.querySelector("input[name=title]").focus();
+        });
+        document.getElementById("cmCloseForm").addEventListener("click", function () {
+            form.hidden = true;
+        });
+    }
+
+    document.querySelectorAll(".cm-like").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+            fetch(btn.dataset.url, {
+                method: "POST",
+                credentials: "same-origin",
+                headers: { "X-CSRFToken": token }
+            }).then(function (r) {
+                if (r.status === 401) { window.location.href = "{% url 'login' %}"; return null; }
+                return r.json();
+            }).then(function (d) {
+                if (!d) return;
+                btn.classList.toggle("is-on", d.liked);
+                btn.querySelector(".cm-heart").textContent = d.liked ? "♥" : "♡";
+                btn.querySelector(".cm-like-count").textContent = d.count;
+            });
+        });
+    });
+})();
+</script>
+<script>
+(function () {
+    var token = document.querySelector("[name=csrfmiddlewaretoken]").value;
+    var modal = document.getElementById("cmModal");
+    var body = document.getElementById("cmModalBody");
+    var form = document.getElementById("cmModalForm");
+    var activeLink = null;
+
+    function openModal() {
+        modal.hidden = false;
+        document.body.style.overflow = "hidden";
+    }
+
+    function closeModal() {
+        modal.hidden = true;
+        document.body.style.overflow = "";
+        body.innerHTML = "";
+        activeLink = null;
+    }
+
+    document.querySelectorAll(".cm-open-modal").forEach(function (link) {
+        link.addEventListener("click", function (e) {
+            e.preventDefault();
+            activeLink = link;
+            body.innerHTML = '<p class="cm-muted">Đang tải...</p>';
+            openModal();
+
+            fetch(link.dataset.modalUrl, { credentials: "same-origin" })
+                .then(function (r) { return r.text(); })
+                .then(function (html) {
+                    body.innerHTML = html;
+                    body.scrollTop = 0;
+                    if (form) form.querySelector("input").focus();
+                })
+                .catch(function () {
+                    body.innerHTML = '<p class="cm-muted">Không tải được bài viết.</p>';
+                });
+        });
+    });
+
+    document.getElementById("cmModalClose").addEventListener("click", closeModal);
+
+    modal.addEventListener("click", function (e) {
+        if (e.target === modal) closeModal();
+    });
+
+    document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape" && !modal.hidden) closeModal();
+    });
+
+    if (form) {
+        form.addEventListener("submit", function (e) {
+            e.preventDefault();
+            if (!activeLink) return;
+
+            var input = form.querySelector("input");
+            var text = input.value.trim();
+            if (!text) return;
+
+            var btn = form.querySelector("button");
+            btn.disabled = true;
+
+            var data = new FormData();
+            data.append("content", text);
+
+            fetch(activeLink.dataset.commentUrl, {
+                method: "POST",
+                credentials: "same-origin",
+                headers: { "X-CSRFToken": token },
+                body: data
+            }).then(function (r) {
+                if (r.status === 401) { window.location.href = "{% url 'login' %}"; return null; }
+                return r.ok ? r.json() : null;
+            }).then(function (d) {
+                if (!d) return;
+
+                var list = document.getElementById("cmCommentList");
+                var empty = document.getElementById("cmNoComment");
+                if (empty) empty.remove();
+
+                list.insertAdjacentHTML("beforeend", d.html);
+                document.getElementById("cmModalCount").textContent = d.count;
+                activeLink.querySelector(".cm-comment-count").textContent = d.count;
+
+                input.value = "";
+                body.scrollTop = body.scrollHeight;
+            }).finally(function () {
+                btn.disabled = false;
+                input.focus();
+            });
+        });
+    }
+})();
+</script>
+{% endblock %}
